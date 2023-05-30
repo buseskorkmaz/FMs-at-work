@@ -6,8 +6,8 @@ from data.rl_data import DataPoint, RL_Dataset
 from models.iql_model import IQL_Policy, PerTokenIQL, TransformerMLP
 from models.base import Evaluator, InputType
 from transformers.modeling_utils import PreTrainedModel
-from utils.sampling_utils import *
-from utils.torch_utils import get_transformer_logs
+from src.utils.sampling_utils import *
+from src.utils.torch_utils import get_transformer_logs
 import wandb
 import math
 

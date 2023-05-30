@@ -13,16 +13,16 @@ def toxicity_reward():
 def toxicity_noised_reward():
     return get_toxicity_f(noise_1=True)
 
-def score_human_reward(reddit_path: str, indexes: List[int]):
-    data = RedditData(reddit_path, indexes, None, None, 0.0, 1.0)
-    data_index = defaultdict(list)
-    for idx, ((_, c), _) in enumerate(data):
-        data_index[c].append(data.gt_scores[idx])
-    def _human_reward(text: str):
-        if text in data_index:
-            return 2 * float(random.choice(data_index[text]) > 0) - 1
-        raise NotImplementedError
-    return _human_reward
+# def score_human_reward(reddit_path: str, indexes: List[int]):
+#     data = RedditData(reddit_path, indexes, None, None, 0.0, 1.0)
+#     data_index = defaultdict(list)
+#     for idx, ((_, c), _) in enumerate(data):
+#         data_index[c].append(data.gt_scores[idx])
+#     def _human_reward(text: str):
+#         if text in data_index:
+#             return 2 * float(random.choice(data_index[text]) > 0) - 1
+#         raise NotImplementedError
+#     return _human_reward
 
 def model_reward(model: RewardModel):
     model.eval()

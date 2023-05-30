@@ -6,7 +6,7 @@ from models.cql_model import CQLModel
 import torch
 import torch.nn.functional as F
 import wandb
-from utils.torch_utils import get_transformer_logs
+from src.utils.torch_utils import get_transformer_logs
 
 class BCQModel(CQLModel):
     def __init__(self, 

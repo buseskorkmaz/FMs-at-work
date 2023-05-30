@@ -14,14 +14,14 @@ def load_toxicity_reward(config, device, verbose=True):
 def load_toxicity_noised_reward(config, device, verbose=True):
     return toxicity_noised_reward()
 
-@register('score_human_reward')
-def load_score_human_reward(config, device, verbose=True):
-    if config['index_path'] is not None:
-        with open(convert_path(config['index_path']), 'r') as f:
-            indexes = json.load(f)
-    else:
-        indexes = None
-    return score_human_reward(convert_path(config['reddit_path']), indexes)
+# @register('score_human_reward')
+# def load_score_human_reward(config, device, verbose=True):
+#     if config['index_path'] is not None:
+#         with open(convert_path(config['index_path']), 'r') as f:
+#             indexes = json.load(f)
+#     else:
+#         indexes = None
+#     return score_human_reward(convert_path(config['reddit_path']), indexes)
 
 @register('model_reward')
 def load_model_reward(config, device, verbose=True):

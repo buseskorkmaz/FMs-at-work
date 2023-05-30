@@ -1,5 +1,9 @@
 import torch
 from torch.utils.data.dataset import IterableDataset
+import sys
+import os
+# sys.path.append(os.path.join(os.path.dirname(os.path.realpath(__file__)), '../'))
+print(os.getcwd())
 from data.rl_data import Iterable_RL_Dataset
 from data.torch_datasets import GeneralDataset, GeneralIterDataset
 from load_objects import load_item
@@ -14,6 +18,7 @@ from functools import partial
 from collections import deque
 import json
 from utils.torch_utils import to
+
 
 def train(cfg):
     print('using config:', cfg)

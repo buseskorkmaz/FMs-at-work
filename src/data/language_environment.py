@@ -1,7 +1,11 @@
 from __future__ import annotations
 from abc import ABC, abstractmethod
 from typing import Any, Dict, List, Optional, Tuple
-from utils.cache import Cache
+import sys
+import os
+sys.path.append("/Users/busesibelkorkmaz/Desktop/ewrl-2023/Implicit-Language-Q-Learning/")
+from src.utils.cache import Cache
+
 
 class Language_Observation(ABC):
     @abstractmethod

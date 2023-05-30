@@ -1,0 +1,7 @@
+defaults:
+ - /bias_sentences@data: eval
+ - /token_reward: constant
+name: bias_list_dataset
+max_len: null
+cuttoff: null
+resample_timeout: 0.0

@@ -7,11 +7,11 @@ from typing import Any, Callable, Dict, Tuple, Union, Optional
 import wandb
 from models.gpt2_optional_final_ln import GPT2LMHeadModel, GPT2Model
 from data.rl_data import DataPoint, List_RL_Dataset, RL_Dataset
-from utils.torch_utils import get_transformer_logs
+from src.utils.torch_utils import get_transformer_logs
 import copy
 from models.base import BaseTransformer, Evaluator, InputType
 from transformers.modeling_utils import PreTrainedModel
-from utils.sampling_utils import *
+from src.utils.sampling_utils import *
 import numpy as np
 import math
 from data.language_environment import Language_Environment, Language_Observation, interact_environment, Policy

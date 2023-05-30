@@ -100,7 +100,7 @@ def gen_data(config):
     global mp_vocab_cache
     global mp_policy_cache
     worker = None
-    device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+    device = torch.device('cuda' if torch.cuda.is_available()() else 'cpu')
     policy = load_item(config['policy'], device)
     vocab = load_item(config['vocab'])
     mp_vocab_cache = Cache(vocab.cache.get_cache())

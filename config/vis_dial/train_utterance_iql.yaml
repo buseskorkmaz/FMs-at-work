@@ -104,7 +104,7 @@ evaluator:
 train:
   save_checkpoint_dir: outputs/visual_dialogue/visdial_hard_yn_official_utterance_iql_test4/
   optim_state_path: null
-  epochs: 10000000
+  epochs: 100000
   dataloader_workers: 1
   bsize: 1
   grad_accum_steps: 64

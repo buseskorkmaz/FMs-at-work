@@ -11,9 +11,9 @@ eval_dataset:
     reward_shift: 0.0
     reward_scale: 1.0
     reward_f:
-      name: score_human_reward
-      reddit_path: data/reddit_comments/
-      index_path: data/reddit_comments/eval_idxs.json
+      # name: score_human_reward
+      # reddit_path: data/reddit_comments/
+      # index_path: data/reddit_comments/eval_idxs.json
   max_len: 256
   cuttoff: null
   resample_timeout: 0.00
@@ -25,9 +25,9 @@ train_dataset:
     reward_shift: 0.0
     reward_scale: 1.0
     reward_f:
-      name: score_human_reward
-      reddit_path: data/reddit_comments/
-      index_path: data/reddit_comments/test_idxs.json
+      # name: score_human_reward
+      # reddit_path: data/reddit_comments/
+      # index_path: data/reddit_comments/test_idxs.json
   max_len: 256
   cuttoff: null
   resample_timeout: 0.00
@@ -48,7 +48,7 @@ evaluator: null
 train:
   save_checkpoint_dir: outputs/toxicity/upvote_reward2/
   optim_state_path: null
-  epochs: 10000000
+  epochs: 100000
   dataloader_workers: 2
   bsize: 16
   grad_accum_steps: 1

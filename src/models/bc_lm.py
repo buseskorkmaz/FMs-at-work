@@ -5,9 +5,9 @@ from models.base import BaseTransformer, Evaluator, InputType
 import torch
 import torch.nn.functional as F
 from typing import Any, Callable, Dict, List, Optional, Tuple, Union
-from utils.torch_utils import get_transformer_logs
+from src.utils.torch_utils import get_transformer_logs
 import numpy as np
-from utils.sampling_utils import *
+from src.utils.sampling_utils import *
 from data.language_environment import Language_Environment, Language_Observation, Policy, interact_environment
 
 class BC_LM(BaseTransformer):

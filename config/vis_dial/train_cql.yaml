@@ -85,7 +85,7 @@ evaluator:
 train:
   save_checkpoint_dir: outputs/visual_dialogue/visdial_hard_yn_cql_official_test1/
   optim_state_path: null
-  epochs: 10000000
+  epochs: 100000
   dataloader_workers: 1
   bsize: 1
   grad_accum_steps: 64

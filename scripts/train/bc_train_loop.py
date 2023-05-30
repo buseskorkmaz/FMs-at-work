@@ -1,17 +1,21 @@
+import sys
+import os
 import torch
 from torch.utils.data.dataset import IterableDataset
+sys.path.append(os.path.join(os.path.dirname(os.path.realpath(__file__)), '../../src/'))
+# print(sys.path)
 from data.rl_data import Iterable_RL_Dataset
 from data.torch_datasets import GeneralDataset, GeneralIterDataset
-from load_objects import load_item
+from src.bias.load_objects import load_item
 from accelerate import Accelerator
 import wandb
-from utils.log_utils import DistributeCombineLogs, label_logs
-from utils.misc import add_system_configs, convert_path
+from src.utils.log_utils import DistributeCombineLogs, label_logs
+from src.utils.misc import add_system_configs, convert_path
 from torch.utils.data import DataLoader
 import os
 from tqdm.auto import tqdm
 from functools import partial
-from utils.torch_utils import to
+from src.utils.torch_utils import to
 from collections import deque
 import json
 
@@ -36,7 +40,7 @@ def train(cfg):
         if accelerator.is_main_process:
             wandb.init(project=wandb_cfg['wandb_project'], config=cfg)
         accelerator.wait_for_everyone()
-    
+    print(cfg['train_dataset'])
     raw_dataset_train = load_item(cfg['train_dataset'], system_cfg['device'])
     raw_dataset_eval = load_item(cfg['eval_dataset'], system_cfg['device'])
     if isinstance(raw_dataset_train, Iterable_RL_Dataset):
