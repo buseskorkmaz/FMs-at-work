@@ -2,7 +2,10 @@
 __pycache__/
 outputs/
 .env
-data/
+data/reddit_comments/
+data/vis_dialogue
+data/wikitext
+data/wordle
 !src/data/
 !scripts/data/
 *.rdb
