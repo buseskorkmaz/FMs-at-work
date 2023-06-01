@@ -1,0 +1,33 @@
+#PBS -l select=1:ncpus=8:mem=10gb:ompthreads=8
+#PBS -l walltime=24:0:0
+
+# Load modules for any applications
+module purge
+module load tools/dev
+module load tools/prod
+module load anaconda3/personal
+source activate ilql
+# conda list numpy
+# conda install -c conda-forge numpy
+# conda install -c conda-forge scipy
+# conda install -c conda-forge pandas
+# conda install -c conda-forge tensorflow
+# conda install -c conda-forge tensorflow-probability
+
+# export LD_LIBRARY_PATH=/usr/local/lib
+export LD_LIBRARY_PATH=/rds/general/user/bsk18/home/anaconda3/lib/
+
+
+# Change to the directory the job was submitted from
+cd $HOME/Bias-ILQL/scripts/train/bias/
+python $HOME/Bias-ILQL/scripts/train/bias/train_reward.py
+
+mkdir $WORK/$PBS_JOBID
+cp * $WORK/$PBS_JOBID
+
+# Run program, using 'mpiexec' to start the job
+# mpiexec automatically picks up the # of cores
+# assigned to the job. No other flags are required
+#  - note: don't use 'mpirun'
+
+a.out
