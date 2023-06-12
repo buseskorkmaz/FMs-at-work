@@ -78,13 +78,13 @@ evaluator:
 train:
   save_checkpoint_dir: outputs/bias/conditional_bias_official_bc_test1/
   optim_state_path: null
-  epochs: 10
+  epochs: 100
   dataloader_workers: 0
   bsize: 1
   grad_accum_steps: 64
-  log_every: 1000
-  eval_every: 10
-  save_every: 1000
+  log_every: 1024
+  eval_every: 1024
+  save_every: 1024
   max_checkpoints: 1
   eval_bsize: 1
   eval_batches: 16
