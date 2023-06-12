@@ -316,9 +316,13 @@ class BC_Evaluator(Evaluator):
         total_token_reward = 0
         total_env_reward = 0
         for i in range(n):
-            result, sequence = interact_environment(self.env, policy, None)
+            result, sequence = interact_environment(self.env, policy, None)            
+            # print("Result", result, "Sequence" ,sequence)
             env_reward = sum(map(lambda x: x[2], sequence))
-            token_reward = sum(DataPoint.get_token_reward(result, model.dataset.tokenizer, model.dataset.token_reward))
+            # token_reward = sum(DataPoint.get_token_reward(result, model.dataset.tokenizer, model.dataset.token_reward))
+            if result.to_sequence()[0][1][0] in ['</a>', '<a>', '</eod>', ' ', '',  '</s>', '<s>']:
+                env_reward = -20
+            token_reward = env_reward
             total_env_reward += env_reward
             total_token_reward += token_reward
             if self.verbose:

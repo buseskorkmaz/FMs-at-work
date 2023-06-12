@@ -3,7 +3,7 @@ from abc import ABC, abstractmethod
 from typing import Any, Dict, List, Optional, Tuple
 import sys
 import os
-sys.path.append("/rds/general/user/bsk18/home/Bias-ILQL")
+sys.path.append("/Users/busesibelkorkmaz/Desktop/Bias-ILQL/")
 from src.utils.cache import Cache
 
 
@@ -56,9 +56,12 @@ def interact_environment(env: Language_Environment, policy: Policy, obs: Optiona
     if obs is None:
         obs = env.reset()
     while not env.is_terminal():
+        # print("INTERACTING")
         action = policy.act(obs)
+        # print("action:", action)
         new_obs, r, t = env.step(action)
+        # print("r", r, "t", t)
         obs_sequence.append((obs, action, r, t))
         obs = new_obs
-    obs_sequence.append((obs, None, 0, True))
+    # obs_sequence.append((obs, None, 0, True))
     return obs, obs_sequence

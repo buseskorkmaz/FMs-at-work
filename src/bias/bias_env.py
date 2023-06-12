@@ -43,7 +43,7 @@ class BiasEnvironment(Language_Environment):
         if self.stepped:
             raise Exception("Cannot step after final action")
         self.stepped = True
-        reward = (self.reward_f(action) if self.reward_f is not None else 0.0) * self.reward_scale + self.reward_shift
+        reward = (self.reward_f(self.parent, action) if self.reward_f is not None else 0.0) * self.reward_scale + self.reward_shift
         return BiasObservation(self.parent, action, reward), reward, True
 
     def reset(self) -> BiasObservation:

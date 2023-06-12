@@ -15,6 +15,7 @@ class ConstantTokenReward(TokenReward):
         self.c = c
     
     def get_token_reward(self, tokens: List[int]) -> List[float]:
+        # print("TOKENS0", tokens)
         return [self.c]*(len(tokens)-1)
 
 class SepcifiedTokenReward(TokenReward):
@@ -24,6 +25,7 @@ class SepcifiedTokenReward(TokenReward):
         self.shift = shift
     
     def get_token_reward(self, tokens: List[int]) -> List[float]:
+        print("TOKENS", tokens)
         return [(self.token_data[tok] * self.scale + self.shift) if tok in self.token_data else (0.0 * self.scale + self.shift) for tok in tokens[1:]]
 
 @dataclass

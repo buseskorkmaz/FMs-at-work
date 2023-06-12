@@ -66,6 +66,7 @@ class RobertaBinaryRewardModel(RewardModel):
         prepared_inputs = self.prepare_inputs(items)
         tokens, attn_mask = prepared_inputs['tokens'], prepared_inputs['attn_mask']
         predictions = self(tokens, attn_mask)
+        # print("USING THIS")
         return (predictions >= 0.5).float().detach().cpu().tolist()
     
     def get_reward_str(self, 
@@ -80,7 +81,9 @@ class RobertaBinaryRewardModel(RewardModel):
         attn_mask = torch.tensor(attn_mask).to(self.device)
         tokens, attn_mask = tokens[:, :self.max_len], attn_mask[:, :self.max_len]
         predictions = self(tokens, attn_mask)
+        # print("predddd", predictions)
         outputs = (predictions >= 0.5).float()
+        # print("Predictions:", outputs, "-for text=", text)
         if isinstance(text, str):
             return outputs.squeeze(0).item()
         return outputs.detach().cpu().list()

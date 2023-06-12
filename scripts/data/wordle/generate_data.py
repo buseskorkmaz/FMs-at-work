@@ -11,7 +11,7 @@ import pickle as pkl
 
 def gen_data(config):
     print(config)
-    device = torch.device('cuda' if torch.cuda.is_available()() else 'cpu')
+    device = torch.device('cuda' if torch.backends.mps.is_available()() else 'cpu')
     policy = load_item(config['policy'], device)
     vocab = load_item(config['vocab'])
     config['save_path'] = convert_path(config['save_path'])

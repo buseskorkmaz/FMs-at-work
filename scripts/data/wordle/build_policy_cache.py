@@ -7,8 +7,8 @@ from wordle.wordle_env import WordleEnvironment
 from wordle.policy import MixturePolicy
 
 def build_cache(config):
-    print(config)
-    device = torch.device('cuda' if torch.cuda.is_available()() else 'cpu')
+    # print(config)
+    device = torch.device('cuda' if torch.backends.mps.is_available()() else 'cpu')
     cache_policy = load_item(config['cache_policy'], device)
     random_policy = load_item(config['random_policy'], device)
     policy = MixturePolicy(config['cache_policy_mix_prob'], cache_policy, random_policy)

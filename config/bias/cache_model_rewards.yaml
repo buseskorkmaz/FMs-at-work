@@ -11,7 +11,7 @@ dataset:
     reward_scale: 1.0
     reward_f: null
   max_len: 16
-  cuttoff: 0.0
+  cuttoff: null
   resample_timeout: 0.00
 
 model:
@@ -20,7 +20,7 @@ model:
     cache_id: d
   roberta_kind: roberta-base
   freeze_roberta: false
-  reward_cuttoff: 0.0
+  reward_cuttoff: -2
   load:
     checkpoint_path: outputs/bias/bias_reward/model.pkl
     strict_load: true

@@ -37,8 +37,8 @@ def process_trajectories(q, policy, vocab):
         q.put(reward)
 
 def build_cache(config):
-    print(config)
-    device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+    # print(config)
+    device = torch.device('cuda' if torch.backends.mps.is_available() else 'cpu')
     cache_policy = load_item(config['cache_policy'], device)
     cache_policy.cache = Cache(cache_policy.cache.get_cache())
     random_policy = load_item(config['random_policy'], device)
