@@ -9,7 +9,7 @@ eval_dataset:
   data:
     cache_path: null
     reward_shift: 0.0
-    reward_scale: -5.0
+    reward_scale: 5.0
     reward_f:
       name: score_human_reward
       sentences_path: data/bias_sentences/
@@ -23,7 +23,7 @@ train_dataset:
   data:
     cache_path: null
     reward_shift: 0.0
-    reward_scale: -5.0
+    reward_scale: 5.0
     reward_f:
       name: score_human_reward
       sentences_path: data/bias_sentences/
@@ -38,7 +38,7 @@ model:
     cache_id: d_test
   roberta_kind: roberta-base
   freeze_roberta: false
-  reward_cuttoff: -2
+  reward_cuttoff: 0
   load:
     checkpoint_path: null
     strict_load: true
@@ -48,7 +48,7 @@ evaluator: null
 train:
   save_checkpoint_dir: outputs/bias/bias_reward/
   optim_state_path: null
-  epochs: 15
+  epochs: 70
   dataloader_workers: 2
   bsize: 16
   grad_accum_steps: 1
@@ -64,5 +64,5 @@ train:
   loss: {}
 
 wandb:
-  use_wandb: true
+  use_wandb: false
   wandb_project: bias_reward

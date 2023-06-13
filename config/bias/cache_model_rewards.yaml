@@ -20,7 +20,7 @@ model:
     cache_id: d
   roberta_kind: roberta-base
   freeze_roberta: false
-  reward_cuttoff: -2
+  reward_cuttoff: 0
   load:
     checkpoint_path: outputs/bias/bias_reward/model.pkl
     strict_load: true

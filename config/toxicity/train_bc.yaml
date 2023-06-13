@@ -11,7 +11,7 @@ train_dataset:
     cache_id: train_raw_data
     cache_path: null
     reward_shift: 0.0
-    reward_scale: -5.0
+    reward_scale: 5.0
     reward_f:
       name: toxicity_reward
       # name: score_human_reward
@@ -27,7 +27,7 @@ eval_dataset:
     cache_id: test_raw_data
     cache_path: null
     reward_shift: 0.0
-    reward_scale: -5.0
+    reward_scale: 5.0
     reward_f:
       name: toxicity_reward
       # name: score_human_reward
@@ -49,7 +49,7 @@ model:
 evaluator:
   env:
     reward_shift: 0.0
-    reward_scale: -5.0
+    reward_scale: 5.0
     data:
       name: reddit_comments
       cache_id: test_raw_data

@@ -10,7 +10,7 @@ dataset:
     cache_id: raw_data
     cache_path: null
     reward_shift: 0.0
-    reward_scale: -5.0
+    reward_scale: 5.0
     reward_f:
       name: bias_reward
   max_len: 16
@@ -50,7 +50,7 @@ model:
 evaluator:
   env:
     reward_shift: 0.0
-    reward_scale: -5.0
+    reward_scale: 5.0
     data:
       name: bias_sentences
       cache_id: raw_data
@@ -64,7 +64,7 @@ evaluator:
           cache_id: d
         roberta_kind: roberta-base
         freeze_roberta: false
-        reward_cuttoff: -2
+        reward_cuttoff: 0
         load:
           name: roberta_binary_reward_model
           checkpoint_path: outputs/bias/bias_reward/model.pkl
