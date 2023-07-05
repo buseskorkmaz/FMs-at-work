@@ -1,5 +1,6 @@
 import json
 import matplotlib.pyplot as plt
+import re
 
 # Initialize an empty dictionary to store metrics
 metrics = {
@@ -12,6 +13,7 @@ metrics = {
     "epoch": []
     # Add other metrics as needed
 }
+pattern = r'\<wandb\.sdk\.data_types\.histogram\.Histogram.*?\>'
 
 # Open the log file and read its contents
 with open("/u/buseskorkmaz/.lsf/cccCluster/943525.stdout", "r") as file:
@@ -24,7 +26,7 @@ with open("/u/buseskorkmaz/.lsf/cccCluster/943525.stdout", "r") as file:
         # Replace single quotes with double quotes
         line = line.replace("'", '"')
         # Remove non-JSON value "<wandb.sdk.data_types.histogram.Histogram object at 0x151e5c12dea0>"
-        line = line.replace('<wandb.sdk.data_types.histogram.Histogram object at 0x151e5c12dea0>', 'null')
+        line = re.sub(pattern, 'null', line)
 
         # Try to parse the line as JSON and skip it if an error occurs
         try:

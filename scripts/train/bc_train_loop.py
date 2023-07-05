@@ -6,16 +6,16 @@ sys.path.append(os.path.join(os.path.dirname(os.path.realpath(__file__)), '../..
 # print(sys.path)
 from data.rl_data import Iterable_RL_Dataset
 from data.torch_datasets import GeneralDataset, GeneralIterDataset
-from src.bias.load_objects import load_item
+from bias.load_objects import load_item
 from accelerate import Accelerator
 import wandb
-from src.utils.log_utils import DistributeCombineLogs, label_logs
-from src.utils.misc import add_system_configs, convert_path
+from utils.log_utils import DistributeCombineLogs, label_logs
+from utils.misc import add_system_configs, convert_path
 from torch.utils.data import DataLoader
 import os
 from tqdm.auto import tqdm
 from functools import partial
-from src.utils.torch_utils import to
+from utils.torch_utils import to
 from collections import deque
 import json
 

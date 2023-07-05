@@ -23,7 +23,7 @@ def eval(cfg):
     print('num processes:', system_cfg['num_processes'])
     print('using fp16:', system_cfg['use_fp16'])
     if eval_cfg['seed'] is not None:
-        random.seed(eval_cfg['seed']+(torch.cuda.current_device() if torch.backends.mps.is_available()() else 0))
+        random.seed(eval_cfg['seed']+(torch.cuda.current_device() if torch.cuda.is_available() () else 0))
         # random.seed(eval_cfg['seed'])
     
     raw_dataset = load_item(cfg['dataset'], system_cfg['device'])

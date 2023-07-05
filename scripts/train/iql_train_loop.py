@@ -2,11 +2,11 @@ import torch
 from torch.utils.data.dataset import IterableDataset
 import sys
 import os
-# sys.path.append(os.path.join(os.path.dirname(os.path.realpath(__file__)), '../'))
-print(os.getcwd())
+sys.path.append(os.path.join(os.path.dirname(os.path.realpath(__file__)), '../../src/'))
+# print(os.getcwd())
 from data.rl_data import Iterable_RL_Dataset
 from data.torch_datasets import GeneralDataset, GeneralIterDataset
-from load_objects import load_item
+from bias.load_objects import load_item
 from accelerate import Accelerator
 import wandb
 from utils.log_utils import DistributeCombineLogs, label_logs
