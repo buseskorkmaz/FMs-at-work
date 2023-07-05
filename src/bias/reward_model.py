@@ -6,8 +6,8 @@ from transformers import RobertaModel, RobertaTokenizer
 from models.base import BaseModel, InputType
 from bias.bias_dataset import BiasListDataset
 from abc import abstractmethod
-from src.utils.torch_utils import to
-from src.utils.misc import strip_from_beginning, strip_from_end
+from utils.torch_utils import to
+from utils.misc import strip_from_beginning, strip_from_end
 
 class RewardModel(BaseModel):
     def __init__(self, 

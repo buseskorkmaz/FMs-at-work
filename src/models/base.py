@@ -4,7 +4,7 @@ from abc import ABC, abstractmethod
 from transformers.modeling_utils import PreTrainedModel
 from typing import Any, Dict, Optional, Tuple, Union, List
 from data.rl_data import DataPoint, RL_Dataset
-from src.utils.torch_utils import to
+from utils.torch_utils import to
 
 InputType = Union[List[DataPoint], Dict[str, Union[torch.Tensor, Any]]]
 

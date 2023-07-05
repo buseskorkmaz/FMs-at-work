@@ -7,11 +7,11 @@ import numpy as np
 from transformers.modeling_utils import PreTrainedModel
 import torch.nn as nn
 from models.gpt2_optional_final_ln import GPT2LMHeadModel, GPT2Model
-from src.utils.sampling_utils import *
+from utils.sampling_utils import *
 from data.language_environment import Language_Environment, Policy, interact_environment
 import math
-from src.utils.cache import Cache
-from src.utils.torch_utils import map_pytree
+from utils.cache import Cache
+from utils.torch_utils import map_pytree
 
 class ChaiModel(BaseModel):
     def __init__(self, dataset: RL_Dataset, 

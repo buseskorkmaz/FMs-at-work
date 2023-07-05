@@ -5,7 +5,7 @@ from models.base import InputType
 from models.iql_model import PerTokenIQL
 import torch
 import wandb
-from src.utils.torch_utils import get_transformer_logs, map_pytree
+from utils.torch_utils import get_transformer_logs, map_pytree
 
 class CQLModel(PerTokenIQL):
     def __init__(self, 

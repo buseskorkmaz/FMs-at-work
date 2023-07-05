@@ -3,8 +3,9 @@ from abc import ABC, abstractmethod
 from typing import Any, Dict, List, Optional, Tuple
 import sys
 import os
-sys.path.append("/Users/busesibelkorkmaz/Desktop/Bias-ILQL/")
-from src.utils.cache import Cache
+# sys.path.append("/u/buseskorkmaz/Bias-ILQL/")
+sys.path.append("/u/buseskorkmaz/Bias-ILQL/src/")
+from utils.cache import Cache
 
 
 class Language_Observation(ABC):

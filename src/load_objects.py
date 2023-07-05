@@ -8,8 +8,8 @@ from models.iql_model import IQL_Evaluator, IQL_Policy, PerTokenIQL, TopAdvantag
 from models.utterance_iql_model import PerUtteranceIQL, PerUtteranceIQL_Policy, UtteranceIQL_Evaluator
 from data.rl_data import ConstantTokenReward, SepcifiedTokenReward
 from models.chai_model import Chai_Evaluator, ChaiModel, ChaiPolicy
-from src.utils.cache import Cache
-from src.utils.misc import convert_path
+from utils.cache import Cache
+from utils.misc import convert_path
 from models.gpt2_optional_final_ln import GPT2LMHeadModel, GPT2Config, GPT2Model
 
 registry = {}

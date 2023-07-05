@@ -1,4 +1,4 @@
-from src.load_objects import *
+from load_objects import *
 import json
 from bias.bias_base import StereosetData
 from bias.reward_fs import model_reward, score_human_reward, bias_reward, bias_noised_reward
