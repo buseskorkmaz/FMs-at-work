@@ -11,7 +11,7 @@ from data.language_environment import interact_environment
 
 def gen_data(config):
     print(config)
-    device = torch.device('cuda' if torch.backends.mps.is_available()() else 'cpu')
+    device = torch.device('cuda' if torch.cuda.is_available() () else 'cpu')
     expert_policy = load_item(config['expert_policy'], device)
     suboptimal_policy = load_item(config['suboptimal_policy'], device)
     vocab = load_item(config['vocab'])
