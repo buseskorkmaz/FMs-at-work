@@ -111,13 +111,13 @@ train:
   optim_state_path: null
   epochs: 10
   dataloader_workers: 0
-  bsize: 1
+  bsize: 8
   grad_accum_steps: 64
   log_every: 256
-  eval_every: 4096
-  save_every: 32768
+  eval_every: 1024
+  save_every: 1024
   max_checkpoints: 1
-  eval_bsize: 1
+  eval_bsize: 8
   eval_batches: 16
   lr: 1e-4
   weight_decay: 0.00
@@ -132,5 +132,5 @@ train:
     mc_returns: false
 
 wandb:
-  use_wandb: true
+  use_wandb: false
   wandb_project: bias_iql

@@ -96,10 +96,14 @@ class DataPoint:
         utterance_rewards = []
         curr_idx = 0
         curr_action_idx = 0
+        # print("TOKENS", tokens)
         for i, t in enumerate(tokens):
+            # print("=="*25, f"Curr_action_idxs {curr_action_idx}")
+            # print("=="*25, f"Curr_idxs {curr_idx}")
             if t == tokenizer.eos_token_id:
                 curr_idx = i
             elif t == tokenizer.eoa_token_id:
+                # print("Last token:", t)
                 action_idxs.extend(list(range(curr_idx, i)))
                 state_idxs.extend(list(range(curr_idx, i)))
                 reward.extend([token_rewards[x] for x in range(curr_idx, i)])

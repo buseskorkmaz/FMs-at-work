@@ -1,0 +1,7 @@
+name: hackernews_rl_dataset
+path: data/hackernews_rl_dataset/
+cache_path: null
+reward_shift: 100.0
+reward_scale: 5.0
+reward_f: hackernews_reward
+index_path: data/hackernews_rl_dataset/test_idxs.json

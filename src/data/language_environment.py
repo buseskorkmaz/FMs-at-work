@@ -59,8 +59,10 @@ def interact_environment(env: Language_Environment, policy: Policy, obs: Optiona
     while not env.is_terminal():
         # print("INTERACTING")
         action = policy.act(obs)
+        # if action != ' ' and action != '':
         # print("action:", action)
         new_obs, r, t = env.step(action)
+        # print("New_obs", new_obs.__str__())
         # print("r", r, "t", t)
         obs_sequence.append((obs, action, r, t))
         obs = new_obs

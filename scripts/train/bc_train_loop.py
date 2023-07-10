@@ -6,7 +6,7 @@ sys.path.append(os.path.join(os.path.dirname(os.path.realpath(__file__)), '../..
 # print(sys.path)
 from data.rl_data import Iterable_RL_Dataset
 from data.torch_datasets import GeneralDataset, GeneralIterDataset
-from bias.load_objects import load_item
+from hackernews.load_objects import load_item
 from accelerate import Accelerator
 import wandb
 from utils.log_utils import DistributeCombineLogs, label_logs

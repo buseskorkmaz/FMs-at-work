@@ -48,7 +48,7 @@ evaluator: null
 train:
   save_checkpoint_dir: outputs/bias/bias_reward/
   optim_state_path: null
-  epochs: 70
+  epochs: 200
   dataloader_workers: 2
   bsize: 16
   grad_accum_steps: 1

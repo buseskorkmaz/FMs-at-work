@@ -1,0 +1,3 @@
+name: score_human_reward
+job_descriptions_path: data/hackernews_rl_dataset/
+index_path: null
