@@ -6,6 +6,7 @@ data/reddit_comments/
 data/vis_dialogue
 data/wikitext
 data/wordle
+data/hackernews_rl_dataset
 !src/data/
 !scripts/data/
 *.rdb
