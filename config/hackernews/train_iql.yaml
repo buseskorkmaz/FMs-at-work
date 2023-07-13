@@ -96,15 +96,15 @@ evaluator:
 train:
   save_checkpoint_dir: outputs/hackernews/conditional_hackernews_official_iql_test1/
   optim_state_path: null
-  epochs: 10000
+  epochs: 48
   dataloader_workers: 0
-  bsize: 8
+  bsize: 1
   grad_accum_steps: 64
-  log_every: 256
-  eval_every: 1024
-  save_every: 1024
+  log_every: 4096
+  eval_every: 4096
+  save_every: 4096
   max_checkpoints: 1
-  eval_bsize: 8
+  eval_bsize: 1
   eval_batches: 16
   lr: 1e-4
   weight_decay: 0.00
