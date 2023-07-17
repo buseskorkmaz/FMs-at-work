@@ -2,7 +2,8 @@ from typing import List
 import random
 from collections import defaultdict
 from hackernews.hackernews_base import HackernewsData
-from hackernews.diversity_evaluator import Diversity_Evaluator
+# from hackernews.diversity_evaluator import Diversity_Evaluator
+from load_objects import load_item
 
 def hackernews_reward():
     return get_diversity_reward_f(noise_1=False)
@@ -47,7 +48,9 @@ def score_human_reward(indexes: List[int]):
 #     return _model_reward
 
 def get_diversity_reward_f(noise_1: bool=False):
-    evaluator  = Diversity_Evaluator()
+    # evaluator  = Diversity_Evaluator()
+    config = {'diversity_reward': {'name': 'diversity_reward'}}
+    evaluator = load_item(config['diversity_reward'])
     def _diversity(text: str, prompt:str):
         q_value= evaluator.calc_q_value(text, prompt)
         return q_value

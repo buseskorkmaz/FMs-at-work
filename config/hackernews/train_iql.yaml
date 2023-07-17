@@ -79,7 +79,7 @@ evaluator:
   verbose: true
   kind: sample
   generation_kwargs:
-    max_generation_len: 512
+    max_generation_len: 128
     # beam_width: 16
     temp: 1.0
     top_k: null
@@ -95,8 +95,8 @@ evaluator:
 
 train:
   save_checkpoint_dir: outputs/hackernews/conditional_hackernews_official_iql_test1/
-  optim_state_path: null
-  epochs: 48
+  optim_state_path: outputs/hackernews/optim_state/
+  epochs: 25
   dataloader_workers: 0
   bsize: 1
   grad_accum_steps: 64
@@ -105,7 +105,7 @@ train:
   save_every: 4096
   max_checkpoints: 1
   eval_bsize: 1
-  eval_batches: 16
+  eval_batches: 32
   lr: 1e-4
   weight_decay: 0.00
   hard_update_every: null
