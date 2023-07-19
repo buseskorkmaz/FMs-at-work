@@ -8,6 +8,7 @@ random.seed(42)
 from scipy.stats import wasserstein_distance
 from transformers import BertTokenizer, BertModel
 import torch
+from hackernews.language_quality_evaluator import Language_Evaluator
 
 
 class Diversity_Evaluator:
@@ -118,6 +119,14 @@ class Diversity_Evaluator:
             job_location = self.idx2location[idx]
         else:
             raise NotImplementedError
+        
+        language_eval = Language_Evaluator(prompt, job_desc)
+        language_score = language_eval.language_score()
+        if language_score < 0.5:
+            print("Poor English quality")
+            language_value = -1500
+        else:
+            language_value = language_score * 100
 
         k = 100
         locations = []
@@ -195,8 +204,10 @@ class Diversity_Evaluator:
             print("no match")
             q_value = -1000
         
+        q_value += language_value
+         
         print("Q_value",  q_value)
         print("--"*50, "\n\n")  
-
+        
         return q_value
 

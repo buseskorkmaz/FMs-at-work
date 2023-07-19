@@ -68,6 +68,6 @@ def load_hackernews_env(config, device, verbose=True):
                                include_parent=config['include_parent'])
 
 @register('diversity_reward')
-def load_diversity_evaluator(config, device, verbose=True):
+def load_diversity_evaluator(config, verbose=True):
     return Diversity_Evaluator()
 
