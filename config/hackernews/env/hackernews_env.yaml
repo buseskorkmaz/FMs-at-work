@@ -1,4 +1,4 @@
 name: hackernews_env
-reward_shift: 100.0
-reward_scale: 5.0
+reward_shift: 0.0
+reward_scale: 1.0
 reward_f: hackernews_reward

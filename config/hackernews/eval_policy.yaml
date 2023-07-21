@@ -9,8 +9,8 @@ dataset:
   data:
     cache_id: raw_data
     cache_path: null
-    reward_shift: 100.0
-    reward_scale: 5.0
+    reward_shift: 0.0
+    reward_scale: 1.0
     reward_f:
       name: hackernews_reward
   max_len: 1024
@@ -49,8 +49,8 @@ model:
 
 evaluator:
   env:
-    reward_shift: 100.0
-    reward_scale: 5.0
+    reward_shift: 0.0
+    reward_scale: 1.0
     data:
       name: hackernews_rl_dataset
       cache_id: raw_data

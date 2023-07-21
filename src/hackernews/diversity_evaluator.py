@@ -124,7 +124,7 @@ class Diversity_Evaluator:
         language_score = language_eval.language_score()
         if language_score < 0.5:
             print("Poor English quality")
-            language_value = -1500
+            language_value = -1000
         else:
             language_value = language_score * 100
 

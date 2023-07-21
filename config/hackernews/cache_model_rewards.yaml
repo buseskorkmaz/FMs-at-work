@@ -7,8 +7,8 @@ dataset:
   cache_id: d
   data:
     cache_path: null
-    reward_shift: 100.0
-    reward_scale: 5.0
+    reward_shift: 0.0
+    reward_scale: 1.0
     reward_f: 
       name: score_human_reward
       job_descriptions_path: data/hackernews_rl_dataset/
