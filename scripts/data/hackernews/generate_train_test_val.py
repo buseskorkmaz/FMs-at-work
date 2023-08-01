@@ -1,7 +1,7 @@
 from datasets import load_dataset, DatasetDict
 import json
 
-dataset =  load_dataset("buseskorkmaz/hackernews_hiring_w_q")["train"]
+dataset = load_dataset("buseskorkmaz/hackernews_new_q_values_10", split='train')
 
 # Add an index to the dataset
 dataset = dataset.add_column('index', list(range(len(dataset))))
@@ -21,11 +21,12 @@ print(test_dataset)
 print(val_dataset)
 
 # Save the indices of each split
-with open('train_idxs.json', 'w') as f:
+with open('train_idxs_d.json', 'w') as f:
     json.dump(train_dataset_final['index'], f)
+    print("here")
 
-with open('eval_idxs.json', 'w') as f:
+with open('eval_idxs_d.json', 'w') as f:
     json.dump(val_dataset['index'], f)
 
-with open('test_idxs.json', 'w') as f:
+with open('test_idxs_d.json', 'w') as f:
     json.dump(test_dataset['index'], f)

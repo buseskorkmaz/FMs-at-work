@@ -5,16 +5,23 @@ nltk.download('punkt')
 
 class Language_Evaluator:
 
-    def __init__(self, prompt: str, job_desc: str, print_result=True):
+    def __init__(self):
+
+        task = 'dialogue'
+        # Initialize evaluator for a specific task
+        self.evaluator = get_evaluator(task)
         
+        self.src = None
+        self.context = None
+        self.output = None
+        self.print = None
+
+    def language_score(self, prompt: str, job_desc: str, print_result=True):
+
         self.src = prompt
         self.context =prompt
         self.output = job_desc
         self.print = print_result
-
-    def language_score(self):
-
-        task = 'dialogue'
 
         # a list of dialogue histories
         # src_list = ['The job is located in Edinburgh Genome Foundry. The company, Edinburgh Genome Foundry, is seeking a qualified individual for the Senior Software Engineer position. The ideal candidate would be skilled in the following technologies: open-source. The remote work options for this job are currently unknown. Write a detailed job description based on this information.\n\n']
@@ -31,11 +38,10 @@ class Language_Evaluator:
         # Prepare data for pre-trained evaluators
         data = convert_to_json(output_list=output_list, 
                             src_list=src_list, context_list=context_list)
-        # Initialize evaluator for a specific task
-        evaluator = get_evaluator(task)
+       
         # Get multi-dimensional evaluation scores
-        eval_scores = evaluator.evaluate(data, print_result=True)
+        eval_scores = self.evaluator.evaluate(data, print_result=True)
 
         # return overall score
-        return eval_scores[-1]['overall']
+        return eval_scores[-1]
             

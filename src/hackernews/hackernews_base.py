@@ -10,11 +10,11 @@ class HackernewsData:
                  indexes: Optional[List[int]], 
                  reward_f: Optional[Callable[[str], float]], 
                  reward_cache: Optional[Cache]=None, 
-                 reward_shift: float=100.0, 
+                 reward_shift: float=0.0, 
                 # not sure about them
                  reward_scale: float=1.0):
         
-        rl_dataset = load_dataset("buseskorkmaz/hackernews_hiring_w_q")["train"]
+        rl_dataset = load_dataset("buseskorkmaz/hackernews_new_q_values_10_no_context", split="train")
         items = [row for row in rl_dataset]
 
         # TODO: check if rest of this ok

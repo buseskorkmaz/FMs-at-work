@@ -7,8 +7,8 @@ def upload_multiple_files(
     # directory_pattern:str = 'data/hackernews/hiring_technologies/processed_hiring_*',
     # dataset_name:str = "buseskorkmaz/hackernews_hiring_technologies_combined",
     # private:bool = True,
-    directory_pattern:str = 'data/hackernews/hiring_embeddings/processed_hiring_embeddings_*',
-    dataset_name:str = "buseskorkmaz/hackernews_hiring_embeddings_combined",
+    directory_pattern:str = 'processed_q_values*',
+    dataset_name:str = "buseskorkmaz/hackernews_new_q_values_10",
     private:bool = True
 
 ):
@@ -32,8 +32,8 @@ def upload_multiple_files(
     return
 
 def upload_single_file(
-    directory:str = 'data/hackernews/hiring_prompts/processed_hiring_prompts_0',
-    dataset_name:str = "buseskorkmaz/hackernews_hiring_prompts",
+    directory:str = 'processed_hiring_prompts_w_context',
+    dataset_name:str = "buseskorkmaz/hackernews_hiring_prompts_w_context",
     private:bool = True
 ):
     # Load the dataset from disk
@@ -63,22 +63,22 @@ def concatenate_columns(
 
     # The pattern to match the directories
     # Use glob to find all directories that match the pattern
-    directory_pattern = 'data/hackernews/hiring_q_values/processed_q_values_*'
-    directories = glob.glob(directory_pattern)
-    print(directories)
+    # directory_pattern = 'data/hackernews/hiring_q_values/processed_q_values_*'
+    # directories = glob.glob(directory_pattern)
+    # print(directories)
 
-    # Load each directory into a huggingface dataset
-    datasets = [load_from_disk(directory) for directory in directories]
-    print("LIST OF DATASETS:\n", datasets)
+    # # Load each directory into a huggingface dataset
+    # datasets = [load_from_disk(directory) for directory in directories]
+    # print("LIST OF DATASETS:\n", datasets)
 
-    # Concatenate all the datasets together
-    combined_dataset = concatenate_datasets(datasets)
-    print("COMBINED:\n" , combined_dataset)
-    print(combined_dataset[0])
+    # # Concatenate all the datasets together
+    # combined_dataset = concatenate_datasets(datasets)
+    # print("COMBINED:\n" , combined_dataset)
+    # print(combined_dataset[0])
 
-    rl_dataset = load_dataset("buseskorkmaz/rl_dataset")["train"]
+    rl_dataset = load_dataset("buseskorkmaz/hackernews_new_q_values_10")["train"]
     # load dataset
-    # q_values = load_dataset("buseskorkmaz/hackernews_hiring_embeddings_combined")["train"]
+    prompt_dataset = load_dataset("buseskorkmaz/hackernews_hiring_prompts")["train"]
 
     # dropna
     # user_profile_dataset = user_profile_dataset.filter(not_none)
@@ -89,13 +89,13 @@ def concatenate_columns(
     # print(combined_dataset)
 
     # # Ensure the datasets are of the same size
-    assert len(rl_dataset) == len(combined_dataset), "Datasets are of different sizes!"
+    # assert len(rl_dataset) == len(prompt_dataset), "Datasets are of different sizes!"
 
     # # Add the 'technologies' feature from the second dataset to the first
     # # hiring_location = hiring_location.map(lambda example, idx: {'technologies': hiring_technologies[idx]['technologies']}, with_indices=True)
   
     # # Create a dictionary from the second dataset for efficient lookup
-    tech_dict = {item['text']: item['q_value'] for item in combined_dataset}
+    tech_dict = {item['text']: item['prompt'] for item in prompt_dataset}
 
     # Add the 'technologies' feature from the second dataset to the first
     # def add_technologies(example):
@@ -105,16 +105,16 @@ def concatenate_columns(
 
     def add_new_column(example, new_column_name):
         # Get the technologies corresponding to the text, or None if not found
-        example[new_column_name] = tech_dict.get(example['action'], None)
+        example[new_column_name] = tech_dict.get(example['text'], None)
         return example
 
     # Now hiring_location contains the combined rows from both datasets
-    rl_dataset = rl_dataset.map(lambda x: add_new_column(x, new_column_name="q_value"))
+    rl_dataset = rl_dataset.map(lambda x: add_new_column(x, new_column_name="prompt"))
     print(rl_dataset)
     print(rl_dataset[32])
     
     # Push to hub
-    rl_dataset.push_to_hub("rl_dataset_w_q", private=True)
+    rl_dataset.push_to_hub("hackernews_new_q_values_10_no_context", private=True)
     
     return
 

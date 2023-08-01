@@ -59,19 +59,19 @@ evaluator:
   verbose: true
   kind: sample
   generation_kwargs:
-    max_generation_len: 128
+    max_generation_len: 256
     num_generations: 1
 
 train:
-  save_checkpoint_dir: outputs/hackernews/conditional_hackernews_official_bc_test1/
+  save_checkpoint_dir: outputs/hackernews/conditional_hackernews_official_bc_test2/
   optim_state_path: null
-  epochs: 48
+  epochs: 50
   dataloader_workers: 0
   bsize: 1
   grad_accum_steps: 64
-  log_every: 4096
+  log_every: 256
   eval_every: 4096
-  save_every: 4096
+  save_every: 8192
   max_checkpoints: 1
   eval_bsize: 1
   eval_batches: 16

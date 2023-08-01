@@ -31,7 +31,11 @@ def train(cfg):
     print('num processes:', system_cfg['num_processes'])
     print('using fp16:', system_cfg['use_fp16'])
     if not os.path.exists(train_cfg['save_checkpoint_dir']):
-        os.makedirs(train_cfg['save_checkpoint_dir'])
+        try:
+            os.makedirs(train_cfg['save_checkpoint_dir'])
+        except:
+            print("Couldn't create the checkpoint dir, probably it already exists")
+            pass
     with open(os.path.join(train_cfg['save_checkpoint_dir'], 'config.json'), 'w') as f:
         json.dump(cfg, f)
 

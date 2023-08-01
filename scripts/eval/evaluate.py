@@ -1,8 +1,12 @@
 import torch
+import sys
+import os
+sys.path.append(os.path.join(os.path.dirname(os.path.realpath(__file__)), '../../'))
+sys.path.append(os.path.join(os.path.dirname(os.path.realpath(__file__)), '../../src'))
 from torch.utils.data.dataset import IterableDataset
 from data.rl_data import Iterable_RL_Dataset
 from data.torch_datasets import GeneralDataset, GeneralIterDataset
-from load_objects import load_item
+from hackernews.load_objects import load_item
 from accelerate import Accelerator
 from utils.log_utils import DistributeCombineLogs, label_logs
 from utils.misc import add_system_configs, convert_path
@@ -12,7 +16,6 @@ from functools import partial
 from utils.torch_utils import to
 import random
 import pickle as pkl
-import os
 
 def eval(cfg):
     print('using config:', cfg)
@@ -23,7 +26,7 @@ def eval(cfg):
     print('num processes:', system_cfg['num_processes'])
     print('using fp16:', system_cfg['use_fp16'])
     if eval_cfg['seed'] is not None:
-        random.seed(eval_cfg['seed']+(torch.cuda.current_device() if torch.cuda.is_available() () else 0))
+        random.seed(eval_cfg['seed']+(torch.cuda.current_device() if torch.cuda.is_available() else 0))
         # random.seed(eval_cfg['seed'])
     
     raw_dataset = load_item(cfg['dataset'], system_cfg['device'])

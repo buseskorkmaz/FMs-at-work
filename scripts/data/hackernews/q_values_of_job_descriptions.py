@@ -3,14 +3,58 @@ import numpy as np
 from sklearn.metrics.pairwise import cosine_similarity
 import re
 import random
+import os
+import sys
 random.seed(42)
 # from scipy.special import kl_div
 from collections import Counter
 from scipy.stats import wasserstein_distance
 from datasets import concatenate_datasets
 import argparse
+sys.path.append(os.path.join(os.path.dirname(os.path.realpath(__file__)), '../../'))
+sys.path.append(os.path.join(os.path.dirname(os.path.realpath(__file__)), '../../../src/'))
+from hackernews.UniEval.utils import convert_to_json
+from hackernews.UniEval.metric.evaluator import get_evaluator
+import nltk
+nltk.download('punkt')
 
+class Language_Evaluator:
 
+    def __init__(self):
+        
+        task = 'dialogue'
+        # Initialize evaluator for a specific task
+        self.evaluator = get_evaluator(task)
+
+    def language_score(self, prompt: str, job_desc: str, print_result=True):
+
+        self.src = prompt
+        self.context =prompt
+        self.output = job_desc
+        self.print = print_result
+
+        # a list of dialogue histories
+        # src_list = ['The job is located in Edinburgh Genome Foundry. The company, Edinburgh Genome Foundry, is seeking a qualified individual for the Senior Software Engineer position. The ideal candidate would be skilled in the following technologies: open-source. The remote work options for this job are currently unknown. Write a detailed job description based on this information.\n\n']
+        src_list = [self.src]
+
+        # a list of additional context that should be included into the generated response
+        # context_list = ['The job is located in Edinburgh Genome Foundry. The company, Edinburgh Genome Foundry, is seeking a qualified individual for the Senior Software Engineer position. The ideal candidate would be skilled in the following technologies: open-source. The remote work options for this job are currently unknown. Write a detailed job description based on this information.\n\n']
+        context_list = self.context
+
+        # a list of model outputs to be evaluated
+        # output_list = ['Sub enterprise enterprise enterprise enterprise enterprise enterprise enterprise enterprise enterprise enterprise enterprise enterprise enterprise enterprise enterprise enterprise enterprise enterprise enterprise enterprise enterprise enterprise enterprise enterprise enterprise enterprise enterprise enterprise enterprise enterprise enterprise enterprise enterprise enterprise enterprise enterprise enterprise enterprise enterprise enterprise enterprise enterprise enterprise enterprise enterprise enterprise enterprise enterprise enterprise enterprise enterprise enterprise enterprise enterprise enterprise enterprise enterprise enterprise enterprise enterprise enterprise enterprise enterprise enterprise enterprise enterprise enterprise enterprise enterprise enterprise enterprise enterprise enterprise enterprise enterprise enterprise enterprise enterprise enterprise enterprise enterprise enterprise enterprise enterprise enterprise enterprise enterprise enterprise enterprise enterprise enterprise enterprise enterprise enterprise enterprise enterprise enterprise enterprise enterprise enterprise enterprise enterprise enterprise enterprise enterprise enterprise enterprise enterprise enterprise enterprise enterprise enterprise enterprise enterprise enterprise Enterprise Enterprise Enterprise Enterprise Enterprise Enterprise Enterprise Enterprise Enterprise Enterprise Enterprise Enterprise']
+        output_list = [self.output]
+                    
+        # Prepare data for pre-trained evaluators
+        data = convert_to_json(output_list=output_list, 
+                            src_list=src_list, context_list=context_list)
+       
+        # Get multi-dimensional evaluation scores
+        eval_scores = self.evaluator.evaluate(data, print_result=True)
+
+        # return overall score
+        return eval_scores[-1]['overall']
+            
 def assign_gender(row):
     gender = random.choice(['Male', 'Female'])
     row['Gender'] = gender
@@ -219,6 +263,13 @@ def get_element_percentages(lst):
 
 def calc_q_value(job_desc):
 
+    language_score = language_eval.language_score(job_desc["prompt"], job_desc["text"])
+    if language_score < 0.5:
+        print("Poor English quality")
+        language_value = -1000
+    else:
+        language_value = language_score * 100
+
     k = 100
     locations = []
     main_locations = []
@@ -298,6 +349,8 @@ def calc_q_value(job_desc):
         print("no match")
         q_value = -1000
     
+    q_value += language_value
+
     print("Q_value",  q_value)
     print("--"*50, "\n\n")  
 
@@ -312,11 +365,14 @@ if __name__ == "__main__":
     index = args.index
 
     print("Loading hiring dataset...")
-    hiring_dataset = load_dataset("buseskorkmaz/hackernews_hiring")["train"]
+    hiring_dataset =load_dataset("buseskorkmaz/hiring_w_q_context", split='train[:10%]')
     print(hiring_dataset)
 
+    # initialize evaluator
+    language_eval = Language_Evaluator()
+
     # split batches
-    num_batches = 24
+    num_batches = 5
     batched_datasets = []
     length_of_dataset = len(hiring_dataset)
 
@@ -336,11 +392,11 @@ if __name__ == "__main__":
     user_profile_dataset = load_dataset("buseskorkmaz/wants_to_be_hired")["wants_to_be_hired"]
     print("The downloaded version:", user_profile_dataset)
     # Map the function to the dataset
-    user_profile_dataset = user_profile_dataset.map(assign_gender)
-    print("Genders are assigned randomly:", user_profile_dataset)
-    # Map the function to the dataset
-    user_profile_dataset = user_profile_dataset.map(extract_info)
-    print("Extracted columns location, technologies, remote, relocate and main_location",user_profile_dataset)
+    # user_profile_dataset = user_profile_dataset.map(assign_gender)
+    # print("Genders are assigned randomly:", user_profile_dataset)
+    # # Map the function to the dataset
+    # user_profile_dataset = user_profile_dataset.map(extract_info)
+    # print("Extracted columns location, technologies, remote, relocate and main_location",user_profile_dataset)
 
     print("Calculating location diversity statistics of the dataset....")
     total_candidate = len(user_profile_dataset)
@@ -354,7 +410,7 @@ if __name__ == "__main__":
     target_unknown_pct =  user_profile_dataset["Main_location"].count("Unknown") / total_candidate
 
     print("Calculating q value for each job description....")
-    hiring_dataset = hiring_dataset.map(calc_q_value, num_proc=8)
+    hiring_dataset = hiring_dataset.map(calc_q_value)
 
     hiring_dataset.save_to_disk(f"processed_q_values_{index}")
 

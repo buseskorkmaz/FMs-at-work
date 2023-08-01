@@ -28,7 +28,7 @@ class HackernewsObservation(Language_Observation):
 class HackernewsEnvironment(Language_Environment):
     def __init__(self, data: HackernewsData, 
                  reward_f: Optional[Callable[[str], float]], 
-                 reward_shift: float=100.0, reward_scale: float=1.0, 
+                 reward_shift: float=0.0, reward_scale: float=1.0, 
                  include_parent: bool=True):
         self.data = data
         self.reward_f = reward_f
@@ -43,7 +43,7 @@ class HackernewsEnvironment(Language_Environment):
         if self.stepped:
             raise Exception("Cannot step after final action")
         self.stepped = True
-        print(self.parent, action)
+        # print(self.parent, action)
         if action == '':
             reward = (-1000) * self.reward_scale + self.reward_shift
         else:

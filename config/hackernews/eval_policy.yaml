@@ -21,7 +21,7 @@ dataset:
 model:
   alpha: 0.005
   gamma: 0.99
-  beta: 0.0
+  beta: 32
   transition_weight: 0.0
   clip_weight: null
   value_max: null
@@ -32,7 +32,7 @@ model:
   double_q: true
   seperate_policy: true
   seperate_target: true
-  tau: 0.8
+  tau: 0.6
   exp_weights: true
   dm_margin: 0.0
   advanced_mlp: false
@@ -60,7 +60,7 @@ evaluator:
   verbose: true
   kind: sample
   generation_kwargs:
-    max_generation_len: 128
+    max_generation_len: 512
     # beam_width: 1
     temp: 1.0
     top_k: null
@@ -71,16 +71,16 @@ evaluator:
     include_logits: true
     include_adv: true
     num_generations: 1
-    rerank_log_prob_weight: 0.0
-    rerank_advantage_weight: 1.0
+    rerank_log_prob_weight: 0.5
+    rerank_advantage_weight: 0.5
 
 eval:
-  dataloader_workers: 1
+  dataloader_workers: 0
   bsize: 1
   batches: 16
   print_every: 8
   seed: 0
-  log_save_path: null
+  log_save_path: outputs/hackernews/iql_eval/eval_logs.pkl
   loss:
     v_loss_weight: 1.0
     q_loss_weight: 1.0

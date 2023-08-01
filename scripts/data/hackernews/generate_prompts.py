@@ -23,6 +23,14 @@ def get_remote_info(row):
 
 def generate_prompt(row):
 
+    def remove_links(text):
+        clean_text = re.sub('<a.*?</a>', '', text)
+        clean_text = clean_text.replace('<a href="', '')
+        clean_text = clean_text.replace('www.', '')
+        clean_text = clean_text.replace("</a>", '')
+        clean_text = clean_text.replace('"', '')
+        return clean_text
+    
     remote_info = get_remote_info(row)
     if remote_info == "Yes":
         remote_statement = "This job offers the option to work remotely."
@@ -31,11 +39,17 @@ def generate_prompt(row):
     else:
         remote_statement = "The remote work options for this job are currently unknown."
 
-    prompt = f"The job is located in {row['location']}. The company, {row['company']}, is seeking a qualified individual for the {row['title']} position. The ideal candidate would be skilled in the following technologies: {row['technologies']}. {remote_statement} Write a detailed job description based on this information."
+    prompt = (f"Original job description for reference: '{remove_links(row['text'])}' \n"
+             f"Based on the original description, the job is located in {row['location']}. "
+             f"The company, {row['company']}, is seeking a qualified individual for the {row['title']} position. "
+             f"The ideal candidate would be skilled in the following technologies: {row['technologies']}. "
+             f"{remote_statement} "
+             f"Write a new job description using only the information provided in the original description.")
 
     # Add the prompt to the row
     row['prompt'] = prompt
     return row
+
 
 def not_none(example):
     return example['text'] is not None
@@ -69,6 +83,6 @@ def main():
 
     # Apply the function to the dataset
     hiring_dataset = hiring_dataset.map(generate_prompt)
-    hiring_dataset.save_to_disk(f"processed_hiring_prompts_{index}")
+    hiring_dataset.save_to_disk(f"processed_hiring_prompts_w_context")
 
 main()

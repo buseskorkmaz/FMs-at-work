@@ -16,7 +16,8 @@ class Diversity_Evaluator:
     def __init__(self, target_male_pct: float=0.5, target_female_pct:float=0.5):
 
         self.user_profile_dataset = load_dataset("buseskorkmaz/wants_to_be_hired")["wants_to_be_hired"]
-        self.hiring_dataset = load_dataset("buseskorkmaz/hackernews_hiring_w_q")["train"]
+        self.hiring_dataset = load_dataset("buseskorkmaz/hackernews_new_q_values_10_no_context", split='train')
+        self.language_eval = Language_Evaluator()
         items = [row for row in self.hiring_dataset]
 
         # remove links <a> and </a> are special tokens
@@ -120,13 +121,21 @@ class Diversity_Evaluator:
         else:
             raise NotImplementedError
         
-        language_eval = Language_Evaluator(prompt, job_desc)
-        language_score = language_eval.language_score()
-        if language_score < 0.5:
+        # overall language check for coherency
+        language_scores = self.language_eval.language_score(prompt, job_desc)
+        language_score = language_scores['overall'] 
+        if language_score < 0.7:
             print("Poor English quality")
             language_value = -1000
         else:
             language_value = language_score * 100
+
+        # fact check based on given prompt
+        groundedness = language_scores['groundedness']
+        factual_penalty = 0
+        if groundedness < 0.85:
+            print('It is not grounded enough for given prompt')
+            factual_penalty = (0.85 - groundedness) * -100
 
         k = 100
         locations = []
@@ -204,7 +213,7 @@ class Diversity_Evaluator:
             print("no match")
             q_value = -1000
         
-        q_value += language_value
+        q_value += language_value + factual_penalty
          
         print("Q_value",  q_value)
         print("--"*50, "\n\n")  

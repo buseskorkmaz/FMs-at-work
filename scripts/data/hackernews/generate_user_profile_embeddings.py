@@ -4,10 +4,14 @@ import torch
 import argparse
 
 def encode_text(row):
+    gender= row['Gender']
+
     # Preprocess the text
     text = row['text']
     # text = text.replace('Location:', '').replace('Remote:', '').replace('Willing to relocate:', '').replace('Technologies:', '').replace('Resume:', '').replace('email:', '')
     text = text.replace('\n', ' ').replace(',', ' ')
+    text = f"I identify my gender is {gender.lower()}. " + text
+    print(text)
 
     # Load pre-trained model and tokenizer
     model = BertModel.from_pretrained('bert-base-uncased')
@@ -45,10 +49,11 @@ def main():
     index = args.index
 
     # load dataset
-    user_profile_dataset = load_dataset("dansbecker/hackernews_hiring_posts", split="wants_to_be_hired")
+    user_profile_dataset = load_dataset("buseskorkmaz/wants_to_be_hired")["wants_to_be_hired"]
+    print(user_profile_dataset)
 
-    # dropna
-    user_profile_dataset = user_profile_dataset.filter(not_none)
+    # # dropna
+    # user_profile_dataset = user_profile_dataset.filter(not_none)
 
     # split batches
     num_batches = 10
