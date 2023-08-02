@@ -44,7 +44,7 @@ model:
     name: hackernews_list_dataset
     cache_id: d
   load:
-    checkpoint_path: outputs/hackernews/conditional_hackernews_official_iql_test1/model.pkl
+    checkpoint_path: outputs/hackernews/conditional_hackernews_official_iql_test1/model_294911.pkl
     strict_load: true
 
 evaluator:
@@ -76,11 +76,11 @@ evaluator:
 
 eval:
   dataloader_workers: 0
-  bsize: 1
-  batches: 16
+  bsize: 700
+  batches: 1
   print_every: 8
   seed: 0
-  log_save_path: outputs/hackernews/iql_eval/eval_logs.pkl
+  log_save_path: outputs/hackernews/iql_eval_2/eval_logs.pkl
   loss:
     v_loss_weight: 1.0
     q_loss_weight: 1.0

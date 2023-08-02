@@ -14,7 +14,7 @@ class HackernewsData:
                 # not sure about them
                  reward_scale: float=1.0):
         
-        rl_dataset = load_dataset("buseskorkmaz/hackernews_new_q_values_10_no_context", split="train")
+        rl_dataset = load_dataset("buseskorkmaz/hiring_w_q_context", split="train")
         items = [row for row in rl_dataset]
 
         # TODO: check if rest of this ok

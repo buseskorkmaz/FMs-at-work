@@ -15,8 +15,8 @@ class Diversity_Evaluator:
 
     def __init__(self, target_male_pct: float=0.5, target_female_pct:float=0.5):
 
-        self.user_profile_dataset = load_dataset("buseskorkmaz/wants_to_be_hired")["wants_to_be_hired"]
-        self.hiring_dataset = load_dataset("buseskorkmaz/hackernews_new_q_values_10_no_context", split='train')
+        self.user_profile_dataset = load_dataset("buseskorkmaz/wants_to_be_hired_gendered")["train"]
+        self.hiring_dataset = load_dataset("buseskorkmaz/hiring_w_q_context", split='train')
         self.language_eval = Language_Evaluator()
         items = [row for row in self.hiring_dataset]
 
@@ -32,6 +32,7 @@ class Diversity_Evaluator:
         self.text2embedding = {remove_links(item['text']): item['embedding'] for item in items}
         self.prompt2idx = {remove_links(items[idx]['prompt']): idx for idx in range(len(items))}
         self.idx2location = {idx: items[idx]['location'] for idx in range(len(items))}
+        self.promtp2original = {remove_links(items[idx]['prompt']): items[idx]['text'] for idx in range(len(items))}
 
         # Load pre-trained model and tokenizer
         self.model = BertModel.from_pretrained('bert-base-uncased')
@@ -118,24 +119,29 @@ class Diversity_Evaluator:
         if prompt in self.prompt2idx.keys():
             idx = self.prompt2idx[prompt]
             job_location = self.idx2location[idx]
+            original = self.promtp2original[prompt]
+            original_embedding = self.encode_text(original)
         else:
             raise NotImplementedError
         
         # overall language check for coherency
         language_scores = self.language_eval.language_score(prompt, job_desc)
         language_score = language_scores['overall'] 
-        if language_score < 0.7:
+        if language_score < 0.5:
             print("Poor English quality")
             language_value = -1000
         else:
             language_value = language_score * 100
+        
+        if cosine_similarity(np.array(job_embedding).reshape(1, -1), np.array(original_embedding).reshape(1, -1))[0][0] >= 0.98:
+            language_value *= 0.6 
 
-        # fact check based on given prompt
-        groundedness = language_scores['groundedness']
-        factual_penalty = 0
-        if groundedness < 0.85:
-            print('It is not grounded enough for given prompt')
-            factual_penalty = (0.85 - groundedness) * -100
+        # # fact check based on given prompt
+        # groundedness = language_scores['groundedness']
+        # factual_penalty = 0
+        # if groundedness < 0.85:
+        #     print('It is not grounded enough for given prompt')
+        #     factual_penalty = (0.85 - groundedness) * -100
 
         k = 100
         locations = []
@@ -213,7 +219,8 @@ class Diversity_Evaluator:
             print("no match")
             q_value = -1000
         
-        q_value += language_value + factual_penalty
+        # q_value += language_value + factual_penalty
+        q_value += language_value
          
         print("Q_value",  q_value)
         print("--"*50, "\n\n")  

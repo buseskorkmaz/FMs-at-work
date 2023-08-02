@@ -7,8 +7,8 @@ def upload_multiple_files(
     # directory_pattern:str = 'data/hackernews/hiring_technologies/processed_hiring_*',
     # dataset_name:str = "buseskorkmaz/hackernews_hiring_technologies_combined",
     # private:bool = True,
-    directory_pattern:str = 'processed_q_values*',
-    dataset_name:str = "buseskorkmaz/hackernews_new_q_values_10",
+    directory_pattern:str = 'processed_profile_embeddings*',
+    dataset_name:str = "buseskorkmaz/wants_to_be_hired_gendered",
     private:bool = True
 
 ):

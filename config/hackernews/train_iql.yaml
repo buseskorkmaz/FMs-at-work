@@ -101,7 +101,7 @@ train:
   bsize: 1
   grad_accum_steps: 64
   log_every: 256
-  eval_every: 4096
+  eval_every: 2048
   save_every: 8192
   max_checkpoints: 1
   eval_bsize: 1
@@ -114,7 +114,7 @@ train:
     v_loss_weight: 1.0
     q_loss_weight: 1.0
     awac_weight: 1.0
-    cql_loss_weight: 0.25
+    cql_loss_weight: 0.0
     dm_loss_weight: 0.0
     mc_returns: false
 
