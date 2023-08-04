@@ -94,9 +94,9 @@ evaluator:
     rerank_advantage_weight: 1.0
 
 train:
-  save_checkpoint_dir: outputs/hackernews/conditional_hackernews_official_iql_test3/
+  save_checkpoint_dir: outputs/hackernews/conditional_hackernews_official_iql_test4/
   optim_state_path: outputs/hackernews/optim_state/
-  epochs: 50
+  epochs: 100
   dataloader_workers: 0
   bsize: 1
   grad_accum_steps: 64
@@ -114,7 +114,7 @@ train:
     v_loss_weight: 1.0
     q_loss_weight: 1.0
     awac_weight: 1.0
-    cql_loss_weight: 0.0
+    cql_loss_weight: 0.10
     dm_loss_weight: 0.0
     mc_returns: false
 

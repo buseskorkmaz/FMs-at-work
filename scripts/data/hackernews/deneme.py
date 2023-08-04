@@ -3,8 +3,8 @@ from transformers import BertTokenizer, BertModel
 import torch
 import numpy as np
 
-# hiring_dataset = load_dataset("buseskorkmaz/wants_to_be_hired_gendered")
-# print(hiring_dataset)
+hiring_dataset = load_dataset("buseskorkmaz/hiring_w_q_context")["train"]
+print(hiring_dataset[30])
 
 # from sklearn.metrics.pairwise import cosine_similarity
 

@@ -60,7 +60,7 @@ evaluator:
   verbose: true
   kind: sample
   generation_kwargs:
-    max_generation_len: 512
+    max_generation_len: 256
     # beam_width: 1
     temp: 1.0
     top_k: null
@@ -76,8 +76,8 @@ evaluator:
 
 eval:
   dataloader_workers: 0
-  bsize: 700
-  batches: 1
+  bsize: 1
+  batches: 50
   print_every: 8
   seed: 0
   log_save_path: outputs/hackernews/iql_eval_2/eval_logs.pkl

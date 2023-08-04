@@ -125,16 +125,17 @@ class Diversity_Evaluator:
             raise NotImplementedError
         
         # overall language check for coherency
-        language_scores = self.language_eval.language_score(prompt, job_desc)
-        language_score = language_scores['overall'] 
-        if language_score < 0.5:
-            print("Poor English quality")
-            language_value = -1000
-        else:
-            language_value = language_score * 100
+        # language_scores = self.language_eval.language_score(prompt, job_desc)
+        # language_score = language_scores['overall'] 
+        # if language_score < 0.5:
+        #     print("Poor English quality")
+        #     language_value = -1000
+        # else:
+        #     language_value = language_score * 100
         
-        if cosine_similarity(np.array(job_embedding).reshape(1, -1), np.array(original_embedding).reshape(1, -1))[0][0] >= 0.98:
-            language_value *= 0.6 
+        # this is going to be a problem - commented after submission
+        # if cosine_similarity(np.array(job_embedding).reshape(1, -1), np.array(original_embedding).reshape(1, -1))[0][0] >= 0.98:
+        #     language_value *= 0.6 
 
         # # fact check based on given prompt
         # groundedness = language_scores['groundedness']
@@ -217,10 +218,11 @@ class Diversity_Evaluator:
             # print(job_desc["text"])
         else:
             print("no match")
-            q_value = -1000
+            # changed after submission, it was 1000
+            q_value = -100
         
         # q_value += language_value + factual_penalty
-        q_value += language_value
+        # q_value += language_value
          
         print("Q_value",  q_value)
         print("--"*50, "\n\n")  
