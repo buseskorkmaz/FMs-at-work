@@ -2,6 +2,7 @@ import glob
 from datasets import load_from_disk, concatenate_datasets, load_dataset
 import argparse
 import typing as T
+from datasets import DatasetDict
 
 def upload_multiple_files(
     # directory_pattern:str = 'data/hackernews/hiring_technologies/processed_hiring_*',
@@ -63,22 +64,22 @@ def concatenate_columns(
 
     # The pattern to match the directories
     # Use glob to find all directories that match the pattern
-    # directory_pattern = 'data/hackernews/hiring_q_values/processed_q_values_*'
-    # directories = glob.glob(directory_pattern)
-    # print(directories)
+    directory_pattern = 'processed_q_values_*'
+    directories = glob.glob(directory_pattern)
+    print(directories)
 
-    # # Load each directory into a huggingface dataset
-    # datasets = [load_from_disk(directory) for directory in directories]
-    # print("LIST OF DATASETS:\n", datasets)
+    # Load each directory into a huggingface dataset
+    datasets = [load_from_disk(directory) for directory in directories]
+    print("LIST OF DATASETS:\n", datasets)
 
-    # # Concatenate all the datasets together
-    # combined_dataset = concatenate_datasets(datasets)
-    # print("COMBINED:\n" , combined_dataset)
-    # print(combined_dataset[0])
+    # Concatenate all the datasets together
+    combined_dataset = concatenate_datasets(datasets)
+    print("COMBINED:\n" , combined_dataset)
+    print(combined_dataset[0])
 
-    rl_dataset = load_dataset("buseskorkmaz/hackernews_new_q_values_10")["train"]
+    rl_dataset = load_dataset("buseskorkmaz/hiring_w_q_context", split='train[:10%]')
     # load dataset
-    prompt_dataset = load_dataset("buseskorkmaz/hackernews_hiring_prompts")["train"]
+    # prompt_dataset = load_dataset("buseskorkmaz/hackernews_hiring_prompts")["train"]
 
     # dropna
     # user_profile_dataset = user_profile_dataset.filter(not_none)
@@ -95,7 +96,8 @@ def concatenate_columns(
     # # hiring_location = hiring_location.map(lambda example, idx: {'technologies': hiring_technologies[idx]['technologies']}, with_indices=True)
   
     # # Create a dictionary from the second dataset for efficient lookup
-    tech_dict = {item['text']: item['prompt'] for item in prompt_dataset}
+    tech_dict = {item['text']: item['q_value'] for item in combined_dataset}
+    emd_dict = {item['text']: item['embedding'] for item in combined_dataset}
 
     # Add the 'technologies' feature from the second dataset to the first
     # def add_technologies(example):
@@ -105,16 +107,24 @@ def concatenate_columns(
 
     def add_new_column(example, new_column_name):
         # Get the technologies corresponding to the text, or None if not found
-        example[new_column_name] = tech_dict.get(example['text'], None)
+        example["q_value"] = tech_dict.get(example['text'], None)
+        example["embedding"] = emd_dict.get(example['text'], None)
         return example
 
     # Now hiring_location contains the combined rows from both datasets
-    rl_dataset = rl_dataset.map(lambda x: add_new_column(x, new_column_name="prompt"))
-    print(rl_dataset)
-    print(rl_dataset[32])
+    rl_dataset = rl_dataset.map(lambda x: add_new_column(x, new_column_name="q_value"))
+    new_splits = DatasetDict({
+        'train': rl_dataset
+    })
+    # new_splits.pop('train[:10%]')
+
+    print(new_splits)
+    print(new_splits['train'][0])
+    filtered_dataset = new_splits.filter(lambda example: example['q_value'] != -100)
+    print(len(filtered_dataset))
     
     # Push to hub
-    rl_dataset.push_to_hub("hackernews_new_q_values_10_no_context", private=True)
+    filtered_dataset.push_to_hub("hiring_w_q_context_256_filtered", private=True)
     
     return
 

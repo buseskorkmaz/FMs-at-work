@@ -16,6 +16,11 @@ if __name__ == "__main__":
     with open(args.eval_file, 'rb') as f:
         d = dill.load(f)
 
+    print(d)
+    print("=="*50)
+    print(d['eval_dump'])
+    print([str(item[1]) for item in d['eval_dump']['results']])
+
     rs = [sum(map(lambda x: x[2], item[1])) for item in d['eval_dump']['results']]
     mean_r = np.mean(rs)
     std_r = np.std(rs)

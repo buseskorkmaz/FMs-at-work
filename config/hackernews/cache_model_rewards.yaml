@@ -12,7 +12,7 @@ dataset:
     reward_f: 
       name: score_human_reward
       job_descriptions_path: data/hackernews_rl_dataset/
-      index_path: data/hackernews_rl_dataset/train_idxs.json
+      index_path: data/hackernews_rl_dataset/eval_idxs.json
   max_len: 1024
   cuttoff: null
   resample_timeout: 0.00

@@ -29,8 +29,8 @@ eval_dataset:
     reward_shift: 0.0
     reward_scale: 1.0
     reward_f:
-      # name: hackernews_reward
-      name: score_human_reward
+      name: hackernews_reward
+      # name: score_human_reward
       job_descriptions_path: data/hackernews_rl_dataset/
       index_path: data/hackernews_rl_dataset/test_idxs.json
   max_len: 1024
@@ -63,9 +63,9 @@ evaluator:
     num_generations: 1
 
 train:
-  save_checkpoint_dir: outputs/hackernews/conditional_hackernews_official_bc_test2/
+  save_checkpoint_dir: outputs/hackernews/conditional_hackernews_official_bc_test_fix_q_256_try2/
   optim_state_path: null
-  epochs: 50
+  epochs: 80
   dataloader_workers: 0
   bsize: 1
   grad_accum_steps: 64
@@ -75,7 +75,7 @@ train:
   max_checkpoints: 1
   eval_bsize: 1
   eval_batches: 16
-  lr: 1e-4
+  lr: 1e-3
   weight_decay: 0.00
   max_steps: null
   loss: {}

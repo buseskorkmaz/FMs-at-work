@@ -38,7 +38,7 @@ def eval(cfg):
                           'batch_size': eval_cfg['bsize'], 
                           'collate_fn': dataset.collate}
     if not isinstance(dataset, IterableDataset):
-        data_loader_kwargs['shuffle'] = True
+        data_loader_kwargs['shuffle'] = False
     data_loader = DataLoader(dataset, **data_loader_kwargs)
 
     evaluator = None
@@ -46,6 +46,9 @@ def eval(cfg):
         evaluator = load_item(cfg['evaluator'], system_cfg['device'])
 
     model = load_item(cfg['model'], system_cfg['device'])
+
+    # print("Dataset length", len(dataset))
+    # print("Dataset0", dataset[0])
 
     if isinstance(dataset, IterableDataset):
         model = accelerator.prepare(model)

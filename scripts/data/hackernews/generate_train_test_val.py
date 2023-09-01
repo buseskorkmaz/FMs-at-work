@@ -1,7 +1,9 @@
 from datasets import load_dataset, DatasetDict
 import json
 
-dataset = load_dataset("buseskorkmaz/hackernews_new_q_values_10", split='train')
+dataset = load_dataset("buseskorkmaz/hiring_w_q_context_256", split='train')
+dataset = dataset.filter(lambda example: example['q_value'] != -100)
+print(len(dataset))
 
 # Add an index to the dataset
 dataset = dataset.add_column('index', list(range(len(dataset))))

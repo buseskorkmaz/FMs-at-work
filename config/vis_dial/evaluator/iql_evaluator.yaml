@@ -1,7 +1,0 @@
-defaults:
-  - /env: venv
-
-name: iql_evaluator
-verbose: true
-kind: sample
-generation_kwargs: {}

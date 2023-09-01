@@ -17,6 +17,38 @@ from hackernews.UniEval.utils import convert_to_json
 from hackernews.UniEval.metric.evaluator import get_evaluator
 import nltk
 nltk.download('punkt')
+from transformers import BertTokenizer, BertModel
+import torch
+
+def encode_text(row):
+    # Preprocess the text
+    text = row['text']
+    # text = text.replace('Location:', '').replace('Remote:', '').replace('Willing to relocate:', '').replace('Technologies:', '').replace('Resume:', '').replace('email:', '')
+    text = text.replace('\n', ' ').replace(',', ' ')
+
+    # Load pre-trained model and tokenizer
+    model = BertModel.from_pretrained('bert-base-uncased')
+    tokenizer = BertTokenizer.from_pretrained('bert-base-uncased')
+
+    # Tokenize and pad the text to a maximum length of 512 tokens
+    input_ids = tokenizer.encode(text, add_special_tokens=True, max_length=256, truncation=True, padding='max_length')
+
+    # Convert to tensor
+    input_ids = torch.tensor([input_ids])
+
+    # Get the embeddings
+    with torch.no_grad():
+        last_hidden_states = model(input_ids)[0]  # Models outputs are now tuples
+
+    # Get the embeddings of the '[CLS]' token, which represents the entire sentence
+    sentence_embedding = last_hidden_states[0][0]
+
+    # Convert the tensor to a list
+    sentence_embedding = sentence_embedding.tolist()
+
+    # Add the embedding to the row
+    row['embedding'] = sentence_embedding
+    return row
 
 class Language_Evaluator:
 
@@ -263,14 +295,14 @@ def get_element_percentages(lst):
 
 def calc_q_value(job_desc):
 
-    language_score = language_eval.language_score(job_desc["prompt"], job_desc["text"])
-    if language_score < 0.5:
-        print("Poor English quality")
-        language_value = -1000
-    else:
-        language_value = language_score * 100
+    # language_score = language_eval.language_score(job_desc["prompt"], job_desc["text"])
+    # if language_score < 0.5:
+    #     print("Poor English quality")
+    #     language_value = -1000
+    # else:
+    #     language_value = language_score * 100
 
-    k = 100
+    k = 50
     locations = []
     main_locations = []
     genders = []
@@ -347,9 +379,9 @@ def calc_q_value(job_desc):
         # print(job_desc["text"])
     else:
         print("no match")
-        q_value = -1000
+        q_value = -100
     
-    q_value += language_value
+    # q_value += language_value
 
     print("Q_value",  q_value)
     print("--"*50, "\n\n")  
@@ -369,10 +401,10 @@ if __name__ == "__main__":
     print(hiring_dataset)
 
     # initialize evaluator
-    language_eval = Language_Evaluator()
+    # language_eval = Language_Evaluator()
 
     # split batches
-    num_batches = 5
+    num_batches = 24
     batched_datasets = []
     length_of_dataset = len(hiring_dataset)
 
@@ -383,13 +415,14 @@ if __name__ == "__main__":
 
     # take the specified shard
     hiring_dataset = batched_datasets[index]
+    hiring_dataset = hiring_dataset.map(encode_text)
 
     # print("Loading rl dataset...")
     # rl_dataset = load_dataset("buseskorkmaz/rl_dataset")
     # print(rl_dataset)
 
     print("Loading wants_to_be_hired dataset...")
-    user_profile_dataset = load_dataset("buseskorkmaz/wants_to_be_hired")["wants_to_be_hired"]
+    user_profile_dataset = load_dataset("buseskorkmaz/wants_to_be_hired_gendered")["train"]
     print("The downloaded version:", user_profile_dataset)
     # Map the function to the dataset
     # user_profile_dataset = user_profile_dataset.map(assign_gender)

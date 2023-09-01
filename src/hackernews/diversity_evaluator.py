@@ -8,7 +8,7 @@ random.seed(42)
 from scipy.stats import wasserstein_distance
 from transformers import BertTokenizer, BertModel
 import torch
-from hackernews.language_quality_evaluator import Language_Evaluator
+# from hackernews.language_quality_evaluator import Language_Evaluator
 
 
 class Diversity_Evaluator:
@@ -16,8 +16,8 @@ class Diversity_Evaluator:
     def __init__(self, target_male_pct: float=0.5, target_female_pct:float=0.5):
 
         self.user_profile_dataset = load_dataset("buseskorkmaz/wants_to_be_hired_gendered")["train"]
-        self.hiring_dataset = load_dataset("buseskorkmaz/hiring_w_q_context", split='train')
-        self.language_eval = Language_Evaluator()
+        self.hiring_dataset = load_dataset("buseskorkmaz/hiring_w_q_context_256_filtered", split='train')
+        # self.language_eval = Language_Evaluator()
         items = [row for row in self.hiring_dataset]
 
         # remove links <a> and </a> are special tokens
@@ -30,9 +30,12 @@ class Diversity_Evaluator:
             return clean_text
 
         self.text2embedding = {remove_links(item['text']): item['embedding'] for item in items}
-        self.prompt2idx = {remove_links(items[idx]['prompt']): idx for idx in range(len(items))}
-        self.idx2location = {idx: items[idx]['location'] for idx in range(len(items))}
-        self.promtp2original = {remove_links(items[idx]['prompt']): items[idx]['text'] for idx in range(len(items))}
+        # In eval, remove "remove_links"
+        # self.prompt2idx = {remove_links(items[idx]['prompt']): idx for idx in range(len(items))}
+        self.prompt2location = {remove_links(items[idx]['prompt']): items[idx]['location'] for idx in range(len(items))}
+        # self.idx2location = {idx: items[idx]['location'] for idx in range(len(items))}
+        self.promtp2original = {items[idx]['prompt']: items[idx]['text'] for idx in range(len(items))}
+        # self.promtp2original = {remove_links(items[idx]['prompt']): items[idx]['text'] for idx in range(len(items))}
 
         # Load pre-trained model and tokenizer
         self.model = BertModel.from_pretrained('bert-base-uncased')
@@ -116,11 +119,13 @@ class Diversity_Evaluator:
             job_embedding = self.encode_text(job_desc)
         
         idx = None
-        if prompt in self.prompt2idx.keys():
-            idx = self.prompt2idx[prompt]
-            job_location = self.idx2location[idx]
-            original = self.promtp2original[prompt]
-            original_embedding = self.encode_text(original)
+        print(prompt)
+        if prompt in self.prompt2location.keys():
+            # idx = self.prompt2idx[prompt]
+            # job_location = self.idx2location[idx]
+            job_location = self.prompt2location[prompt]
+            # original = self.promtp2original[prompt]
+            # original_embedding = self.encode_text(original)
         else:
             raise NotImplementedError
         
@@ -144,11 +149,12 @@ class Diversity_Evaluator:
         #     print('It is not grounded enough for given prompt')
         #     factual_penalty = (0.85 - groundedness) * -100
 
-        k = 100
+        k = 50
         locations = []
         main_locations = []
         genders = []
         filtered_user_profiles = self.user_profile_dataset.filter(lambda x: self.filter_candidates(x,job_location))
+        # filtered_user_profiles = self.user_profile_dataset 
         if filtered_user_profiles:
             similarity_matrix = cosine_similarity(filtered_user_profiles["embedding"], np.array(job_embedding).reshape(1, -1)).flatten()
             # idmax = similarity_matrix.argmax()
@@ -223,7 +229,7 @@ class Diversity_Evaluator:
         
         # q_value += language_value + factual_penalty
         # q_value += language_value
-         
+        print("Job desc:", job_desc, "\n") 
         print("Q_value",  q_value)
         print("--"*50, "\n\n")  
         

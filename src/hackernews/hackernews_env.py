@@ -45,7 +45,7 @@ class HackernewsEnvironment(Language_Environment):
         self.stepped = True
         # print(self.parent, action)
         if action == '':
-            reward = (-1000) * self.reward_scale + self.reward_shift
+            reward = (-200) * self.reward_scale + self.reward_shift
         else:
             reward = (self.reward_f(action, self.parent) if self.reward_f is not None else 0.0) * self.reward_scale + self.reward_shift
         return HackernewsObservation(self.parent, action, reward), reward, True

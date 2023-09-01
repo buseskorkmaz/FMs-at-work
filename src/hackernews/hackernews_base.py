@@ -14,10 +14,9 @@ class HackernewsData:
                 # not sure about them
                  reward_scale: float=1.0):
         
-        rl_dataset = load_dataset("buseskorkmaz/hiring_w_q_context", split="train")
+        rl_dataset = load_dataset("buseskorkmaz/hiring_w_q_context_256_filtered", split="train")
         items = [row for row in rl_dataset]
-
-        # TODO: check if rest of this ok
+        print("Indexes:", indexes)
         if indexes is not None:
             items = [items[idx] for idx in indexes]
         self.info = ("huggingface", len(indexes))
@@ -36,7 +35,7 @@ class HackernewsData:
 
         self.data = [remove_links(item['text']) for item in items]
         self.parent_data = [remove_links(item['prompt']) for item in items]
-        self.gt_scores = [float(item['q_value']) for item in items]
+        self.gt_scores = [-100 if float(item['q_value']) == -1000.0 else float(item['q_value']) for item in items]
         # self.location = [item['location'] for item in items]
         # self.embedding = [item['embedding'] for item in items]
         # self.remote = [item['remote'] for item in items]
@@ -49,6 +48,7 @@ class HackernewsData:
         print(self.data[12])
         print(self.parent_data[12])
         print(self.gt_scores[12])
+        print("Uploaded dataset length:", len(self.data))
 
     def __getitem__(self, idx):
         job_description = self.data[idx]

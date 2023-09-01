@@ -1,6 +1,6 @@
 defaults:
   - model: per_token_iql
-  - dataset: list_test
+  - dataset: list_eval
   - evaluator: iql_evaluator
   - _self_
 
@@ -13,6 +13,8 @@ dataset:
     reward_scale: 1.0
     reward_f:
       name: hackernews_reward
+      job_descriptions_path: data/hackernews_rl_dataset/
+      index_path: data/hackernews_rl_dataset/eval_idxs.json
   max_len: 1024
   cuttoff: null
   resample_timeout: 0.05
@@ -21,7 +23,7 @@ dataset:
 model:
   alpha: 0.005
   gamma: 0.99
-  beta: 32
+  beta: 64
   transition_weight: 0.0
   clip_weight: null
   value_max: null
@@ -44,7 +46,7 @@ model:
     name: hackernews_list_dataset
     cache_id: d
   load:
-    checkpoint_path: outputs/hackernews/conditional_hackernews_official_iql_test1/model_294911.pkl
+    checkpoint_path: outputs/hackernews/conditional_hackernews_official_iql_bc_fix/model_32767_copy.pkl
     strict_load: true
 
 evaluator:
@@ -56,6 +58,8 @@ evaluator:
       cache_id: raw_data
     reward_f:
       name: hackernews_reward
+      job_descriptions_path: data/hackernews_rl_dataset/
+      index_path: data/hackernews_rl_dataset/eval_idxs.json
     include_parent: true
   verbose: true
   kind: sample
@@ -71,19 +75,19 @@ evaluator:
     include_logits: true
     include_adv: true
     num_generations: 1
-    rerank_log_prob_weight: 0.5
-    rerank_advantage_weight: 0.5
+    rerank_log_prob_weight: 0.0
+    rerank_advantage_weight: 1.0
 
 eval:
   dataloader_workers: 0
   bsize: 1
-  batches: 50
+  batches: 400
   print_every: 8
   seed: 0
-  log_save_path: outputs/hackernews/iql_eval_2/eval_logs.pkl
+  log_save_path: outputs/hackernews/iql_eval_bc_fix_w_language_32767/eval_logs.pkl
   loss:
     v_loss_weight: 1.0
     q_loss_weight: 1.0
     awac_weight: 1.0
-    cql_loss_weight: 1.0
+    cql_loss_weight: 0.25
     mc_returns: false
