@@ -1,0 +1,7 @@
+name: workable_rl_dataset
+path: data/workable_rl_dataset/
+cache_path: null
+reward_shift: 0.0
+reward_scale: 1.0
+reward_f: workable_reward
+index_path: null

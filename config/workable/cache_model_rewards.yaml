@@ -1,0 +1,21 @@
+defaults:
+  - model: diversity_reward
+  - dataset: list_all
+  - _self_
+
+dataset:
+  cache_id: d
+  data:
+    cache_path: null
+    reward_shift: 0.0
+    reward_scale: 1.0
+    reward_f: 
+      name: score_human_reward
+      job_descriptions_path: data/workable_rl_dataset/
+      index_path: data/workable_rl_dataset/eval_idxs.json
+  max_len: 1024
+  cuttoff: null
+  resample_timeout: 0.00
+
+dataloader_workers: 0
+bsize: 1024

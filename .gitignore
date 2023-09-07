@@ -11,7 +11,7 @@ data/wikitext
 data/wordle
 data/hackernews_rl_dataset
 data/bias_sentences
-data/workable
+data/workable_rl_dataset
 scripts/data/bias
 scripts/train/bias
 scripts/eval/hackernews/buseskorkmaz

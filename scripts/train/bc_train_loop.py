@@ -6,7 +6,7 @@ sys.path.append(os.path.join(os.path.dirname(os.path.realpath(__file__)), '../..
 # print(sys.path)
 from data.rl_data import Iterable_RL_Dataset
 from data.torch_datasets import GeneralDataset, GeneralIterDataset
-from hackernews.load_objects import load_item
+from workable.load_objects import load_item
 from accelerate import Accelerator
 import wandb
 from utils.log_utils import DistributeCombineLogs, label_logs
@@ -46,6 +46,7 @@ def train(cfg):
         accelerator.wait_for_everyone()
     # print(cfg['train_dataset'])
     raw_dataset_train = load_item(cfg['train_dataset'], system_cfg['device'])
+    print(cfg['train_dataset'])
     raw_dataset_eval = load_item(cfg['eval_dataset'], system_cfg['device'])
     if isinstance(raw_dataset_train, Iterable_RL_Dataset):
         dataset_train = GeneralIterDataset(raw_dataset_train, 'cpu')

@@ -1,0 +1,7 @@
+defaults:
+ - /workable_rl_dataset@data: train
+ - /token_reward: constant
+name: workable_list_dataset
+max_len: 1024
+cuttoff: null
+resample_timeout: 0.0

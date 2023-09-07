@@ -1,6 +1,6 @@
 #!/bin/bash
 
-for i in {1..99}
+for i in {0..199}
 do
-    jbsub -queue x86_1h -mem 48g -cores 4+1 python generate_user_profile_embeddings.py --index $i
+    jbsub -queue x86_12h -mem 32g -cores 4+0 python q_values_of_job_descriptions.py --index $i
 done
