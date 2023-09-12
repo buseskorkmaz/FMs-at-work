@@ -1,7 +1,7 @@
 from datasets import load_from_disk
 import json
 
-dataset = load_from_disk("/dccstor/autofair/bias_llm/Bias-ILQL/data/workable_rl_dataset/job_descriptions_w_q_prompt")
+dataset = load_from_disk("/dccstor/autofair/bias_llm/Bias-ILQL/data/workable_rl_dataset/job_descriptions_w_q_prompt_eng")
 dataset = dataset.filter(lambda example: example['q_value'] != -100)
 print(len(dataset))
 

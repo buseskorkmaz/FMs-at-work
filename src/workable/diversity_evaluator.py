@@ -24,7 +24,7 @@ class Diversity_Evaluator:
                 ):
 
         self.user_profile_dataset = load_from_disk("/dccstor/autofair/bias_llm/Bias-ILQL/data/workable_rl_dataset/candidates_w_main_location")
-        self.hiring_dataset = load_from_disk("/dccstor/autofair/bias_llm/Bias-ILQL/data/workable_rl_dataset/job_descriptions_w_q_prompt")
+        self.hiring_dataset = load_from_disk("/dccstor/autofair/bias_llm/Bias-ILQL/data/workable_rl_dataset/job_descriptions_w_q_prompt_eng")
         items = [row for row in self.hiring_dataset]
 
         self.text2embedding = {item['description']: item['embedding'] for item in items}
@@ -179,7 +179,9 @@ class Diversity_Evaluator:
         
         # q_value += language_value
 
+        print("Job desc:", job_desc, "\n") 
         print("Q_value",  q_value)
+        print("--"*50, "\n\n")  
         # print("--"*50, "\n\n")  
 
         return q_value

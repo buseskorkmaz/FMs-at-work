@@ -10,7 +10,7 @@ class WorkableData:
                  reward_shift: float=0.0, 
                  reward_scale: float=1.0):
         
-        rl_dataset = load_from_disk("/dccstor/autofair/bias_llm/Bias-ILQL/data/workable_rl_dataset/job_descriptions_w_q_prompt")
+        rl_dataset = load_from_disk("/dccstor/autofair/bias_llm/Bias-ILQL/data/workable_rl_dataset/job_descriptions_w_q_prompt_eng")
         items = [row for row in rl_dataset]
         print("Indexes:", indexes)
         if indexes is not None:
@@ -38,7 +38,6 @@ class WorkableData:
         prompt = self.parent_data[idx]
         if job_description not in self.reward_cache:
             self.reward_cache[job_description] = self.reward_f(job_description, prompt) if self.reward_f is not None else 0.0
-        print(self.reward_cache[job_description])
         return (prompt, job_description,), self.reward_cache[job_description] * self.reward_scale + self.reward_shift
     
     def __len__(self):
