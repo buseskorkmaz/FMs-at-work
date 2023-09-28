@@ -229,7 +229,7 @@ class Diversity_Evaluator:
         
         # q_value += language_value + factual_penalty
         # q_value += language_value
-        print("Job desc:", job_desc, "\n") 
+        # print("Job desc:", job_desc, "\n") 
         print("Q_value",  q_value)
         print("--"*50, "\n\n")  
         

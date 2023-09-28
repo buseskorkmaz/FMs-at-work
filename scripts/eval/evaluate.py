@@ -6,7 +6,7 @@ sys.path.append(os.path.join(os.path.dirname(os.path.realpath(__file__)), '../..
 from torch.utils.data.dataset import IterableDataset
 from data.rl_data import Iterable_RL_Dataset
 from data.torch_datasets import GeneralDataset, GeneralIterDataset
-from hackernews.load_objects import load_item
+from workable.load_objects import load_item
 from accelerate import Accelerator
 from utils.log_utils import DistributeCombineLogs, label_logs
 from utils.misc import add_system_configs, convert_path

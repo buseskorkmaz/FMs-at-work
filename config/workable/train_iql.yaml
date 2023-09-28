@@ -94,9 +94,9 @@ evaluator:
     rerank_advantage_weight: 1.0
 
 train:
-  save_checkpoint_dir: outputs/workable/conditional_workable_official_iql_bc_test1_16383_eng/
+  save_checkpoint_dir: outputs/workable/conditional_workable_official_iql_bc_test1_16383_eng_short_lr1e04/
   optim_state_path: outputs/workable/optim_state/
-  epochs: 40
+  epochs: 10
   dataloader_workers: 0
   bsize: 1
   grad_accum_steps: 64
@@ -106,7 +106,7 @@ train:
   max_checkpoints: 1
   eval_bsize: 1
   eval_batches: 8
-  lr: 1e-3
+  lr: 1e-4
   weight_decay: 0.00
   hard_update_every: null
   max_steps: null

@@ -1,4 +1,6 @@
 *.pyc
+*.json
+*.arrow
 __pycache__/
 outputs/
 figures/

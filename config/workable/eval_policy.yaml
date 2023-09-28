@@ -46,7 +46,7 @@ model:
     name: workable_list_dataset
     cache_id: d
   load:
-    checkpoint_path: outputs/workable/conditional_workable_official_iql_bc_fix/model_32767_copy.pkl
+    checkpoint_path: outputs/workable/conditional_workable_official_iql_bc_test1_16383_eng/model_32767_copy.pkl
     strict_load: true
 
 evaluator:
@@ -84,7 +84,7 @@ eval:
   batches: 400
   print_every: 8
   seed: 0
-  log_save_path: outputs/workable/iql_eval_bc_fix_w_language_32767/eval_logs.pkl
+  log_save_path: outputs/workable/iql_bc_test1_16383_eng/eval_logs.pkl
   loss:
     v_loss_weight: 1.0
     q_loss_weight: 1.0
