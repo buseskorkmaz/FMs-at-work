@@ -7,8 +7,7 @@ sys.path.append(os.path.join(os.path.dirname(os.path.realpath(__file__)), '../..
 sys.path.append(os.path.join(os.path.dirname(os.path.realpath(__file__)), '../../../src'))
 import dill
 import re
-from datasets import load_dataset, load_from_disk
-import json
+from datasets import load_from_disk
 from sklearn.metrics.pairwise import cosine_similarity
 from scipy.stats import wasserstein_distance
 from transformers import BertTokenizer, BertModel
@@ -72,25 +71,6 @@ class Diversity_Evaluator:
         sentence_embedding = sentence_embedding.tolist()
 
         return sentence_embedding   
-
-    # def filter_candidates(self, user_profile_row, job_location):
-    #     # replace 'location' and 'remote' with the actual column names in your dataset
-
-    #     # check if it is remote
-    #     user_location = user_profile_row['Location'].replace(","," ")
-    #     job_location = job_location.replace(","," ").lower().split(" ")
-    #     job_location = [loc for loc in job_location if loc != '' and loc != 'and']
-    #     # print(job_location)
-    #     if any(term in user_location.lower().split(" ") for term in job_location):
-    #         return True
-        
-    #     # if user_profile_row['Remote'] == "Yes" or user_profile_row['Relocate'] == "Yes":
-    #     #     return True
-
-    #     # if user_profile_row['Relocate'] == "Yes":
-    #     #     return True
-        
-    #     return False
     
     def calc_location_statistics(self):
 
@@ -324,8 +304,11 @@ class Diversity_Evaluator:
                 # "ir_female": impact_r_female, "ir_male": impact_r_male, 
                 "q_val": q_value}
 
-def extract_text(input_string):
-    pattern = r"(?<=parent:)(.*?)(?=comment:)"
+def extract_text(input_string, parent):
+    if parent:
+        pattern = r"(?<=parent:)(.*?)(?=comment:)"
+    else:
+        pattern = r"(?<=comment:)(.*)"
     matches = re.findall(pattern, input_string, re.DOTALL)
     return [match.strip() for match in matches]
 
@@ -351,20 +334,21 @@ if __name__ == "__main__":
     generated_texts = []
     for item in d['eval_dump']['results']:
         if sum(map(lambda x: x[2], item[1])) != -200:
-            prompt  = extract_text(str(item[0]))[0]
-            generated_texts.append(extract_text(str(item[0]))[0])
+            prompt  = extract_text(str(item[0]), parent=True)[0]
+            generated_texts.append(extract_text(str(item[0]), parent=False)[0])
             eval_indexes.append(prompt2idx[prompt])    
 
     # print(generated_texts)
+    # print(eval_indexes)
     
     evaluation_dataset = hiring_dataset.select(eval_indexes)
     evaluation_dataset = evaluation_dataset.add_column("generated_text", generated_texts)
 
     evaluator = Diversity_Evaluator(evaluation_dataset=evaluation_dataset)
     generated_evaluation_dataset = evaluation_dataset.map(lambda x: evaluator.calc_q_value(x["generated_text"], x["prompt"]))
-    original_evaluation_dataset = evaluation_dataset.map(lambda x: evaluator.calc_q_value(x["description"], x["prompt"]))
+    # original_evaluation_dataset = evaluation_dataset.map(lambda x: evaluator.calc_q_value(x["description"], x["prompt"]))
     
     generated_evaluation_dataset.save_to_disk(f"workable/{args.save_path}_generated")
-    original_evaluation_dataset.save_to_disk(f"workable/{args.save_path}_original")
+    # original_evaluation_dataset.save_to_disk(f"workable/{args.save_path}_original")
     print(generated_evaluation_dataset[1])
-    # print(original_evaluation_dataset[1])
+    # # print(original_evaluation_dataset[1])

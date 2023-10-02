@@ -31,6 +31,7 @@ if __name__ == "__main__":
         if sum(map(lambda x: x[2], item[1])) != -200:
             prompts.append(extract_text(str(item[0]))[0])
     print(prompts[2])
+    print(str(d['eval_dump']['results'][2][0]))
     print(len(prompts))
 
     rs = [sum(map(lambda x: x[2], item[1])) for item in d['eval_dump']['results'] if sum(map(lambda x: x[2], item[1])) != -200.0]
@@ -44,6 +45,7 @@ if __name__ == "__main__":
             ent.append(-ent_item)
 
     print(max(rs), min(rs))
+    
     # print(rs)
     mean_r = np.mean(rs)
     std_r = np.std(rs)
@@ -63,14 +65,16 @@ if __name__ == "__main__":
     prompt2idx = {items[idx]['prompt']: idx for idx in range(len(items))}
 
     original_q_values = []
-
+    eval_idxs = []
     for prompt in prompts:
         idx = prompt2idx[prompt]
         q_value = hiring_dataset[idx]['q_value']
         original_q_values.append(q_value)
+        eval_idxs.append(idx)
     
     # print(rs)
     # print(original_q_values)
+    print(eval_idxs)
 
     mean_r = np.mean(original_q_values)
     std_r = np.std(original_q_values)
