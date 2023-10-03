@@ -5,8 +5,22 @@ Official code from the paper "Foundation Models at Work: Fine-Tuning for Fairnes
 # Setup
  
 ### **Preprocessed Data**
- 
-WIP
+
+Copy the data and indexes to under `/data/task_path` in your environment. For workable, first move the preprocessed data files into your `/data` directory: 
+
+```shell
+cp -r /dccstor/autofair/workable_processed/candidates_w_main_location path_to_env/data/workable_rl_dataset
+cp -r /dccstor/autofair/workable_processed/job_descriptions_w_q_prompt_eng path_to_env/data/workable_rl_dataset
+```
+
+Then copy the indexes:
+
+```shell
+cp /dccstor/autofair/workable_processed/train_idxs.json path_to_env/data/workable_rl_dataset
+cp /dccstor/autofair/workable_processed/test_idxs.json path_to_env/data/workable_rl_dataset
+cp /dccstor/autofair/workable_processed/eval_idxs.json path_to_env/data/workable_rl_dataset
+```
+
 ### **Dependencies and PYTHONPATH**
  
 This repo was designed for python 3.9.7
@@ -76,7 +90,7 @@ You may notice a special `cache_id` attribute associated with some objects in a 
  
 For all configs, use paths relative to the repo root.
  
-## A Few Abstrations to be Aware of
+## A Few Abstractions to be Aware of
  
 Hackernews and Workable implement a few base classes. Once implemented, all the offline RL algorithms can be applied to the task in a plug-and-play manner. See the "Creating Your Own Tasks" section for an overview of what should be implemented in order to create your own tasks. Below, we outline the key abstractions that make this possible.
  
