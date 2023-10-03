@@ -25,9 +25,38 @@ cp /dccstor/autofair/workable_processed/eval_idxs.json path_to_env/data/workable
  
 This repo was designed for python 3.9.7
  
-``` shell
+```shell
 pip install -r requirements.txt
 export PYTHONPATH="$PWD/src/"
+```
+
+# Inference
+
+Copy the checkpoint to under `/outputs/task_name`. For workable:
+
+```shell
+cp -r /dccstor/autofair/workable_processed/checkpoints/conditional_workable_official_iql_bc_test1_16383_eng/ path_to_env/outputs/workable/
+```
+
+Edit the config file (`config/workable/eval_policy.yaml`) with input/output paths and hyperparameter values. Then, evaluate policy:
+
+```shell
+cd scripts/eval/workable
+jbsub -queue x86_24h -mem 32g -cores 4+1 python eval_policy.py 
+```
+
+Distill policy to see original and rewrite diversity scores:
+
+```shell
+cd scripts/eval/workable
+python distill_policy_eval.py --eval_file ../../../outputs/workable/your_output_path/eval_logs.pkl 
+```
+
+Impact ratio and diversity score calculations for both original and rewritten job descriptions (in CCC):
+
+```shell
+cd scripts/eval/workable
+jbsub -queue x86_24h -mem 32g -cores 4+1 python impact_ratio_calc.py --eval_file ../../../outputs/workable/your_output_path/eval_logs.pkl --save_path ../../../outputs/
 ```
 
 # Running Experiments
