@@ -86,7 +86,7 @@ Here I outline a recommended workflow for training offline RL agents. Suppose th
 I would first train a BC model on the data:
  
 ``` shell
-cd scripts/train/hackernews/
+cd scripts/train/workable/
 python train_bc.py
 ```
 
@@ -100,14 +100,14 @@ jbsub -queue x86_12h -mem 32g -cores 4+1 python train_bc.py
  
 ``` shell
 cd ../data/
-python convert_bc.py --load ../../outputs/hackernews/conditional_hackernews_official_bc_test1/model.pkl --save ../../outputs/hackernews/conditional_hackernews_official_bc_test1/model_converted.pkl
+python convert_bc.py --load ../../outputs/workable/conditional_workable_official_bc_test1/model.pkl --save ../../outputs/workable/conditional_workable_official_bc_test1/model_converted.pkl
 ```
  
 Then edit the checkpoint that offline RL is configured to train with:
  
 ``` shell
 cd ../train/
-python train_iql.py model.load.checkpoint_path=outputs/hackernews/conditional_hackernews_official_bc_test1/model_converted.pkl model.load.strict_load=false train.loss.awac_weight=0.0
+python train_iql.py model.load.checkpoint_path=outputs/workable/conditional_workable_official_bc_test1/model_converted.pkl model.load.strict_load=false train.loss.awac_weight=0.0
 ```
 
 `train_iql` is responsible for training the RL agent and producing fairness aware job descriptions. This is the most resource-expensive step in our framework and current version of code supports multi-GPU training with distributed backend of torch. Training of RL agent should take less than 1 day with 8 GPUs. The training time varies with the GPU configuration (multi-node, one node, etc.). You can run the following command on CCC:
@@ -123,18 +123,18 @@ This is just one workflow though, you can also train the BC model at the same ti
 * All data is provided pre-processed in the `data/` folder.
 * `scripts/` contains all scripts for running training, evaluation, and data pre-processing steps in the paper. Scripts are organized into subfolders corresponding to the dataset used.
 * `config/` contains .yaml configs for each script. This repo uses [hydra](https://hydra.cc/docs/intro/) to manage configs. Configs are organized into subfolders corresponding to the dataset used. Most config files are named the same as their corresponding script, but if you are unsure which config corresponds to a script, check the line `@hydra.main(config_path="some_path", config_name="some_name")` to see which config file the script corresponds to.
-* `src/` contains all the core implementations. See `src/models/` for all model implementations. See `src/data/` for all base data processing and MDP abstraction code. See `src/utils/` for various utility functions. See `src/hackernews/` for hackernews hiring dataset specific code respectively.
+* `src/` contains all the core implementations. See `src/models/` for all model implementations. See `src/data/` for all base data processing and MDP abstraction code. See `src/utils/` for various utility functions. See `src/workable/` for hackernews hiring dataset specific code respectively.
 * `ILQL` is referred to as `iql` throughout the repo.
  
 ## Config Framework Overview
  
-Each script is associated with a config file. The config file specifies which models, dataset, and evaluators are to be loaded by the script and their corresponding hyperparameters. See `configs/hackernews/train_iql.yaml` for an example.
+Each script is associated with a config file. The config file specifies which models, dataset, and evaluators are to be loaded by the script and their corresponding hyperparameters. See `configs/workable/train_iql.yaml` for an example.
  
-Each possible model, dataset, or evaluator object is given its own config file, which specifies default values for that object and a special `name` attribute, which tells the config manager what class to load. See `configs/hackernews/model/per_token_iql.yaml` for an example.
+Each possible model, dataset, or evaluator object is given its own config file, which specifies default values for that object and a special `name` attribute, which tells the config manager what class to load. See `configs/workable/model/per_token_iql.yaml` for an example.
  
-The files `src/load_objects.py` and `src/hackernews/load_objects.py` define how each object is loaded from its corresponding config. The `@register('name')` tag above each load object function links to the `name` attribute in the config.
+The files `src/load_objects.py` and `src/workable/load_objects.py` define how each object is loaded from its corresponding config. The `@register('name')` tag above each load object function links to the `name` attribute in the config.
  
-You may notice a special `cache_id` attribute associated with some objects in a config. For an example, see `train_dataset` in `configs/hackernews/train_iql.yaml`. This attribute tells the config manager to cache the first object that it loads that is associated with this id, and then to return this cached object for subsequent object configs with this `cache_id`.
+You may notice a special `cache_id` attribute associated with some objects in a config. For an example, see `train_dataset` in `configs/workable/train_iql.yaml`. This attribute tells the config manager to cache the first object that it loads that is associated with this id, and then to return this cached object for subsequent object configs with this `cache_id`.
  
 For all configs, use paths relative to the repo root.
  
@@ -160,7 +160,7 @@ Hacker News hiring task has a corresponding environment and dataset implemented 
 
 You can similarly define your own tasks that can easily be run on all these offline RL algorithms. This codebase implements a simple set of RL environment abstractions that make it possible to define your own environments and datasets that can plug-and-play with any of the offline RL algorithms.
 
-All of the core abstractions are defined in `src/data/`. Here we outline what needs to be implemented in order to create your own tasks. For examples, see the implementations in `src/hackernews/`.
+All of the core abstractions are defined in `src/data/`. Here we outline what needs to be implemented in order to create your own tasks. For examples, see the implementations in `src/workable/`.
  
 ## 1. Create an environment and define observations:
  
