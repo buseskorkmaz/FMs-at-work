@@ -89,8 +89,14 @@ I would first train a BC model on the data:
 cd scripts/train/hackernews/
 python train_bc.py
 ```
+
+This step is responsible for supervised learning to fine-tune underlying language model to prompt and job description generation task. Thus, the fairness related reward is not part of the loss optimization in the training. Producing good enough job descriptions generally takes 5-6 hours training(depends on data size and epoch number, this number is demonstrative for the current setting) with following command on CCC. Please note, `train_bc` script is not optimized for multi-GPU support currently.
+
+```shell
+jbsub -queue x86_12h -mem 32g -cores 4+1 python train_bc.py 
+```
  
-Then convert this BC checkpoint into one compatible with the offline RL models:
+`BC` stands for behavior-cloning in RL literature. We need to use BC as a language model policy in our training. Following script converts this BC checkpoint into one compatible policy to use with the offline RL models:
  
 ``` shell
 cd ../data/
@@ -102,6 +108,12 @@ Then edit the checkpoint that offline RL is configured to train with:
 ``` shell
 cd ../train/
 python train_iql.py model.load.checkpoint_path=outputs/hackernews/conditional_hackernews_official_bc_test1/model_converted.pkl model.load.strict_load=false train.loss.awac_weight=0.0
+```
+
+`train_iql` is responsible for training the RL agent and producing fairness aware job descriptions. This is the most resource-expensive step in our framework and current version of code supports multi-GPU training with distributed backend of torch. Training of RL agent should take less than 1 day with 8 GPUs. The training time varies with the GPU configuration (multi-node, one node, etc.). You can run the following command on CCC:
+
+```shell
+jbsub -queue x86_24h -cores 4x1+2 -mem 32g -name iql_test_16383 python -m torch.distributed.launch --nproc_per_node 2 --use_env train_iql.py model.load.checkpoint_path=outputs/workable/conditional_workable_official_bc_test_1/model_converted.pkl model.load.strict_load=false train.loss.awac_weight=0.0
 ```
  
 This is just one workflow though, you can also train the BC model at the same time as the offline RL agent by setting `train.loss.awac_weight=1.0` in the training config.
