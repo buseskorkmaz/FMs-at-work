@@ -1,7 +1,0 @@
-name: bias_sentences
-path: data/bias_sentences/
-cache_path: null
-reward_shift: 0.0
-reward_scale: 1.0
-reward_f: null
-index_path: data/bias_sentences/train_idxs.json

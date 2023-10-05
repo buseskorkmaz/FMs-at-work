@@ -1,6 +1,7 @@
 *.pyc
 *.json
 *.arrow
+!analysis/input_files/
 __pycache__/
 outputs/
 figures/
