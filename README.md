@@ -3,6 +3,10 @@
 Official code from the paper "Foundation Models at Work: Fine-Tuning for Fairness Beyond Human Feedback", based on the implementation of ILQL [arxiv] (https://arxiv.org/abs/2206.11871) .
  
 # Setup
+
+### **Supported Environment**
+
+This project is developed with Python 3.10.6 on CCC with CUDA backend. Currently, some operations required by PyTorch are not implemented yet for MPS backend (MacOS M1/M2 GPUs). Thus, this project is not supported on MPS.
  
 ### **Preprocessed Data**
 
