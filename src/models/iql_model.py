@@ -1244,6 +1244,32 @@ class IQL_Evaluator(Evaluator):
     
     def dump(self):
         return {'results': self.all_results, 'entropies': self.all_entropy}
+    
+
+    def inference(self, model: PerTokenIQL, items: InputType) -> Optional[Dict[str, Any]]:
+        policy = IQL_Policy(model, self.kind, **self.generation_kwargs)
+        tokens = model.prepare_inputs(items)['tokens']
+        total_token_reward = 0
+        total_env_reward = 0
+        for i in range(tokens.shape[0]):
+            result, sequence = interact_environment(self.env, policy, None)
+            self.all_results.append((result, sequence,))
+            env_reward = sum(map(lambda x: x[2], sequence))
+            token_reward = sum(DataPoint.get_token_reward(result, model.dataset.tokenizer, model.dataset.token_reward))
+            total_env_reward += env_reward
+            total_token_reward += token_reward
+            print(result)
+            print('='*25)
+            print('token reward:', token_reward)
+            print('env reward:', env_reward)
+            print('avg token reward:', total_token_reward / (i + 1))
+            print('avg env reward:', total_env_reward / (i + 1))
+            print('='*25)
+        return 
+     
+    def dump(self):
+        return {'results': self.all_results, 'entropies': self.all_entropy}
+
 
 class TopAdvantageNGrams(Evaluator):
     def __init__(self, data: List_RL_Dataset, print_every: int, print_k: int, n_gram: Optional[int]) -> None:

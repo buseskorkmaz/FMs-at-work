@@ -36,6 +36,7 @@ def load_item(config, *args, verbose=True):
             return cache[(name, config['cache_id'])]
     if verbose:
         print(f'loading {name}: {config}')
+    print(args)
     item = registry[name](config, *args, verbose=verbose)
     if 'cache_id' in config:
         print(f'saving to cache ({name}, {config["cache_id"]})')
@@ -47,7 +48,8 @@ def load_model(config, model, device, verbose=True):
     if config['checkpoint_path'] is not None:
         if verbose:
             print('loading %s state dict from: %s' % (config['name'], convert_path(config["checkpoint_path"])))
-        model.load_state_dict(torch.load(convert_path(config['checkpoint_path']), map_location='cuda'), strict=config['strict_load'])
+        # model.load_state_dict(torch.load(convert_path(config['checkpoint_path']), map_location='cuda'), strict=config['strict_load'])
+        model.load_state_dict(torch.load(convert_path(config['checkpoint_path']), map_location=device), strict=config['strict_load'])
         if verbose:
             print('loaded.')
     return model
@@ -193,8 +195,11 @@ def load_chai_policy(config, device, verbose=True):
     return ChaiPolicy(chai_model, **config['generation_kwargs'])
 
 @register('iql_evaluator')
-def load_iql_evaluator(config, device, verbose=True):
-    env = load_item(config['env'], device, verbose=verbose)
+def load_iql_evaluator(config, device, verbose=True, prompt=None):
+    if prompt is None:
+        env = load_item(config['env'], device, verbose=verbose)
+    else:
+        env = load_item(config['env'], device, verbose=verbose, prompt=prompt)
     return IQL_Evaluator(env, config['verbose'], config['kind'], **config['generation_kwargs'])
 
 @register('top_advantage_n_grams')

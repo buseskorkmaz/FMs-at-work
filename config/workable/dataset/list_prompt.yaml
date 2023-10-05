@@ -1,0 +1,6 @@
+defaults:
+ - /token_reward: constant
+name: prompt_dataset
+max_len: 1024
+cuttoff: null
+resample_timeout: 0.0

@@ -29,8 +29,11 @@ This repo was designed for python 3.9.7
 pip install -r requirements.txt
 export PYTHONPATH="$PWD/src/"
 ```
-
 # Inference
+
+WIP
+
+# Evaluation
 
 Copy the checkpoint to under `/outputs/task_name`. For workable:
 
@@ -96,8 +99,14 @@ Then edit the checkpoint that offline RL is configured to train with:
 cd ../train/
 python train_iql.py model.load.checkpoint_path=outputs/hackernews/conditional_hackernews_official_bc_test1/model_converted.pkl model.load.strict_load=false train.loss.awac_weight=0.0
 ```
- 
-This is just one workflow though, you can also train the BC model at the same time as the offline RL agent by setting `train.loss.awac_weight=1.0` in the training config.
+
+To train on CCC with distributed computing support of PyTorch:
+
+```shell
+jbsub -queue x86_24h -cores 4x1+2 -mem 32g python -m torch.distributed.launch --nproc_per_node 2 --use_env train_iql.py model.load.checkpoint_path=outputs/workable/conditional_workable_official_bc_test_1/model_converted.pkl model.load.strict_load=false train.loss.awac_weight=0.0
+```
+
+The output of the training of at this stage is the final model of the training pipeline. It is the checkpoint model you will use in evaluation. This is just one workflow though, you can also train the BC model at the same time as the offline RL agent by setting `train.loss.awac_weight=1.0` in the training config.
  
 # Repo Overview
  
