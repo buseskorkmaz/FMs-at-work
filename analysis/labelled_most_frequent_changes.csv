@@ -1,0 +1,703 @@
+Deletion,Addition,Count,Row Indices,Meaningful,Protected Entity Error,Syntax Error,Link Change
+'- questions,'+ of,1,[1],TRUE,N,N,N
+'- AppHero,'+ App,1,[2],FALSE,Y,N,N
+'- >http://apphero.com/careers</a>,'+ based,1,[2],FALSE,N,N,Y
+'+ -,"'+ Toronto,",1,[2],FALSE,Y,N,N
+'+ -,'+ Passionate,1,[2],TRUE,N,N,N
+'+ -,'+ Exc,1,[2],TRUE,N,N,N
+'- wielding),'+ (2.,1,[5],TRUE,N,N,N
+'- >http://www.benbria.com/company/careers</a>,'+ ',1,[5],FALSE,N,N,Y
+'- ROLE,'+ RROLE,1,[6],TRUE,N,Y,N
+'- platforms.,'+ the,1,[7],TRUE,N,N,N
+'- multicore,'+ divisionot,1,[7],TRUE,N,N,N
+"'- microkernels,","'+ microkots,",1,[7],TRUE,N,N,N
+"'- href=""http://careers.nvidia.com//pljb/nvidia/nvidiaemployment/applicant/jobClick.jsp?count=1&amp;id=9407""","'+ http://careers.nvf/pljb/nf-f-applicant/jobClick.jsp?,",1,[7],FALSE,N,N,Y
+'- nvidia.com,'+ nvk.com',1,[7],FALSE,Y,N,N
+'- ———,'+ &lt;&lt;,1,[8],FALSE,N,N,N
+'- <a,'+ —,1,[8],FALSE,N,N,N
+'- negatives.,'+ problems.,1,[8],TRUE,N,N,N
+'- >http://ravelry.com/jobs</a>,'+ ',1,[11],FALSE,N,N,Y
+'- donors,'+ investors,1,[12],TRUE,N,N,N
+"'- bills,","'+ papers,",1,[13],TRUE,N,N,N
+'- >http://byliner.com/jobs</a>,'+ |,1,[15],FALSE,N,N,Y
+'+ front-end.,'+ We,1,[15],TRUE,N,N,N
+'+ back-end,'+ developers.,1,[15],TRUE,N,N,N
+'- savraj@,'+ coolraj@,1,[16],TRUE,Y,N,N
+'- frozen,'+ rocket,1,[16],TRUE,N,N,N
+"'- oats,",'+ instant,1,[16],TRUE,N,N,N
+'- sugar,'+ added,1,[16],TRUE,N,N,N
+'- preservatives.,'+ presews.,1,[16],TRUE,N,N,N
+'- NVIDIA,'+ our,1,[17],FALSE,Y,N,N
+'- multicore,'+ codecore,1,[17],TRUE,N,N,N
+'- Practical,'+ P,1,[17],TRUE,N,N,N
+'- nvidia.com,'+ nve.com',1,[17],FALSE,Y,N,N
+'- frozen,'+ cloud,1,[19],TRUE,N,N,N
+'- superfood,'+ superfoodes,1,[19],FALSE,N,Y,N
+'- team,'+ does,1,[19],TRUE,N,N,N
+'- chefs,"'+ smoothies,",1,[19],TRUE,N,N,N
+'- nutritionists,'+ Harvest,1,[19],FALSE,Y,N,N
+'- fruits,'+ Harvest,1,[19],FALSE,Y,N,N
+"'- vegetables,",'+ Harvest,1,[19],FALSE,Y,N,N
+'- cup,'+ Harvest,1,[19],FALSE,Y,N,N
+'- so,'+ very,1,[19],TRUE,N,N,N
+'- ropes,'+ ways,1,[20],TRUE,N,N,N
+'- wont,'+ would,1,[20],FALSE,N,Y,N
+'- >http://www.khitchdee.com</a>,'+ /,1,[20],FALSE,N,N,Y
+'- questions,'+ recent,1,[22],TRUE,N,N,N
+'+ cloud-based,'+ databases,1,[22],TRUE,N,N,N
+'- questions,'+ such,1,[23],TRUE,N,N,N
+"'+ tight-knit,","'+ experienced,",1,[24],TRUE,N,N,N
+'- >http://eng.tobi.com/</a>,'+ ',1,[24],FALSE,N,N,Y
+'+ -,'+ Web,1,[24],TRUE,N,N,N
+'- donors,'+ donations,1,[26],TRUE,N,N,N
+'+ -,"'+ City,",1,[26],FALSE,Y,N,N
+'- snuff,'+ tosnuff,1,[28],FALSE,N,Y,N
+'+ -,'+ Data,1,[28],TRUE,N,N,N
+'- RG,'+ GR,1,[29],FALSE,Y,N,N
+'- Although,'+ Since,1,[29],TRUE,N,N,N
+'+ full-time,'+ positions,1,[29],TRUE,N,N,N
+"'- Kik,","'+ K,",1,[30],TRUE,N,N,N
+'- Wicked,'+ We,1,[30],TRUE,N,N,N
+'- Unlike,'+ Since,1,[31],TRUE,N,N,N
+'- port,'+ aport,1,[33],TRUE,N,N,N
+'- REDACTED_EMAIL,'+ RED,1,[33],FALSE,N,Y,N
+'- Unpakt,'+ Unukt,1,[34],FALSE,N,Y,N
+'- Www.unpakt.com/jobs,'+ BookwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwWwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww,1,[34],FALSE,N,N,Y
+'- Teespring,'+ httpespeek,1,[36],FALSE,N,N,Y
+'- nimblestorage,'+ nimblestability,1,[37],FALSE,N,Y,N
+'- >http://jobs.37signals.com/jobs/8551</a>,'+ Based,1,[38],FALSE,N,N,Y
+'+ co-founder,'+ was,1,[38],TRUE,N,N,N
+'- DISQUS?,'+ NOT,1,[39],FALSE,Y,N,N
+'- topic,'+ matter,1,[39],TRUE,N,N,N
+'- plants,'+ resources,1,[40],TRUE,n,N,N
+'- peak,'+ ones,1,[40],TRUE,N,N,N
+'- diminishing,'+ about,1,[40],TRUE,N,N,N
+'- charming,'+ lovely,1,[40],TRUE,N,N,N
+'- (grown,'+ (growing,1,[40],TRUE,N,Y,N
+'- monkey,'+ mongo,1,[40],TRUE,N,Y,N
+'- *,'+ -,1,[41],FALSE,N,N,N
+'- harper,'+ sendharper,1,[41],TRUE,N,N,N
+'+ -,'+ we,1,[41],TRUE,N,N,N
+'- cofounder/CTO).,'+ cofounder/CTO).',1,[42],FALSE,N,N,N
+'- Clever,'+ Cloudver,1,[43],FALSE,Y,N,N
+'- tackled,'+ tackling,1,[46],TRUE,N,Y,N
+'- bones.,'+ blood.,1,[46],TRUE,N,N,N
+'- www.doubledutch.me,'+ doubledew.me,1,[47],FALSE,N,N,Y
+'- remarkable.,'+ notable.,1,[47],TRUE,N,N,N
+'+ award-winning,'+ provider,1,[47],TRUE,N,N,N
+"'- caf,","'+ restaurant,",1,[49],TRUE,N,N,N
+'- ♦,'+ •,1,[49],FALSE,N,N,N
+'- LucidMedia,'+ Lucid,1,[52],FALSE,Y,N,N
+'- eyeglasses.,'+ eyegglings.,1,[54],TRUE,N,N,N
+'- When,'+ If,1,[54],TRUE,N,N,N
+'- BrightTALK,'+ BrightTalk,1,[56],FALSE,Y,N,N
+'+ --------------------------------,'+ Based,1,[56],FALSE,N,N,N
+'- ♦,'+ Lead,1,[57],FALSE,N,N,N
+'+ H-1B,'+ welcome,1,[58],FALSE,Y,N,N
+"'+ Full-Time,",'+ H-1B,1,[59],FALSE,Y,N,N
+"'- Wimbledon,",'+ Wim,1,[61],FALSE,Y,N,N
+'- Wimbledon,'+ Wim,1,[61],FALSE,Y,N,N
+'+ -,'+ Wim,1,[61],FALSE,N,N,N
+'- CEOs,'+ executives,1,[62],FALSE,Y,N,N
+'- tackled.,'+ handled.,1,[62],TRUE,N,N,N
+'- Payroll,'+ Applyroll,1,[62],FALSE,Y,N,N
+'- SA's,'+ S,1,[63],FALSE,N,Y,N
+'- >http://turntable.fm/jobs</a>,'+ ',1,[64],FALSE,N,N,Y
+'- (winter,'+ (sarn,1,[65],FALSE,N,N,N
+"'- Fake,",'+ Comina,1,[65],TRUE,N,N,N
+'- Flickr,'+ Flash,1,[65],FALSE,Y,N,N
+'- Streak,'+ Strongak,1,[67],FALSE,Y,N,N
+'- dime.,'+ note.,1,[67],TRUE,N,N,N
+'- Obviously:,'+ Unfortunately:,1,[67],TRUE,N,N,N
+'- best-selling,'+ best-market-changing,1,[70],TRUE,N,N,N
+'- tiny,'+ small,1,[70],TRUE,N,N,N
+'- avenues,'+ areas,1,[70],TRUE,N,N,N
+'- Social+Capital,'+ Social+,1,[72],TRUE,N,N,N
+'- molecules,'+ databases,1,[75],TRUE,N,Y,N
+'- mainly,'+ mostly,1,[75],TRUE,N,N,N
+'- Kent,"'+ Kent,",1,[75],FALSE,N,N,N
+'- Kemmish,'+ E.,1,[75],FALSE,Y,N,N
+"'- Liverpool,","'+ Italy,",1,[78],FALSE,Y,N,N
+'- prescribing,'+ GM,1,[78],TRUE,N,N,N
+'- catalogue,'+ chart,1,[78],TRUE,N,N,N
+'- facilities,'+ services,1,[78],TRUE,N,N,N
+'- team-player.,'+ team-,1,[79],TRUE,N,N,N
+"'- impediments,","'+ infrastructure,",1,[79],TRUE,N,N,N
+'- sufficient,'+ enough,1,[79],TRUE,N,N,N
+'- Arch,'+ open,1,[80],FALSE,Y,N,N
+'- Hyde,'+ the,1,[80],FALSE,Y,N,N
+'- Due,'+ due,1,[80],TRUE,N,N,N
+'- DISQUS?,'+ REMQUS?,1,[83],FALSE,Y,N,N
+'- topic,'+ subject,1,[83],TRUE,N,N,N
+'- >https://www.scirra.com/careers</a>,'+ ',1,[84],FALSE,N,N,Y
+'- Almost,'+ Since,1,[85],TRUE,N,N,N
+"'- removed,","'+ added,",1,[85],TRUE,N,N,N
+'- http://jobs.benzinga.com,'+ http://jobs.,1,[86],FALSE,N,N,Y
+'- Candidate,'+ Candidates,1,[87],TRUE,N,Y,N
+'- Internet,'+ Network,1,[88],TRUE,N,N,N
+'- Capacity,'+ •,1,[89],FALSE,N,Y,N
+'- optimization,'+ fixing,1,[89],TRUE,N,N,N
+'- recommendations.,'+ fixing,1,[89],TRUE,N,N,N
+'- cover,'+ coverage,1,[89],TRUE,N,Y,N
+'- Sense.,'+ atSense.,1,[90],FALSE,Y,N,N
+'- 1%-3%,'+ 1%,1,[90],FALSE,Y,N,N
+'- Although,'+ While,1,[91],TRUE,N,N,N
+'- Flickr,'+ Yelp,1,[92],FALSE,Y,N,N
+'- Everyme,'+ Ifme,1,[93],FALSE,Y,N,N
+'- showed,'+ demonstrated,1,[93],TRUE,N,N,N
+'- surprised,'+ well,1,[93],TRUE,N,N,N
+'- perfection.,'+ beauty.,1,[93],TRUE,N,N,N
+'- Siegler,'+ MULL,1,[93],FALSE,Y,N,N
+'- >http://parislemon.com/post/11647475506/your-true-social-netw...</a>,'+ &,1,[93],FALSE,N,N,Y
+'+ -,'+ Lead,1,[93],FALSE,N,N,N
+'+ -,'+ TheThinknum,1,[94],FALSE,N,N,N
+'+ -,'+ http://thinknum.com,1,[94],FALSE,N,N,Y
+'+ -TheThinknum,'+ -,1,[94],FALSE,Y,N,N
+'- solicitation,'+ recruitment,1,[95],TRUE,N,N,N
+'- constraints,'+ alongside,1,[95],TRUE,N,N,N
+'- Gumroad,'+ Growth,1,[96],FALSE,Y,N,N
+'- Probably,'+ Maybe,1,[96],TRUE,N,N,N
+'- earliest,'+ most,1,[96],TRUE,N,N,N
+'- ::,'+ #,1,[97],FALSE,N,N,N
+'- ::,'+ •,1,[98],FALSE,N,N,N
+'- truth,'+ reality,1,[99],TRUE,N,N,N
+'+ analytics-driven,'+ technical,1,[102],TRUE,N,N,N
+'+ York/NYC/Remote-friendly,'+ SFX,1,[104],FALSE,Y,N,N
+'- plants,'+ vests,1,[107],TRUE,N,N,N
+'- peak,'+ on,1,[107],TRUE,N,N,N
+'- diminishing,'+ growing,1,[107],TRUE,N,N,N
+'- house,'+ get,1,[107],TRUE,N,N,N
+"'- Glasgow,","'+ Bristol,",1,[112],FALSE,Y,N,N
+'+ -,'+ No,1,[114],TRUE,N,N,N
+'- (edited,'+ (ed,1,[115],TRUE,N,Y,N
+'- unleashes,'+ uses,1,[116],TRUE,N,N,N
+'- eBook,'+ EIGHT,1,[121],FALSE,Y,N,N
+'- federation,'+ fusion,1,[123],TRUE,N,N,N
+'- Developers,'+ the,1,[123],TRUE,N,N,N
+'+ http://onapp.com/platform/onapp-en-code-onapp-no-scale,'+ anywhere,1,[123],TRUE,N,N,Y
+'- avid,'+ enthusiast,1,[124],TRUE,N,N,N
+'+ -Based,'+ on,1,[125],FALSE,N,N,N
+'- you,'+ you',1,[128],FALSE,N,N,N
+"'- sensing,","'+ behavior,",1,[129],TRUE,N,N,N
+'- concise,'+ succinct,1,[130],FALSE,N,N,N
+'- sparkling,'+ creating,1,[130],FALSE,N,N,N
+'+ Web-developer,'+ position.,1,[131],FALSE,N,N,N
+'- refresh.io,'+ rest.io',1,[131],FALSE,Y,N,N
+'+ -ly,'+ on-site,1,[132],TRUE,N,N,N
+'+ -,'+ Great,1,[132],TRUE,N,N,N
+'+ -,'+ Flexible,1,[132],TRUE,N,N,N
+'- briefing,'+ telling,1,[133],TRUE,N,N,N
+'- May.,'+ May...,1,[136],TRUE,N,Y,N
+'- (Major,'+ EIL,1,[137],TRUE,N,Y,N
+'- FreeSWITCH,'+ FreeSWitch,1,[137],FALSE,Y,N,N
+"'- 2600hz,","'+ 2727z,",1,[137],FALSE,Y,N,N
+"'- Sebastopol,","'+ Embok,",1,[138],FALSE,Y,N,N
+'- demographics,'+ various,1,[138],TRUE,N,N,N
+'- strengthens,'+ makes,1,[138],TRUE,N,N,N
+'- supplemental,'+ additional,1,[138],TRUE,N,N,N
+"'- Sebastopol,",'+ San,1,[138],FALSE,Y,N,N
+'- escalating,'+ growing,1,[139],TRUE,N,N,N
+'- •,'+ •••,1,[140],FALSE,N,N,N
+'- escalating,'+ increasing,1,[140],TRUE,N,N,N
+'- Capacity,'+ Data,1,[140],TRUE,N,N,N
+'- Indeed.com,'+ Since.com,1,[141],FALSE,Y,N,N
+'- classroom,'+ classrooms,1,[142],TRUE,N,Y,N
+'- provably,'+ a,1,[142],TRUE,N,N,N
+'- have,'+ Sanuri,1,[142],FALSE,Y,N,N
+'- THREE,'+ three,1,[148],FALSE,Y,N,N
+'+ http://blog.desksnear.me/careers/ruby-on-rails-job.html,'+ >,1,[149],FALSE,N,N,Y
+'+ high-quality,'+ software,1,[149],TRUE,N,N,N
+"'- Florida,","'+ Miami,",1,[150],FALSE,Y,N,N
+"'- Desk.com,","'+ Desktop.com,",1,[150],FALSE,Y,N,N
+"'- anyone,","'+ any,",1,[153],TRUE,N,N,N
+'- remembered,'+ heard,1,[153],TRUE,N,N,N
+'- disabled,'+ disability,1,[153],TRUE,N,N,N
+"'- Hawthorne,","'+ Engineering,",1,[154],FALSE,Y,N,N
+"'- Borg,","'+ Boston,",1,[154],FALSE,Y,N,N
+'- Simulations,'+ Software,1,[154],TRUE,N,N,N
+'+ -,'+ http://spacex.com/careers/position/3857,1,[154],FALSE,N,N,Y
+'- writing,'+ Some,1,[154],TRUE,N,N,N
+'- the,'+ engineer,1,[154],TRUE,N,N,N
+'+ -,'+ http://spacex.com/careers/position/3825,1,[154],FALSE,N,N,Y
+'- all,'+ read,1,[155],TRUE,N,N,N
+'- want,'+ wanted,1,[155],TRUE,N,Y,N
+'+ -,"'+ London,",1,[157],FALSE,Y,N,N
+'+ -,'+ Experience,1,[158],TRUE,N,N,N
+'- Osborne.,'+ O.,1,[158],FALSE,Y,N,N
+'- ideas,'+ ideas.,1,[159],TRUE,N,Y,N
+'+ -,'+ http://working,1,[161],FALSE,N,N,Y
+'- Layer,'+ Layer--,1,[163],TRUE,N,Y,N
+'- plants,'+ sources,1,[164],TRUE,N,N,N
+'- peak,'+ summer,1,[164],TRUE,N,N,N
+'- diminishing,'+ silification,1,[164],TRUE,N,N,N
+'- >http://dev.splunk.com</a>,'+ ',1,[166],FALSE,N,N,Y
+'+ -,'+ Splunk,1,[166],FALSE,Y,N,N
+"'+ (full-time,","'+ H1B,",1,[166],FALSE,Y,N,N
+'- geographic,'+ geom,1,[168],TRUE,N,N,N
+'- printed,'+ written,1,[169],TRUE,N,N,N
+'- artistic,'+ creative,1,[169],TRUE,N,N,N
+'- tendency,'+ knack,1,[169],TRUE,N,N,N
+'- Gumroad,'+ Overflow,1,[171],FALSE,Y,N,N
+'- earliest,'+ The,1,[171],TRUE,N,N,N
+'- celebrating,'+ recognizing,1,[172],TRUE,N,N,N
+'+ co-founders,'+ who,1,[173],TRUE,N,N,N
+'- peak,'+ drop,1,[176],TRUE,N,N,N
+'- diminishing,'+ developing,1,[176],TRUE,N,N,N
+'- monkey,'+ linux,1,[176],TRUE,N,N,N
+'- ::,'+ &,1,[177],FALSE,N,N,N
+'- >http://www.timesys.com/company/careers</a>,'+ tell,1,[178],FALSE,N,N,N
+'- professors,'+ teachers,1,[179],TRUE,N,N,N
+'- Bookkeeper,'+ Bookkeepers,1,[180],FALSE,Y,N,N
+'- xml,'+ html,1,[181],FALSE,N,N,N
+'- csv,"'+ csv,",1,[181],FALSE,N,N,N
+'- unexpectedly,'+ incredibly,1,[181],TRUE,N,N,N
+'- Daniel,'+ Dan,1,[181],FALSE,Y,N,N
+'- SfunCube,'+ Sfun,1,[181],FALSE,Y,N,N
+'- EDM,'+ EMSM,1,[182],FALSE,Y,N,N
+'- more,'+ less,1,[185],TRUE,N,N,N
+'- ;-),'+ ;-)',1,[186],TRUE,N,N,N
+'- TTC,'+ T,1,[189],FALSE,Y,N,N
+'- Andrew,'+ St.Andrew,1,[189],FALSE,Y,N,N
+'- Teespring,'+ Teespe,1,[190],FALSE,Y,N,N
+'- Teespring,'+ to,1,[190],FALSE,Y,N,N
+'+ full-time,'+ rails,1,[190],TRUE,N,N,N
+'- Teespring,'+ Conesound,1,[191],FALSE,Y,N,N
+'- eBook,'+ eBooks,1,[192],FALSE,Y,N,N
+'- regardless,'+ the,1,[194],TRUE,N,N,N
+'- outfits.,'+ brands.,1,[194],TRUE,N,N,N
+"'- inevitably,","'+ eventually,",1,[194],TRUE,N,N,N
+'- orchestrating,'+ architectating,1,[194],TRUE,N,N,N
+'- comprehensive,'+ extensive,1,[195],TRUE,N,N,N
+'- accommodations,'+ amenities,1,[196],TRUE,N,N,N
+'- reflected,'+ not,1,[196],TRUE,N,N,N
+'- eclectic,'+ diverse,1,[196],TRUE,N,N,N
+'- formatting,'+ quality,1,[196],TRUE,N,N,N
+"'- Hexagon,",'+ Dublin,1,[197],FALSE,Y,N,N
+'- nurturing,'+ rewarding,1,[197],TRUE,N,N,N
+'- Tandem's,'+ Tascore's,1,[201],FALSE,Y,N,N
+'- persuasive,'+ compelling,1,[201],TRUE,N,N,N
+'- advise,'+ guide,1,[201],TRUE,N,N,N
+'- promotion,'+ marketing,1,[201],TRUE,N,N,N
+'- REDWOOD,'+ REDACTED,1,[202],FALSE,Y,N,N
+'- expectation,'+ expect,1,[202],TRUE,N,Y,N
+'- MBA,'+ BBA,1,[202],FALSE,Y,N,N
+'- influencer,'+ influacrator,1,[202],TRUE,N,N,N
+'- Breakfast,'+ Workfast,1,[204],TRUE,N,N,N
+'- Kemmish,'+ Hermish,1,[205],FALSE,Y,N,N
+'- structuring,'+ structureduring,1,[206],TRUE,N,,N
+'- Andy,'+ Peter,1,[206],FALSE,Y,N,N
+'- Mike,'+ W,1,[206],FALSE,Y,N,N
+'- Diffbot,'+ Devtech',1,[206],FALSE,Y,N,N
+'- Thomson,'+ theThomson,1,[207],FALSE,Y,N,N
+'- Reuters,'+ Robert,1,[207],FALSE,Y,N,N
+'- AutoFac,'+ AutomateF,1,[207],FALSE,Y,N,N
+'- >http://jobs.thomsonreuters.com/job/Senior-Software-Engineer-...</a>,'+ ',1,[207],FALSE,N,N,Y
+'+ early-stage,"'+ startup,",1,[208],TRUE,N,N,N
+'- socio-economics,'+ social-althics,1,[209],TRUE,N,Y,N
+'- Organisations,'+ organizes,1,[209],TRUE,N,Y,N
+'- Importing,'+ Developing,1,[209],TRUE,N,N,N
+'- columns,'+ positions,1,[209],TRUE,N,N,N
+'- imported,'+ produced,1,[209],TRUE,N,N,N
+'- from,'+ take,1,[209],TRUE,N,N,N
+'+ on-going,"'+ venture,",1,[211],TRUE,N,N,N
+'- electric,'+ electricity,1,[212],FALSE,N,Y,N
+'- peak,'+ average,1,[212],TRUE,N,N,N
+'- diminishing,'+ giving,1,[212],TRUE,N,N,N
+'+ afterwork-beers.,'+ The,1,[212],TRUE,N,N,N
+'- adore,'+ love,1,[213],TRUE,N,N,N
+'- shelter.,'+ just,1,[215],TRUE,N,N,N
+"'- Amber.js,",'+ the,1,[215],FALSE,Y,N,N
+'- horizontal/vertical,'+ vertical/vertical,1,[215],FALSE,N,Y,N
+'+ industry-changing,'+ product.,1,[216],FALSE,N,N,N
+'- Sandbox,'+ Gound,1,[218],TRUE,N,N,N
+'- Sandbox,'+ Front,1,[218],TRUE,N,N,N
+'+ well-working,'+ platforms,1,[218],TRUE,N,N,N
+'- blow,'+ over,1,[219],TRUE,N,N,N
+'- overnight.,'+ about,1,[219],TRUE,N,N,N
+"'- router,","'+ browser,",1,[221],TRUE,N,N,N
+'- Escape,'+ The,1,[221],TRUE,N,N,N
+'- the,'+ other,1,[221],TRUE,N,N,N
+'- Hungry,'+ http://hf,1,[221],FALSE,N,N,Y
+'- Escape,'+ Experience,1,[222],TRUE,N,N,N
+'- comfortably,'+ securely,1,[225],TRUE,N,N,N
+'- wicked-smart,'+ great-smart,1,[225],TRUE,N,N,N
+'- wicked-smart,'+ good-smart,1,[227],TRUE,N,N,N
+'+ -,'+ NYC,1,[228],FALSE,Y,N,N
+'+ -,'+ Hiring,1,[228],TRUE,N,N,N
+'+ -,'+ http://thinknum.,1,[228],FALSE,N,N,Y
+'- <a,'+ http://vvco.co/careers,1,[229],FALSE,N,N,Y
+'- Sanoga,'+ Sanaya,1,[231],FALSE,Y,N,N
+'- booming,'+ growing,1,[231],TRUE,N,N,N
+"'- sanoga.com,","'+ Sanaya.com,",1,[231],FALSE,Y,N,Y
+"'- layouts,","'+ designs,",1,[231],TRUE,N,N,N
+'- visuals,'+ graphics,1,[231],TRUE,N,N,N
+'- therapeutics,'+ medicine-based,1,[232],TRUE,N,N,N
+'- exceptionally,'+ extremely,1,[232],TRUE,N,N,N
+'- complement,'+ join,1,[232],TRUE,N,N,N
+'- biological,'+ bi,1,[232],TRUE,N,N,N
+'- winners).,'+ winning).,1,[233],TRUE,N,Y,N
+'- ShareRoot,'+ ShareRed,1,[234],FALSE,Y,N,N
+'- ShareRoot,'+ ShareTal,1,[234],FALSE,Y,N,N
+'- contest,'+ competition,1,[234],TRUE,N,N,N
+"'- Pictures,",'+ The,1,[234],TRUE,N,N,N
+'- General,"'+ General,",1,[234],FALSE,N,N,N
+'- respectable,'+ fair,1,[234],TRUE,N,N,N
+"'- Casino,","'+ Atlantic,",1,[235],FALSE,Y,N,N
+'- Cora…),'+ Cusion,1,[235],FALSE,N,Y,N
+'- Nestlé…),"'+ Ad,",1,[235],FALSE,Y,N,N
+'- ontology.,'+ architecture.,1,[235],TRUE,N,N,N
+'- expressive,'+ meaningful,1,[235],TRUE,N,N,N
+'- new,'+ ,1,[237],TRUE,N,N,N
+"'- ""I",'+ I,1,[238],FALSE,N,Y,N
+'- mlulic,'+ luluc,1,[238],FALSE,Y,N,N
+'- THEN,'+ ==,1,[241],FALSE,N,Y,N
+'- LIST,'+ FULL,1,[241],TRUE,N,N,N
+'- registererd,'+ registeredererd,1,[242],FALSE,N,Y,Y
+'- inferior,'+ superior,1,[244],TRUE,N,N,N
+'- >,'+ >*,1,[245],FALSE,N,Y,N
+'+ -,'+ Competitive,1,[245],TRUE,N,N,N
+"'- commanding,","'+ management,",1,[249],TRUE,N,N,N
+'- orchestration,'+ orchestrification,1,[251],TRUE,N,N,N
+'- SI,'+ UI,1,[251],TRUE,N,N,N
+"'- versa,",'+ then,1,[251],TRUE,N,N,N
+'- traits,'+ ones,1,[251],TRUE,N,N,N
+'+ -,"'+ Edinburgh,",1,[253],FALSE,Y,N,N
+"'+ super-fast-growing,",'+ highly,1,[253],TRUE,N,N,N
+'- thrill,'+ excitement,1,[254],TRUE,N,N,N
+'- Kinvey's,'+ the,1,[254],FALSE,Y,N,N
+'- ridiculously,'+ incredibly,1,[254],TRUE,N,N,N
+'- Reid,'+ and,1,[258],FALSE,Y,N,N
+'- Economic,'+ Economics,1,[258],FALSE,N,Y,N
+'- eventual,'+ initial,1,[258],TRUE,N,N,N
+'- Pearson,'+ OpenD,1,[258],FALSE,Y,N,N
+'- confusing.,'+ complicated.,1,[261],TRUE,N,N,N
+'- outpacing,'+ transcuting,1,[261],TRUE,N,N,N
+'- Struggle,'+ Incus,1,[261],TRUE,N,N,N
+'- set-top,'+ set-topbox,1,[262],FALSE,N,Y,N
+'- avoiding,'+ experiencing,1,[264],TRUE,N,N,N
+'- information.,'+ information..,1,[266],FALSE,N,Y,N
+'- kiosk,'+ very,1,[267],TRUE,N,N,N
+'- clearwaveinc.com,'+ clearwaveinc.com',1,[267],FALSE,N,N,Y
+'+ back-end.,'+ The,1,[267],TRUE,N,N,N
+'- worse,'+ better,1,[269],TRUE,N,N,N
+'- Brad,"'+ Brad,",1,[269],FALSE,N,Y,N
+'- Rap,'+ rap,1,[270],FALSE,N,Y,N
+'- dope,'+ nice,1,[270],TRUE,N,N,N
+'- disk,'+ device,1,[271],TRUE,N,N,N
+'- impressive,'+ amazing,1,[272],TRUE,N,N,N
+'- Backend,'+ Android,1,[274],TRUE,N,N,N
+'- performance.,'+ prior,1,[274],TRUE,N,N,N
+'+ consumer-facing,'+ app(s),1,[274],TRUE,N,N,N
+'- 3,'+ three,1,[275],FALSE,N,Y,N
+'- outlets),'+ venues),1,[275],TRUE,N,N,N
+'- promo,'+ fan-made,1,[275],TRUE,N,N,N
+'- cheese!,'+ nice,1,[275],TRUE,N,N,N
+'- Scroll,'+ Sc/Not,1,[277],FALSE,Y,N,N
+'- Scroll,'+ Link,1,[277],TRUE,N,N,N
+'- stunning,'+ amazing,1,[277],TRUE,N,N,N
+'- create,'+ produce,1,[277],TRUE,N,N,N
+'- Scroll’s,'+ L’s,1,[277],FALSE,Y,N,N
+'- Large-scale,'+ Small-scale,1,[281],TRUE,N,N,N
+'- Cassandra,'+ Protocol,1,[281],FALSE,Y,N,N
+'- Kestrel,'+ Protocol,1,[281],FALSE,Y,N,N
+'- REDACTED_EMAIL,'+ Thrift,1,[281],FALSE,N,N,Y
+'- ———————,'+ ------------------------—,1,[284],FALSE,N,Y,N
+'- modesty,'+ privacy,1,[284],TRUE,N,N,N
+'- DTU,'+ TDU,1,[285],FALSE,Y,N,N
+'- microbes,'+ organisms,1,[285],TRUE,N,N,N
+'- chemicals,'+ materials,1,[285],TRUE,N,N,N
+'- petroleum-based,'+ scientific-based,1,[285],TRUE,N,N,N
+"'- chemicals,","'+ materials,",1,[285],TRUE,N,N,N
+"'- ECMAScript2015,",'+ ECMcript,1,[285],FALSE,Y,N,N
+'- confusing.,'+ interesting.,1,[286],TRUE,N,N,N
+'- outpacing,'+ spreading,1,[286],TRUE,N,N,N
+'- Struggle,'+ Passion,1,[286],TRUE,N,N,N
+'- Andrew,'+ Andrew's,1,[288],FALSE,N,Y,N
+'- THEN,'+ AND,1,[290],TRUE,N,N,N
+'- LIST,'+ List,1,[290],FALSE,N,Y,N
+'- thrill,'+ great,1,[291],TRUE,N,N,N
+'- Kinvey's,'+ your,1,[291],FALSE,Y,N,N
+'- app,'+ apps,1,[291],FALSE,N,Y,N
+'- Reid,'+ Reh,1,[292],FALSE,Y,N,N
+'- eventual,'+ ultimate,1,[292],TRUE,N,N,N
+'- RevZilla.com,'+ LinuxZilla.com,1,[293],FALSE,Y,N,N
+'- aiming,'+ aim,1,[294],FALSE,N,Y,N
+'- struggle,'+ fight,1,[295],TRUE,N,N,N
+"'- pivotal,","'+ key,",1,[295],TRUE,N,N,N
+'- UniCredit,'+ UUniComp,1,[296],FALSE,Y,N,N
+'- UniCredit,'+ UniUni,1,[296],FALSE,Y,N,N
+'- set-top,'+ set-topbox),1,[297],FALSE,N,Y,N
+'- ropes,'+ lines,1,[298],TRUE,N,N,N
+'- wont,'+ should,1,[298],TRUE,N,N,N
+'- >http://www.khitchdee.com</a>,'+ ',1,[298],FALSE,N,N,Y
+'- >http://code.mixpanel.com</a>,'+ Based,1,[299],FALSE,N,N,Y
+'- lease,'+ contract,1,[300],TRUE,N,N,N
+'- hairbrain,'+ timebrain,1,[302],TRUE,N,N,N
+'- factory-boy),'+ company-o),1,[302],TRUE,N,N,N
+"'- (Linode,","'+ (Lionate,",1,[302],FALSE,Y,N,N
+"'- FeinCMS,","'+ EnglishCMS,",1,[302],FALSE,Y,N,N
+'- twelve.,'+ 12.,1,[303],FALSE,N,Y,N
+"'- swift,","'+ fast,",1,[304],TRUE,N,N,N
+'- avoiding,'+ tackling,1,[304],TRUE,N,N,N
+'- SI,'+ SF,1,[306],FALSE,Y,N,N
+'- letting,'+ let,1,[307],FALSE,N,Y,N
+'- business-critical,'+ business-,1,[307],TRUE,N,N,N
+'+ mission-driven,'+ company,1,[309],TRUE,N,N,N
+'- Pride,'+ Love,1,[310],TRUE,N,N,N
+'- Creatively,'+ Designively,1,[311],TRUE,N,N,N
+'- module/component,'+ module/tier,1,[311],TRUE,N,N,N
+'- Configure,'+ Postgresion,1,[311],TRUE,N,N,N
+'+ -,'+ Senior,1,[312],TRUE,N,N,N
+'- McGrath,'+ Her,1,[313],FALSE,Y,N,N
+'- columns).,'+ rows).,1,[317],FALSE,N,Y,N
+'- >http://www.blurb.com/join_us</a>,'+ ',1,[320],FALSE,N,N,Y
+'+ -,'+ front,1,[320],TRUE,N,N,N
+'- impeccably,'+ perfectlyably,1,[321],FALSE,N,Y,N
+'- touchscreen,'+ device,1,[321],TRUE,N,N,N
+'- <a,'+ *,1,[322],FALSE,N,N,Y
+'- Among,'+ For,1,[323],FALSE,N,N,N
+'- implement,'+ implementing,1,[323],FALSE,N,Y,N
+'- broke,'+ broken,1,[325],TRUE,N,N,N
+'- impeccably,'+ excellentably,1,[325],TRUE,N,N,N
+'- touchscreen,'+ touch,1,[325],TRUE,N,N,N
+'- investigations,'+ operations,1,[326],TRUE,N,N,N
+'- (www.ideofutures.com),'+ web,1,[326],FALSE,N,N,Y
+'- Project,'+ Projections,1,[326],FALSE,N,Y,N
+"'- Marine,",'+ or,1,[327],TRUE,N,N,N
+"'+ H-Davidson,","'+ pet,",1,[327],FALSE,Y,N,N
+'- >http://www.gsdesign.com/careers</a>,'+ ',1,[327],FALSE,N,N,Y
+"'+ H-Davidson,",'+ Red,1,[327],FALSE,Y,N,N
+'- aerospace,'+ air,1,[328],TRUE,N,N,N
+'- Bottomline,'+ Clline,1,[330],TRUE,N,N,N
+'- maternal,"'+ like,",1,[333],TRUE,N,N,N
+'- agriculture.,"'+ education,",1,[333],TRUE,N,N,N
+'- Is,'+ IS,1,[335],FALSE,N,Y,N
+'- Before,'+ We?,1,[335],TRUE,N,N,N
+'- CNBC,'+ CMS,1,[335],FALSE,Y,N,N
+'- (junior||senior),'+ (junior),1,[337],TRUE,N,N,N
+'- gmail,'+ gmail',1,[337],FALSE,N,Y,N
+"'- swift,","'+ rapid,",1,[338],TRUE,N,N,N
+'- avoiding,'+ doing,1,[338],TRUE,N,N,N
+"'+ Full-time,",'+ onSITE,1,[338],TRUE,N,N,N
+'- flowing,'+ growing,1,[339],TRUE,N,N,N
+'- ergonomic,'+ ericonomy,1,[339],TRUE,N,N,N
+'- photograph,'+ photo,1,[339],FALSE,N,Y,N
+'- DTU,'+ DETU,1,[341],FALSE,Y,N,N
+'- microbes,'+ bugs,1,[341],TRUE,N,N,N
+'- petroleum-based,'+ oil-based,1,[341],TRUE,N,N,N
+"'- chemicals,","'+ bugs,",1,[341],TRUE,N,N,N
+'- Doodle,'+ Designer,1,[343],FALSE,Y,N,N
+"'- playful,","'+ funny,",1,[343],TRUE,N,N,N
+'- Watch,'+ Check,1,[343],TRUE,N,N,N
+'- Hangouts’,'+ H,1,[343],FALSE,Y,N,N
+'- auto-shop,'+ automated-shop,1,[343],FALSE,N,Y,N
+'- promo,'+ bonus,1,[344],TRUE,N,N,N
+"'- Reps,","'+ Thanks,",1,[344],TRUE,N,N,N
+'- cheese!,'+ username,1,[344],TRUE,N,N,N
+'- paperwork.,'+ money.,1,[345],TRUE,N,N,N
+'- arguably,'+ perhaps,1,[345],TRUE,N,N,N
+'- Bottomline,'+ Stack,1,[347],TRUE,N,N,N
+'- commonly,'+ frequently,1,[347],TRUE,N,N,N
+'- Harry,"'+ Hoh,",1,[349],FALSE,Y,N,N
+'- liaise,'+ also,1,[349],TRUE,N,N,N
+'- HR-ese,'+ HR-de,1,[349],FALSE,Y,N,N
+'- Rogers','+ Figs',1,[350],FALSE,Y,N,N
+'- plugin,'+ plugins,1,[351],FALSE,N,Y,N
+'- tens-of-thousands,'+ tens-of-th,1,[351],FALSE,N,Y,N
+'- -Squash,'+ -Unabsash,1,[351],FALSE,Y,N,N
+'- Friend.ly,'+ Rel.ly,1,[354],FALSE,Y,N,N
+'- NASA;,"'+ CMS,",1,[355],FALSE,Y,N,N
+'- dissemination,'+ communication,1,[355],TRUE,N,N,N
+"'- (budget,","'+ (funded,",1,[355],TRUE,N,N,N
+'- abundant,'+ an,1,[355],FALSE,N,Y,N
+'- Mapsense,'+ Message,1,[356],FALSE,Y,N,N
+'- autoscaled,'+ automated,1,[356],TRUE,N,N,N
+'- Bytecode,'+ Data,1,[357],FALSE,Y,N,N
+'- anomaly,'+ event,1,[359],TRUE,N,N,N
+'- Primate,'+ Programme,1,[360],TRUE,N,N,N
+'- BA/BMath/BSc,'+ BA/BSc,1,[360],TRUE,N,N,N
+'- lieu,'+ instead,1,[360],TRUE,N,N,N
+'- investigative,'+ operating,1,[361],TRUE,N,N,N
+'- (cross-domain,'+ (circle-domain,1,[362],TRUE,N,N,N
+'- AnswerHub.,'+ QuHub.,1,[363],FALSE,Y,N,N
+'+ full-time,'+ Java/Web,1,[363],FALSE,Y,N,N
+'+ full-time,'+ Java/,1,[364],FALSE,Y,N,N
+'- margarita,'+ ylarite,1,[365],TRUE,N,N,N
+'- premiere.,'+ launch.,1,[365],TRUE,N,N,N
+'- myself,'+ me,1,[366],TRUE,N,N,N
+'- cukes,'+ cucucuk,1,[366],FALSE,N,Y,N
+'+ Full-time,'+ remote,1,[366],TRUE,N,N,N
+'+ full-time,'+ w/,1,[366],FALSE,N,Y,N
+'- Flywheel,'+ flyway,1,[370],FALSE,Y,N,N
+'- Founding,'+ Founded,1,[373],FALSE,N,Y,N
+'- realtime-graphics,'+ realtime-g,1,[373],FALSE,N,Y,N
+'+ realtime-g,'+ graphics,1,[373],FALSE,N,Y,N
+"'- Wimbledon,",'+ Ri,1,[374],FALSE,Y,N,N
+'- Wimbledon,'+ Wimber,1,[374],FALSE,Y,N,N
+'+ cloud-based,'+ video,1,[374],TRUE,N,N,N
+'- Warsaw,'+ Wia,1,[375],FALSE,Y,N,N
+'- introductions,'+ introduceations,1,[375],FALSE,N,Y,N
+'- >http://linkfindr.com/linkfindr/default/about</a>,'+ ',1,[375],FALSE,N,N,Y
+'+ front-end,"'+ engineers,",1,[376],TRUE,N,N,N
+'+ -,'+ REDACTED_EMAIL',1,[376],FALSE,N,N,Y
+'- toolbelt,'+ tool,1,[379],TRUE,N,N,N
+'- coupled,'+ combined,1,[379],TRUE,N,N,N
+"'- Rewards,","'+ Benefits,",1,[379],TRUE,N,N,N
+'- Tickets,'+ Sales,1,[379],TRUE,N,N,N
+'- >https://www.room77.com/jobs.html?s=HN</a>,'+ -,1,[382],FALSE,N,N,Y
+'- polling/survey,'+ testing/survey,1,[384],TRUE,N,N,N
+'+ --,'+ GoAIO,1,[384],FALSE,N,Y,N
+'+ full-time,'+ salaried,1,[384],TRUE,N,N,N
+'+ --,'+ full,1,[384],TRUE,N,N,N
+'+ full-time,'+ Blurb,1,[385],FALSE,Y,N,N
+'- agreement,'+ agree,1,[386],FALSE,N,Y,N
+'- Autodesk,'+ Automodesk,1,[386],FALSE,Y,N,N
+'- kid,'+ baby,1,[386],TRUE,N,N,N
+'- amp,'+ toamp,1,[386],TRUE,N,N,N
+'- KidsCanGiveToo.com,'+ FunCanGive,1,[387],FALSE,Y,N,N
+"'- invitations,","'+ invites,",1,[387],FALSE,N,Y,N
+'- auto,'+ automated,1,[388],TRUE,N,N,N
+'- Marketing,'+ Marketing',1,[390],FALSE,N,Y,N
+'+ -,"'+ AWS,",1,[390],FALSE,Y,N,N
+'- dart,'+ wok.,1,[391],TRUE,N,N,N
+'- www.doubledutch.me,'+ doubledw.me,1,[392],FALSE,N,N,Y
+'- Configuration,'+ System,1,[394],TRUE,N,N,N
+'- structuring,'+ ofstructuring,1,[396],FALSE,N,Y,N
+'- Andy,'+ Sunny,1,[396],FALSE,Y,N,N
+'- Mike,'+ Mark,1,[396],FALSE,Y,N,N
+'- Diffbot,'+ Data,1,[396],FALSE,Y,N,N
+'- ­­,'+ ­,1,[397],FALSE,N,Y,N
+'- world,'+ world.,1,[397],FALSE,N,Y,N
+'- Tutors),'+ and,1,[397],TRUE,N,N,N
+'- you,'+ you�,1,[397],FALSE,N,Y,N
+"'- (peninsula,","'+ (coins,",1,[398],TRUE,N,N,N
+'- applicable,'+ applicablePHD.,1,[398],TRUE,N,N,N
+'- utopia.,'+ ture.,1,[398],TRUE,N,N,N
+'- REDACTED_EMAIL,'+ E,1,[398],FALSE,N,N,Y
+'- accommodations,'+ arrangements,1,[399],TRUE,N,N,N
+'- reflected,'+ written,1,[399],TRUE,N,N,N
+'- eclectic,'+ elegant,1,[399],TRUE,N,N,N
+'- INFO,'+ More,2,"[0, 6]",FALSE,N,Y,N
+'- NVIDIA.,'+ MIT.,2,"[7, 17]",FALSE,Y,N,N
+"'- Cleveland,","'+ City,",2,"[12, 26]",FALSE,Y,N,N
+"'- (OpenLayers,","'+ (OpenLills,",2,"[14, 76]",FALSE,Y,N,N
+'- >http://www.camptocamp.com/en/careers</a>,'+ Based,2,"[14, 76]",FALSE,N,Y,Y
+"'- Princeton,","'+ Paris,",2,"[16, 19]",FALSE,Y,N,N
+"'- freezer,","'+ fridge,",2,"[16, 19]",TRUE,N,N,N
+'- intend,'+ plan,2,"[20, 298]",TRUE,N,N,N
+'- >http://www.braintreepayments.com/braintree-careers</a>,'+ ',2,"[27, 91]",FALSE,N,N,Y
+'- march,'+ move,2,"[28, 66]",TRUE,N,N,N
+'- Feather,'+ Flutter,2,"[33, 74]",FALSE,Y,N,N
+'- macOS,'+ Mac,2,"[33, 74]",TRUE,N,N,N
+'- >http://byliner.com/jobs</a>,'+ Based,2,"[35, 183]",FALSE,N,N,Y
+'- >http://teamcoco.com/content/web-developer</a>,'+ Based,2,"[44, 45]",FALSE,N,N,Y
+'+ pre-class,'+ description,2,"[45, 45]",TRUE,N,N,N
+'- DoubleDutch-,'+ Double,2,"[47, 392]",FALSE,Y,N,N
+'- DoubleDutch,'+ Double,2,"[47, 392]",FALSE,Y,N,N
+'- DoubleDutch!,'+ Double,2,"[47, 392]",FALSE,Y,N,N
+'- Internet,'+ Net,2,"[52, 53]",TRUE,N,N,N
+'+ well-funded,'+ by,2,"[59, 376]",TRUE,N,N,N
+'+ back-end,'+ engineers,2,"[60, 60]",TRUE,N,N,N
+'- Forbidden,'+ Forab,2,"[61, 374]",TRUE,N,N,N
+'- compression,'+ comp,2,"[61, 374]",TRUE,N,N,N
+'+ pre-launch,'+ social,2,"[65, 92]",TRUE,N,N,N
+'- -------------------------------------------------------------,'+ -----------------------------,2,"[81, 105]",FALSE,N,Y,N
+'- escalating,'+ expanding,2,"[89, 220]",TRUE,N,N,N
+'- sizable,'+ substantial,2,"[96, 171]",TRUE,N,N,N
+'+ -,'+ The,2,"[96, 171]",FALSE,N,Y,N
+'- >http://dev.splunk.com</a>,'+ Based,2,"[99, 100]",FALSE,N,N,Y
+'- formerly,'+ previously,2,"[104, 182]",TRUE,N,N,N
+"'- Arc90,","'+ asArc90,",2,"[104, 182]",FALSE,Y,N,N
+'- Quintel,'+ Quin,2,"[107, 164]",FALSE,Y,N,N
+"'- evenings,","'+ nights,",2,"[107, 164]",TRUE,N,N,N
+'+ --,'+ full-time,2,"[116, 117]",FALSE,N,Y,N
+'- unleashes,'+ releases,2,"[117, 385]",TRUE,N,N,N
+'+ http://onapp.com/platform/onapp-the-card-ch-done-app-no-scale,'+ anywhere,2,"[123, 123]",FALSE,N,N,Y
+'+ -,'+ Challenging,2,"[125, 199]",TRUE,N,N,N
+'+ Full-Time,'+ Ruby,2,"[125, 132]",TRUE,N,N,N
+'+ -,'+ 4,2,"[125, 132]",FALSE,N,Y,N
+'- Capacity,'+ Ability,2,"[139, 220]",TRUE,N,N,N
+'- •,'+ •ly,2,"[139, 140]",FALSE,N,Y,N
+'+ -,'+ https://texastribune.org/jobs/platform-developer/,2,"[151, 151]",FALSE,N,N,Y
+'+ platform-developer,'+ position.,2,"[151, 151]",TRUE,N,N,N
+'- 52.,'+ 50.,2,"[153, 155]",TRUE,Y,N,N
+'- explanations,'+ questions,2,"[153, 155]",TRUE,N,N,N
+'- Fairfax,'+ fairfair,2,"[159, 219]",FALSE,Y,N,N
+'+ front-end,'+ developers,2,"[160, 160]",TRUE,N,N,N
+'- artistic,'+ art,2,"[169, 300]",TRUE,N,N,N
+'- plants,'+ powers,2,"[176, 212]",TRUE,N,N,N
+'+ -,'+ New,2,"[180, 180]",TRUE,N,N,N
+'+ -,'+ Ruby,2,"[180, 180]",TRUE,N,N,N
+'- Philippines.,'+ countries.,2,"[196, 399]",TRUE,N,N,N
+'- Diffbot,'+ Compbot,2,"[206, 396]",FALSE,Y,N,N
+"'- 733t,","'+ 717t,",2,"[206, 396]",FALSE,Y,N,N
+'- alias,'+ name,2,"[206, 396]",TRUE,N,N,N
+'- >http://www.khanacademy.org/careers</a>,'+ ',2,"[214, 217]",FALSE,N,N,Y
+'+ full-time,'+ and,2,"[214, 337]",TRUE,N,N,N
+'- >http://twilio.jobscore.com/list</a>,'+ ',2,"[223, 224]",FALSE,N,N,Y
+'+ Full-time,'+ .,2,"[223, 224]",TRUE,N,N,N
+'+ Full-time,'+ position.,2,"[223, 224]",TRUE,N,N,N
+'- celebrities,'+ people,2,"[238, 238]",TRUE,N,N,N
+'- OPPORTUNITIES,'+ OPPORTUNities,2,"[241, 290]",FALSE,N,Y,N
+'+ http://venturebeat.com/2014/01/20/this-startup-tells-you-when-companies-try-your-competitors-software-and-is-growing-25-a-month/,'+ >,2,"[247, 250]",FALSE,N,N,Y
+'- the,'+ theSI,2,"[251, 306]",TRUE,N,N,N
+'+ Cal-Train,'+ station.,2,"[252, 352]",FALSE,Y,N,N
+'- Kinvey,'+ Kock,2,"[254, 291]",FALSE,Y,N,N
+'+ -,'+ Tech,2,"[257, 324]",TRUE,N,N,N
+'+ --,'+ cbinsights.com/jobs,2,"[257, 324]",FALSE,N,N,Y
+'+ 7-figure,'+ per,2,"[257, 324]",TRUE,N,N,N
+'- Arizona,'+ AZ,2,"[258, 292]",FALSE,Y,N,N
+'- ugly,'+ beautiful,2,"[261, 286]",TRUE,N,N,N
+"'- frankly,","'+ honestly,",2,"[261, 286]",TRUE,N,N,N
+"'- struggle,","'+ challenge,",2,"[261, 286]",TRUE,N,N,N
+'- tedious,'+ loves,2,"[262, 297]",TRUE,N,N,N
+'- >http://stb-tester.com</a>,'+ ',2,"[262, 297]",FALSE,N,N,Y
+'+ on-site.,'+ The,2,"[262, 297]",TRUE,N, N,N
+"'- swift,","'+ quick,",2,"[264, 318]",TRUE,N,N,N
+'- impeccable,'+ excellent,2,"[268, 276]",TRUE,N,N,N
+"'- 51,","'+ 50,",2,"[288, 313]",FALSE,Y,N,N
+'- worst,'+ best,2,"[288, 313]",TRUE,N,N,N
+'- CTO,'+ CTO',2,"[288, 313]",FALSE,N,Y,N
+'- >https://nimbula.com/company/careers/</a>,'+ ',2,"[289, 348]",FALSE,N,N,Y
+'+ -,'+ Distributed,2,"[289, 348]",TRUE,N,N,N
+'- affiliates,'+ organizations,2,"[301, 346]",TRUE,N,N,N
+'- our,'+ the,2,"[311, 311]",TRUE,N,N,N
+'- slicing,'+ cutting,2,"[321, 325]",TRUE,N,N,N
+'- GS,'+ G,2,"[327, 327]",FALSE,Y,N,N
+"'- Portsmouth,","'+ Portland,",2,"[330, 347]",FALSE,Y,N,N
+'- Robinhood?,'+ Robinhood?===,2,"[346, 369]",FALSE,Y,N,N
+'- BOSH,'+ Bosh,2,"[367, 368]",FALSE,N,Y,N
+'- Definitely,'+ Ideally,2,"[393, 394]",TRUE,N,N,N
+'+ -,'+ Python,3,"[14, 76, 76]",TRUE,N,N,N
+'+ -,'+ San,3,"[36, 42, 190]",FALSE,Y,N,N
+'- Quintel,'+ Quit,3,"[40, 176, 212]",FALSE,Y,N,N
+'- plain,'+ simple,3,"[40, 107, 176]",TRUE,N,N,N
+'- DECK,'+ Dck,3,"[46, 46, 46]",FALSE,Y,N,N
+'+ South-West,'+ of,3,"[61, 374, 374]",FALSE,Y,N,N
+'- flipped,'+ flip,3,"[68, 142, 280]",FALSE,N,Y,N
+'- charming,'+ beautiful,3,"[107, 164, 212]",TRUE,N,N,N
+'+ in-house,'+ chef.,3,"[108, 109, 110]",TRUE,N,N,N
+'- >http://www.blurb.com/jobs/sr-software-engineer</a>,'+ ',3,"[116, 117, 385]",FALSE,N,N,Y
+'- >http://redguava.com.au/jobs</a>,'+ Based,3,"[125, 132, 199]",FALSE,N,N,Y
+'+ -,'+ Mostly,3,"[125, 199, 199]",TRUE,N,N,N
+'- hilarious,'+ funny,3,"[128, 135, 178]",TRUE,N,N,N
+"'+ full-time,remote):",'+ Timesys,3,"[128, 135, 178]",TRUE,N,N,N
+'+ Full-time,'+ Twilio,3,"[223, 224, 224]",FALSE,Y,N,N
+'- >http://news.ycombinator.com/item?id=3653146</a>,'+ ',3,"[255, 287, 332]",FALSE,N,N,Y
+'+ Front-end,'+ developer.,3,"[257, 324, 329]",TRUE,N,N,N
+"'+ Full-time,",'+ ONSITE,3,"[264, 304, 318]",TRUE,N,N,N
+'+ -,'+ Thumbtack.,4,"[31, 108, 109, 110]",FALSE,Y,N,N
+'+ -,'+ Thumbtack,4,"[31, 108, 109, 110]",FALSE,Y,N,N
+'+ -,'+ Software,4,"[31, 108, 109, 110]",TRUE,N,N,N
+'+ -,'+ Full,4,"[37, 42, 72, 72]",TRUE,N,N,N
+'+ on-site,'+ role,4,"[125, 132, 199, 199]",TRUE,N,N,N
+'+ senior-software-engineer-ruby,'+ position.,4,"[253, 265, 331, 331]",TRUE,N,N,N
+'+ Front-end,'+ developer,4,"[257, 324, 329, 375]",TRUE,N,N,N
+"'- href=""",'+ ',4,"[264, 304, 318, 338]",FALSE,N,N,Y
+'- reserves,'+ resources,5,"[40, 107, 164, 176, 212]",TRUE,N,N,N
+"'+ senior-software-engineer-ruby,",'+ is,5,"[253, 253, 265, 331, 331]",TRUE,N,N,N
+'+ front-end,'+ develop,6,"[160, 160, 184, 184, 184, 184]",TRUE,N,N,N
+'+ -,'+ Working,6,"[317, 317, 317, 317, 317, 317]",TRUE,N,N,N
+'- com,'+ com',8,"[18, 30, 37, 106, 156, 187, 315, 383]",FALSE,N,Y,N
+'- >,'+ >',14,"[1, 23, 32, 79, 124, 133, 151, 189, 204, 216, 229, 243, 283, 309]",FALSE,N,Y,N
+'- REDACTED_EMAIL,'+ REDACTED_EMAIL',31,"[28, 47, 66, 68, 75, 81, 94, 101, 104, 105, 113, 142, 167, 169, 170, 173, 175, 179, 182, 205, 213, 218, 226, 228, 256, 280, 296, 328, 343, 376, 392]",FALSE,N,N,Y
