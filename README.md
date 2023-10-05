@@ -33,8 +33,11 @@ This repo was designed for python 3.9.7
 pip install -r requirements.txt
 export PYTHONPATH="$PWD/src/"
 ```
-
 # Inference
+
+Under development in `inference_dev` branch. I will develop it with Hackernews checkpoint and share with you in a way that you can make it work for Workable just changing the checkpoint path and prompt.
+
+# Evaluation
 
 Copy the checkpoint to under `/outputs/task_name`. For workable:
 
