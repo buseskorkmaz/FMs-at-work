@@ -28,3 +28,6 @@ tests/
 .DS_Store
 *.swp
 .env
+benchmarking/*/*.sh
+benchmarking/*/*.sh.o*
+benchmarking/*/*.sh.e*
