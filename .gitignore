@@ -31,3 +31,8 @@ tests/
 benchmarking/*/*.sh
 benchmarking/*/*.sh.o*
 benchmarking/*/*.sh.e*
+benchmarking/*.sh
+benchmarking/*.sh.o*
+benchmarking/*.sh.e*
+benchmarking/*.e*
+benchmarking/*.o*

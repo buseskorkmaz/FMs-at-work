@@ -1,0 +1,3 @@
+[submodule "benchmarking/UniEval"]
+	path = benchmarking/UniEval
+	url = https://github.com/maszhongming/UniEval.git
