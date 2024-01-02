@@ -65,7 +65,19 @@ model:
   load:
     checkpoint_path: null
     strict_load: true
-
+  llama:
+    lm_head: true
+    from_pretrained: true
+  flant5:
+    lm_head: true
+    from_pretrained: true
+  bloom3b:
+    lm_head: true
+    from_pretrained: true
+  openllama:
+    lm_head: true
+    from_pretrained: true
+       
 evaluator:
   env:
     reward_shift: 0.0
@@ -97,9 +109,9 @@ train:
   save_checkpoint_dir: outputs/hackernews/conditional_hackernews_official_iql_bc_fix_q_256_try2_16383/
   optim_state_path: outputs/hackernews/optim_state/
   epochs: 40
-  dataloader_workers: 0
+  dataloader_workers: 4
   bsize: 1
-  grad_accum_steps: 64
+  grad_accum_steps: 4
   log_every: 256
   eval_every: 2048
   save_every: 8192

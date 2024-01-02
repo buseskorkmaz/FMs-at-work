@@ -2,6 +2,6 @@ defaults:
  - /hackernews_rl_dataset@data: test
  - /token_reward: constant
 name: hackernews_list_dataset
-max_len: 1024
+max_len: 256
 cuttoff: null
 resample_timeout: 0.0

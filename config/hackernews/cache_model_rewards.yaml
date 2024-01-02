@@ -13,9 +13,9 @@ dataset:
       name: score_human_reward
       job_descriptions_path: data/hackernews_rl_dataset/
       index_path: data/hackernews_rl_dataset/eval_idxs.json
-  max_len: 1024
+  max_len: 256
   cuttoff: null
   resample_timeout: 0.00
 
-dataloader_workers: 0
-bsize: 1024
+dataloader_workers: 4
+bsize: 1

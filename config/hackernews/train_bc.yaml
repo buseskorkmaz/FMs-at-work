@@ -17,7 +17,7 @@ train_dataset:
       name: score_human_reward
       job_descriptions_path: data/hackernews_rl_dataset/
       index_path: data/hackernews_rl_dataset/train_idxs.json
-  max_len: 1024
+  max_len: 256
   resample_timeout: 0.0
   include_parent: true
 
@@ -33,7 +33,7 @@ eval_dataset:
       # name: score_human_reward
       job_descriptions_path: data/hackernews_rl_dataset/
       index_path: data/hackernews_rl_dataset/test_idxs.json
-  max_len: 1024
+  max_len: 256
   resample_timeout: 0.0
   include_parent: true
 
@@ -63,12 +63,12 @@ evaluator:
     num_generations: 1
 
 train:
-  save_checkpoint_dir: outputs/hackernews/conditional_hackernews_official_bc_test_fix_q_256_try2/
+  save_checkpoint_dir: outputs/hackernews/openllama/openllama_trial.pkl
   optim_state_path: null
-  epochs: 80
-  dataloader_workers: 0
+  epochs: 7
+  dataloader_workers: 4
   bsize: 1
-  grad_accum_steps: 64
+  grad_accum_steps: 4
   log_every: 256
   eval_every: 4096
   save_every: 8192

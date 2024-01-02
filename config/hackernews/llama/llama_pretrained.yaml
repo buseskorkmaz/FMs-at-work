@@ -1,0 +1,4 @@
+name: llama
+llama_type: NousResearch/Llama-2-7b-chat-hf
+from_pretrained: true
+lm_head: true
