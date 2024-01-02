@@ -1,0 +1,4 @@
+name: flant5
+flant5_type: google/flan-t5-xl
+from_pretrained: false
+lm_head: true
