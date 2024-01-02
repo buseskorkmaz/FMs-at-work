@@ -15,8 +15,11 @@ class HackernewsData:
                  reward_scale: float=1.0):
         
         rl_dataset = load_dataset("buseskorkmaz/hiring_w_q_context_256_filtered", split="train")
+        print(rl_dataset)
+        # print(len(rl_dataset))
+        # print(rl_dataset[0])
         items = [row for row in rl_dataset]
-        print("Indexes:", indexes)
+        # print("Indexes:", indexes)
         if indexes is not None:
             items = [items[idx] for idx in indexes]
         self.info = ("huggingface", len(indexes))

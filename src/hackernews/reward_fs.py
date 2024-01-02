@@ -3,7 +3,7 @@ import random
 from collections import defaultdict
 from hackernews.hackernews_base import HackernewsData
 # from hackernews.diversity_evaluator import Diversity_Evaluator
-from load_objects import load_item
+from load_objects_openllama import load_item
 
 def hackernews_reward():
     return get_diversity_reward_f(noise_1=False)
