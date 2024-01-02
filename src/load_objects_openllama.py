@@ -1,16 +1,17 @@
 import json
-from models.bc_lm import BC_LM, BC_Evaluator, BC_Policy
+from models.bc_lm_openllama import BC_LM, BC_Evaluator, BC_Policy
 import torch
 from models.bcq_model import BCQModel, GModel, PsiModel
 from models.cql_model import CQLModel
 from models.dt_model import DT, DT_Evaluator
-from models.iql_model import IQL_Evaluator, IQL_Policy, PerTokenIQL, TopAdvantageNGrams
+from models.iql_model_openllama import IQL_Evaluator, IQL_Policy, PerTokenIQL, TopAdvantageNGrams
 from models.utterance_iql_model import PerUtteranceIQL, PerUtteranceIQL_Policy, UtteranceIQL_Evaluator
 from data.rl_data import ConstantTokenReward, SepcifiedTokenReward
 from models.chai_model import Chai_Evaluator, ChaiModel, ChaiPolicy
 from utils.cache import Cache
 from utils.misc import convert_path
-from models.gpt2_optional_final_ln import GPT2LMHeadModel, GPT2Config, GPT2Model
+# from models.gpt2_optional_final_ln import GPT2LMHeadModel, GPT2Config, GPT2Model
+from transformers import PreTrainedModel, LlamaForCausalLM, LlamaConfig
 
 registry = {}
 cache = {}
@@ -62,19 +63,23 @@ def load_specified_token_reward(config, device, verbose=True):
         token_data = {int(k): v for k, v in json.load(f).items()}
     return SepcifiedTokenReward(token_data, config['scale'], config['shift'])
 
-@register('gpt2')
-def load_gpt2(config, verbose=True):
-    obj = GPT2LMHeadModel if config['lm_head'] else GPT2Model
+@register('openllama')
+def load_openllama(config, verbose=True):
+    obj = LlamaForCausalLM if config['lm_head'] else PreTrainedModel
     if config['from_pretrained']:
-        return obj.from_pretrained(config['gpt2_type'])
-    config = GPT2Config.from_pretrained(config['gpt2_type'])
+        model = obj.from_pretrained(config['openllama_type'])
+        print(f"--> Model Llama-2")
+        total_params = sum(p.numel() for p in model.parameters() if p.requires_grad)
+        print(f"\n--> Llama-2 has {total_params / 1e6} Million params\n")
+        return model
+    config = LlamaConfig.from_pretrained(config['openllama_type'])
     return obj(config)
 
 @register('bc_lm')
 def load_bc_lm(config, device, verbose=True):
-    gpt2 = load_item(config['gpt2'], verbose=verbose)
+    openllama = load_item(config['openllama'], verbose=verbose)
     dataset = load_item(config['dataset'], device, verbose=verbose)
-    model = BC_LM(gpt2, dataset, device, config['transition_weight'])
+    model = BC_LM(openllama, dataset, device, config['transition_weight'])
     return load_model(config['load'], model, device, verbose=verbose)
 
 @register('bc_policy')
@@ -87,11 +92,11 @@ def load_bc_evaluator(config, device, verbose=True):
     env = load_item(config['env'], device, verbose=verbose)
     return BC_Evaluator(env, config['env'], config['kind'], **config['generation_kwargs'])
 
-@register('per_token_iql')
-def load_per_token_iql(config, device, verbose=True):
-    gpt2 = load_item(config['gpt2'], verbose=verbose)
+@register('per_token_iql_openllama')
+def load_per_token_iql_openllama(config, device, verbose=True):
+    openllama = load_item(config['openllama'], verbose=verbose)
     dataset = load_item(config['dataset'], device, verbose=verbose)
-    model = PerTokenIQL(gpt2, dataset, device, config['alpha'], config['gamma'], 
+    model = PerTokenIQL(openllama, dataset, device, config['alpha'], config['gamma'], 
                         config['beta'], config['transition_weight'], config['clip_weight'], 
                         config['value_max'], config['value_min'], config['detach_v'], 
                         config['detach_pi'], config['detach_q'], config['double_q'], 
@@ -102,9 +107,9 @@ def load_per_token_iql(config, device, verbose=True):
 
 @register('per_token_cql')
 def load_per_token_cql(config, device, verbose=True):
-    gpt2 = load_item(config['gpt2'], verbose=verbose)
+    openllama = load_item(config['openllama'], verbose=verbose)
     dataset = load_item(config['dataset'], device, verbose=verbose)
-    model = CQLModel(gpt2, dataset, device, config['alpha'], config['gamma'], 
+    model = CQLModel(openllama, dataset, device, config['alpha'], config['gamma'], 
                      config['beta'], config['transition_weight'], config['clip_weight'], 
                      config['value_max'], config['value_min'], config['detach_v'], 
                      config['detach_pi'], config['detach_q'], config['double_q'], 
@@ -114,9 +119,9 @@ def load_per_token_cql(config, device, verbose=True):
 
 @register('per_token_bcq')
 def load_per_token_bcq(config, device, verbose=True):
-    gpt2 = load_item(config['gpt2'], verbose=verbose)
+    openllama = load_item(config['openllama'], verbose=verbose)
     dataset = load_item(config['dataset'], device, verbose=verbose)
-    model = BCQModel(gpt2, dataset, device, config['alpha'], config['gamma'], 
+    model = BCQModel(openllama, dataset, device, config['alpha'], config['gamma'], 
                      config['beta'], config['transition_weight'], config['clip_weight'], 
                      config['value_max'], config['value_min'], config['detach_v'], 
                      config['detach_pi'], config['detach_q'], config['double_q'], 
@@ -126,9 +131,9 @@ def load_per_token_bcq(config, device, verbose=True):
 
 @register('per_token_psi')
 def load_per_token_psi(config, device, verbose=True):
-    gpt2 = load_item(config['gpt2'], verbose=verbose)
+    openllama = load_item(config['openllama'], verbose=verbose)
     dataset = load_item(config['dataset'], device, verbose=verbose)
-    model = PsiModel(gpt2, dataset, device, config['alpha'], config['gamma'], 
+    model = PsiModel(openllama, dataset, device, config['alpha'], config['gamma'], 
                      config['beta'], config['transition_weight'], config['clip_weight'], 
                      config['value_max'], config['value_min'], config['detach_v'], 
                      config['detach_pi'], config['detach_q'], config['double_q'], 
@@ -138,9 +143,9 @@ def load_per_token_psi(config, device, verbose=True):
 
 @register('per_token_g')
 def load_per_token_g(config, device, verbose=True):
-    gpt2 = load_item(config['gpt2'], verbose=verbose)
+    openllama = load_item(config['openllama'], verbose=verbose)
     dataset = load_item(config['dataset'], device, verbose=verbose)
-    model = GModel(gpt2, dataset, device, config['alpha'], config['gamma'], 
+    model = GModel(openllama, dataset, device, config['alpha'], config['gamma'], 
                    config['beta'], config['transition_weight'], config['clip_weight'], 
                    config['value_max'], config['value_min'], config['detach_v'], 
                    config['detach_pi'], config['detach_q'], config['double_q'], 
@@ -150,9 +155,9 @@ def load_per_token_g(config, device, verbose=True):
 
 @register('per_utterance_iql')
 def load_per_utterance_iql(config, device, verbose=True):
-    gpt2 = load_item(config['gpt2'], verbose=verbose)
+    openllama = load_item(config['openllama'], verbose=verbose)
     dataset = load_item(config['dataset'], device, verbose=verbose)
-    model = PerUtteranceIQL(gpt2, dataset, device, config['alpha'], config['gamma'], 
+    model = PerUtteranceIQL(openllama, dataset, device, config['alpha'], config['gamma'], 
                             config['beta'], config['transition_weight'], config['clip_weight'], 
                             config['value_max'], config['value_min'], config['detach_v'], 
                             config['detach_pi'], config['detach_q'], config['double_q'], 
@@ -162,7 +167,7 @@ def load_per_utterance_iql(config, device, verbose=True):
 
 @register('chai_model')
 def load_chai_model(config, device, verbose=True):
-    gpt2 = load_item(config['gpt2'], verbose=verbose)
+    openllama = load_item(config['openllama'], verbose=verbose)
     dataset = load_item(config['dataset'], device, verbose=verbose)
     if config['use_cache']:
         cache = Cache()
@@ -174,7 +179,7 @@ def load_chai_model(config, device, verbose=True):
                 print('loaded.')
     else:
         cache = None
-    model = ChaiModel(dataset, device, gpt2, config['alpha'], config['gamma'], cache)
+    model = ChaiModel(dataset, device, openllama, config['alpha'], config['gamma'], cache)
     return load_model(config['load'], model, device, verbose=verbose)
 
 @register('iql_policy')
@@ -214,9 +219,9 @@ def load_chai_evaluator(config, device, verbose=True):
 
 @register('dt_model')
 def load_dt_model(config, device, verbose=True):
-    gpt2 = load_item(config['gpt2'], verbose=verbose)
+    openllama = load_item(config['openllama'], verbose=verbose)
     dataset = load_item(config['dataset'], device, verbose=verbose)
-    model = DT(gpt2, dataset, device, config['transition_weight'])
+    model = DT(openllama, dataset, device, config['transition_weight'])
     return load_model(config['load'], model, device, verbose=verbose)
 
 @register('dt_evaluator')
