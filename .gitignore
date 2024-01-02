@@ -36,3 +36,6 @@ benchmarking/*.sh.o*
 benchmarking/*.sh.e*
 benchmarking/*.e*
 benchmarking/*.o*
+logs/
+*.o*
+*.e*
