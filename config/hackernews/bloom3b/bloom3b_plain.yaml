@@ -1,0 +1,4 @@
+name: bloom3b
+bloom3b_type: bigscience/bloom-3b
+from_pretrained: false
+lm_head: true
