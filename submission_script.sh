@@ -1,5 +1,5 @@
-#PBS -l select=1:ncpus=8:mem=96gb:ngpus=4:gpu_type=RTX6000
-#PBS -l walltime=48:0:0
+#PBS -l select=1:ncpus=8:mem=120gb:ngpus=5:gpu_type=RTX6000
+#PBS -l walltime=24:0:0
 
 echo "Host - $HOSTNAME"
 # echo "Commit - $(git rev-parse HEAD)"

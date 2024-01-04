@@ -63,23 +63,23 @@ evaluator:
     num_generations: 1
 
 train:
-  save_checkpoint_dir: outputs/hackernews/openllama/openllama_trial.pkl
+  save_checkpoint_dir: outputs/hackernews/openllama/lrl1e-4-newconfig.pkl
   optim_state_path: null
-  epochs: 7
-  dataloader_workers: 4
+  epochs: 4
+  dataloader_workers: 5
   bsize: 1
   grad_accum_steps: 4
   log_every: 256
-  eval_every: 4096
-  save_every: 8192
-  max_checkpoints: 1
+  eval_every: 512
+  save_every: 1024
+  max_checkpoints: 2
   eval_bsize: 1
-  eval_batches: 16
-  lr: 1e-3
+  eval_batches: 5
+  lr: 1e-4
   weight_decay: 0.00
   max_steps: null
   loss: {}
 
 wandb:
-  use_wandb: false
-  wandb_project: hackernews_iql
+  use_wandb: true
+  wandb_project: hackernews_bc

@@ -17,5 +17,5 @@ dataset:
   cuttoff: null
   resample_timeout: 0.00
 
-dataloader_workers: 4
+dataloader_workers: 5
 bsize: 1
