@@ -83,7 +83,7 @@ def train(cfg):
         evaluator = load_item(cfg['evaluator'], system_cfg['device'])
 
     model = load_item(cfg['model'], system_cfg['device'])
-    # model.train()
+    model.train()
     model = accelerator.prepare(model)
 
     if hasattr(model, 'param_groups'):
