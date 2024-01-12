@@ -92,7 +92,7 @@ def load_bc_evaluator(config, device, verbose=True):
     env = load_item(config['env'], device, verbose=verbose)
     return BC_Evaluator(env, config['env'], config['kind'], **config['generation_kwargs'])
 
-@register('per_token_iql_openllama')
+@register('per_token_iql')
 def load_per_token_iql_openllama(config, device, verbose=True):
     openllama = load_item(config['openllama'], verbose=verbose)
     dataset = load_item(config['dataset'], device, verbose=verbose)

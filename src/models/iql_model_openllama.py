@@ -59,7 +59,7 @@ class PerTokenIQL(BaseTransformer):
                 ):
         assert isinstance(model, PreTrainedModel) or isinstance(model, LlamaForCausalLM)
         super().__init__(model, dataset, device)
-        self.h_dim  = self.model.config.n_embd
+        self.h_dim  = self.model.config.hidden_size
         self.alpha = alpha
         self.gamma = gamma
         self.beta = beta
@@ -220,7 +220,9 @@ class PerTokenIQL(BaseTransformer):
             policy_prefix_embs = prefix_embs.clone()
         if remove_prefix_position_embs:
             prefix_embs -= transformer.wpe(position_ids[:, :prefix_embs.shape[1]])
-        input_embeddings = torch.cat((prefix_embs, transformer.wte(tokens)), dim=1)
+        embeddings = self.model.get_input_embeddings()
+        model_embeddings = embeddings(tokens)
+        input_embeddings = torch.cat((prefix_embs, model_embeddings), dim=1)
         model_outputs = self.model(inputs_embeds=input_embeddings, 
                                    attention_mask=input_attn_mask, 
                                    position_ids=position_ids, 
@@ -240,7 +242,10 @@ class PerTokenIQL(BaseTransformer):
         else:
             if remove_prefix_position_embs:
                 target_prefix_embs -= target_transformer.wpe(position_ids[:, :prefix_embs.shape[1]])
-            target_input_embeddings = torch.cat((target_prefix_embs, target_transformer.wte(tokens)), dim=1)
+            embeddings = self.lm_target.get_input_embeddings()
+            target_model_embeddings = embeddings(tokens)
+            target_input_embeddings = torch.cat((target_prefix_embs, target_model_embeddings), dim=1)
+
             with torch.no_grad():
                 target_outputs = self.lm_target(inputs_embeds=target_input_embeddings, 
                                                 attention_mask=input_attn_mask, 

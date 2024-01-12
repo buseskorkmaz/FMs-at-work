@@ -6,7 +6,7 @@ sys.path.append(os.path.join(os.path.dirname(os.path.realpath(__file__)), '../..
 # print(os.getcwd())
 from data.rl_data import Iterable_RL_Dataset
 from data.torch_datasets import GeneralDataset, GeneralIterDataset
-from workable.load_objects import load_item
+from hackernews.load_objects import load_item
 from accelerate import Accelerator
 import wandb
 from utils.log_utils import DistributeCombineLogs, label_logs
@@ -26,13 +26,26 @@ def train(cfg):
     train_cfg['save_checkpoint_dir'] = convert_path(train_cfg['save_checkpoint_dir'])
     train_cfg['optim_state_path'] = convert_path(train_cfg['optim_state_path'])
     wandb_cfg = cfg['wandb']
+    # deepspeed_plugin = DeepSpeedPlugin(zero_stage=2, gradient_accumulation_steps=2)
     accelerator = Accelerator()
+    # Print out key configuration properties
+    print("Device:", accelerator.device)
+    print("Distributed Type:", accelerator.distributed_type)
+    print("Local process index:", accelerator.local_process_index)
+    print("Number of processes:", accelerator.num_processes)
+    print("Is main process:", accelerator.is_main_process)
+    print("Is local main process:", accelerator.is_local_main_process)
+    print("Use FP16:", accelerator.use_fp16)
     system_cfg = add_system_configs(cfg, accelerator)
     print('using device:', system_cfg['device'])
     print('num processes:', system_cfg['num_processes'])
     print('using fp16:', system_cfg['use_fp16'])
     if not os.path.exists(train_cfg['save_checkpoint_dir']):
-        os.makedirs(train_cfg['save_checkpoint_dir'])
+        try:
+            os.makedirs(train_cfg['save_checkpoint_dir'])
+        except:
+            print("Couldn't create the checkpoint dir, probably it already exists")
+            pass
     with open(os.path.join(train_cfg['save_checkpoint_dir'], 'config.json'), 'w') as f:
         json.dump(cfg, f)
 
@@ -71,6 +84,7 @@ def train(cfg):
 
     model = load_item(cfg['model'], system_cfg['device'])
     model.train()
+    model = accelerator.prepare(model)
 
     if hasattr(model, 'param_groups'):
         params = [{'params': frozenset().union(*list(map(lambda x: x.parameters(), p))), **f(train_cfg)} for p, f in model.param_groups]
@@ -82,13 +96,13 @@ def train(cfg):
         optim.load_state_dict(torch.load(train_cfg['optim_state_path'], map_location=system_cfg['device']))
         print('loaded.')
     if isinstance(dataset_train, IterableDataset) and isinstance(dataset_eval, IterableDataset):
-        model, optim = accelerator.prepare(model, optim)
+        optim = accelerator.prepare(optim)
     elif isinstance(dataset_train, IterableDataset):
-        model, optim, eval_data_loader = accelerator.prepare(model, optim, eval_data_loader)
+        optim, eval_data_loader = accelerator.prepare(optim, eval_data_loader)
     elif isinstance(dataset_eval, IterableDataset):
-        model, optim, data_loader = accelerator.prepare(model, optim, data_loader)
+        optim, data_loader = accelerator.prepare(optim, data_loader)
     else:
-        model, optim, data_loader, eval_data_loader = accelerator.prepare(model, optim, data_loader, eval_data_loader)
+        optim, data_loader, eval_data_loader = accelerator.prepare(optim, data_loader, eval_data_loader)
 
     train_logs = DistributeCombineLogs(accelerator, use_wandb=wandb_cfg['use_wandb'])
     eval_logs = DistributeCombineLogs(accelerator, use_wandb=wandb_cfg['use_wandb'])
