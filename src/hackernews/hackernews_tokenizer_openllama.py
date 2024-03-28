@@ -3,7 +3,7 @@ from transformers import LlamaTokenizer
 
 class HackernewsTokenizer(Tokenizer):
     def __init__(self):
-        self.tokenizer = LlamaTokenizer.from_pretrained('openlm-research/open_llama_3b', trust_remote_code=True)
+        self.tokenizer = LlamaTokenizer.from_pretrained('openlm-research/open_llama_3b_v2', trust_remote_code=True)
         self.tokenizer.add_special_tokens({'additional_special_tokens': ['</a>', '<a>', '</eod>'], 
                                            'bos_token': '<s>', 
                                            'sep_token': '</s>', 

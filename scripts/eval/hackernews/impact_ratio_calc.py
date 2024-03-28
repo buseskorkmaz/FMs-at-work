@@ -26,7 +26,8 @@ class Diversity_Evaluator:
 
     def __init__(self, evaluation_dataset, target_male_pct: float=0.5, target_female_pct:float=0.5):
 
-        self.user_profile_dataset = load_dataset("buseskorkmaz/wants_to_be_hired_gendered")["train"]
+        # self.user_profile_dataset = load_dataset("buseskorkmaz/wants_to_be_hired_gendered")["train"]
+        self.user_profile_dataset = load_dataset("buseskorkmaz/biasinbios_processed")["train"]
         self.evaluation_dataset = evaluation_dataset
         items = [row for row in self.evaluation_dataset]
 

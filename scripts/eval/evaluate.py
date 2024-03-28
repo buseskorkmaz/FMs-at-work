@@ -6,7 +6,7 @@ sys.path.append(os.path.join(os.path.dirname(os.path.realpath(__file__)), '../..
 from torch.utils.data.dataset import IterableDataset
 from data.rl_data import Iterable_RL_Dataset
 from data.torch_datasets import GeneralDataset, GeneralIterDataset
-from workable.load_objects import load_item
+from hackernews.load_objects import load_item
 from accelerate import Accelerator
 from utils.log_utils import DistributeCombineLogs, label_logs
 from utils.misc import add_system_configs, convert_path
@@ -20,7 +20,15 @@ import pickle as pkl
 def eval(cfg):
     print('using config:', cfg)
     eval_cfg = cfg['eval']
+    # process_id = eval_cfg['seed']
     accelerator = Accelerator()
+    print("Device:", accelerator.device)
+    print("Distributed Type:", accelerator.distributed_type)
+    print("Local process index:", accelerator.local_process_index)
+    print("Number of processes:", accelerator.num_processes)
+    print("Is main process:", accelerator.is_main_process)
+    print("Is local main process:", accelerator.is_local_main_process)
+    print("Use FP16:", accelerator.use_fp16)
     system_cfg = add_system_configs(cfg, accelerator)
     print('using device:', system_cfg['device'])
     print('num processes:', system_cfg['num_processes'])
@@ -34,6 +42,11 @@ def eval(cfg):
         dataset = GeneralIterDataset(raw_dataset, 'cpu')
     else:
         dataset = GeneralDataset(raw_dataset, 'cpu')
+        # dataset = Subset(orig_dataset, desired_indices)
+    
+    print("Dataset length", len(dataset))
+    # print("Dataset0", dataset[31])
+    
     data_loader_kwargs = {'num_workers': eval_cfg['dataloader_workers'], 
                           'batch_size': eval_cfg['bsize'], 
                           'collate_fn': dataset.collate}
@@ -53,7 +66,9 @@ def eval(cfg):
     if isinstance(dataset, IterableDataset):
         model = accelerator.prepare(model)
     else:
-        model, data_loader = accelerator.prepare(model, data_loader)
+        # model, data_loader = accelerator.prepare(model, data_loader)
+        data_loader = accelerator.prepare(data_loader)
+    
     model.eval()
 
     eval_logs = DistributeCombineLogs(accelerator, use_wandb=False)

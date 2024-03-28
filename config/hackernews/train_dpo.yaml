@@ -17,7 +17,7 @@ train_dataset:
       name: score_human_reward
       job_descriptions_path: data/hackernews_rl_dataset/
       index_path: data/hackernews_rl_dataset/train_idxs.json
-  max_len: 512
+  max_len: 1024
   resample_timeout: 0.0
   include_parent: true
 
@@ -33,7 +33,7 @@ eval_dataset:
       # name: score_human_reward
       job_descriptions_path: data/hackernews_rl_dataset/
       index_path: data/hackernews_rl_dataset/test_idxs.json
-  max_len: 512
+  max_len: 1024
   resample_timeout: 0.0
   include_parent: true
 
@@ -63,23 +63,24 @@ evaluator:
     num_generations: 1
 
 train:
-  save_checkpoint_dir: outputs/hackernews/llama/lrl1e-5-2dataloader
-  optim_state_path: null
-  epochs: 3
-  dataloader_workers: 2
-  bsize: 1
+  save_checkpoint_dir: outputs/hackernews/dpo/lr_1e-6_3gpu
+  optim_state_path: outputs/hackernews/optim_state/
+  epochs: 10
+  dataloader_workers: 1
+  bsize: 8
   grad_accum_steps: 4
-  log_every: 128
-  eval_every: 512
-  save_every: 2048
+  log_every: 256
+  eval_every: 2048
+  save_every: 8192
   max_checkpoints: 1
   eval_bsize: 1
-  eval_batches: 4
-  lr: 1e-5
+  eval_batches: 8
+  lr: 1e-6
   weight_decay: 0.00
+  hard_update_every: null
   max_steps: null
   loss: {}
 
 wandb:
   use_wandb: true
-  wandb_project: hackernews_bc_llama
+  wandb_project: hackernews_dpo

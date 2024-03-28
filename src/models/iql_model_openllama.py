@@ -268,7 +268,10 @@ class PerTokenIQL(BaseTransformer):
             else:
                 if remove_prefix_position_embs:
                     policy_prefix_embs -= policy_transformer.wpe(position_ids[:, :prefix_embs.shape[1]])
-                policy_input_embeddings = torch.cat((policy_prefix_embs, policy_transformer.wte(tokens)), dim=1)
+                embeddings = policy_transformer.get_input_embeddings()
+                policy_model_embeddings = embeddings(tokens)
+                policy_input_embeddings = torch.cat((policy_prefix_embs, policy_model_embeddings), dim=1)
+
                 if detach_full_policy:
                     with torch.no_grad():
                         policy_outputs = self.lm_policy(inputs_embeds=policy_input_embeddings, 
@@ -692,8 +695,8 @@ class IQL_Policy(Policy):
     #     n = bsize * beam_width
     #     max_len = self.iql_model.dataset.max_len
     #     if max_len is None:
-    #         max_len = self.iql_model.model.config.n_positions
-    #     max_len = min(max_len, self.iql_model.model.config.n_positions)
+    #         max_len = self.iql_model.model.config.max_position_embeddings
+    #     max_len = min(max_len, self.iql_model.model.config.max_position_embeddings)
     #     if max_generation_len is None:
     #         max_generation_len = max_len+1
     #     input_strs = [tokenizer.decode(tokens[i, :][:attn_mask[i, :].sum().long()].tolist(), clean_up_tokenization_spaces=False) for i in range(len(tokens))]
@@ -848,8 +851,8 @@ class IQL_Policy(Policy):
         tokenizer = self.iql_model.dataset.tokenizer
         max_length = self.iql_model.dataset.max_len
         if max_length is None:
-            max_length = self.iql_model.model.config.n_positions
-        max_length = min(max_length, self.iql_model.model.config.n_positions)
+            max_length = self.iql_model.model.config.max_position_embeddings
+        max_length = min(max_length, self.iql_model.model.config.max_position_embeddings)
         device = self.iql_model.device
         bsize, vocab_size = tokens.shape[0], tokenizer.num_tokens()
         n = bsize * beam_width
@@ -989,8 +992,8 @@ class IQL_Policy(Policy):
         tokenizer = self.iql_model.dataset.tokenizer
         max_length = self.iql_model.dataset.max_len
         if max_length is None:
-            max_length = self.iql_model.model.config.n_positions
-        max_length = min(max_length, self.iql_model.model.config.n_positions)
+            max_length = self.iql_model.model.config.max_position_embeddings
+        max_length = min(max_length, self.iql_model.model.config.max_position_embeddings)
         device = self.iql_model.device
         bsize = tokens.shape[0]
         n = bsize * num_generations
@@ -1115,8 +1118,8 @@ class IQL_Policy(Policy):
     #     tokenizer = self.iql_model.dataset.tokenizer
     #     max_length = self.iql_model.dataset.max_len
     #     if max_length is None:
-    #         max_length = self.iql_model.model.config.n_positions
-    #     max_length = min(max_length, self.iql_model.model.config.n_positions)
+    #         max_length = self.iql_model.model.config.max_position_embeddings
+    #     max_length = min(max_length, self.iql_model.model.config.max_position_embeddings)
     #     device = self.iql_model.device
     #     bsize = tokens.shape[0]
     #     n = bsize * num_generations

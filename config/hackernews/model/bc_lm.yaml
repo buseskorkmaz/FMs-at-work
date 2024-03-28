@@ -1,5 +1,5 @@
 defaults:
- - /openllama: openllama_pretrained
+ - /llama: llama_pretrained
 
 name: bc_lm
 dataset: null

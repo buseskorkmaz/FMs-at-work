@@ -3,7 +3,6 @@ from torch.utils.data.dataset import IterableDataset
 import sys
 import os
 sys.path.append(os.path.join(os.path.dirname(os.path.realpath(__file__)), '../../src/'))
-# print(os.getcwd())
 from data.rl_data import Iterable_RL_Dataset
 from data.torch_datasets import GeneralDataset, GeneralIterDataset
 from hackernews.load_objects import load_item
@@ -21,6 +20,14 @@ import json
 from utils.torch_utils import to
 from datetime import timedelta
 
+def dpo_loss(model_outputs, rewards):
+    logits = model_outputs.logits
+    log_probs = torch.log_softmax(logits, dim=-1)
+    generated_sequences = torch.argmax(logits, dim=-1)
+    action_log_probs = torch.gather(log_probs, -1, generated_sequences.unsqueeze(-1)).squeeze(-1)
+    sequence_log_probs = torch.sum(action_log_probs, dim=-1)
+    loss = -torch.mean(sequence_log_probs * rewards)
+    return loss
 
 def train(cfg):
     print('using config:', cfg)
@@ -55,7 +62,7 @@ def train(cfg):
     if wandb_cfg['use_wandb']:
         accelerator.wait_for_everyone()
         if accelerator.is_main_process:
-            wandb.init(project=wandb_cfg['wandb_project'], config=cfg)
+            run = wandb.init(project=wandb_cfg['wandb_project'], config=cfg)
         accelerator.wait_for_everyone()
     
     raw_dataset_train = load_item(cfg['train_dataset'], system_cfg['device'])
@@ -113,42 +120,76 @@ def train(cfg):
     best_loss = float('inf')
     saved_checkpoints = deque([])
     for epoch in tqdm(range(train_cfg['epochs']), disable=not accelerator.is_local_main_process):
+        train_loss = 0
+        train_items_ct = 0
         for items in tqdm(data_loader, disable=not accelerator.is_local_main_process):
             items = to(items, system_cfg['device'])
-            loss, logs, postproc_fs = accelerator.unwrap_model(model).get_loss(items, **train_cfg['loss'])
-            accelerator.backward(loss / train_cfg['grad_accum_steps'])
-            train_logs.accum_logs(logs)
+            prepared_inputs = model.prepare_inputs(items)
+            tokens, attn_mask = prepared_inputs['tokens'], prepared_inputs['attn_mask']
+            model_outputs = accelerator.unwrap_model(model)(tokens, attn_mask, output_attentions=True)
+            # Generate model outputs
+            # model_outputs = accelerator.unwrap_model(model).generate(items)
+            
+            # Compute diversity scores for the generated outputs
+            evaluator.verbose = False
+            generated_diversity_scores = evaluator.evaluate(accelerator.unwrap_model(model), items)
+            print("generated_diversity_scores", generated_diversity_scores)
+            # Compute rewards
+            if len(items['rewards']) > 0:
+                rewards = generated_diversity_scores['token_reward'][0] - items['rewards'][0][-1]
+            else:
+                rewards = generated_diversity_scores['token_reward'][0]
+                print("items:", items, "skipped due to an error in rewards")
+
+            # Compute DPO loss
+            loss = dpo_loss(model_outputs, rewards)
+            train_loss += loss
+            accelerator.backward(loss)
+            train_logs.accum_logs({'loss': (loss, ([], []))})
+
             if (step + 1) % train_cfg['grad_accum_steps'] == 0:
                 optim.step()
                 optim.zero_grad()
-                if train_cfg['loss']['q_loss_weight'] != 0.0 or train_cfg['loss']['v_loss_weight'] != 0.0:
-                    accelerator.unwrap_model(model).soft_update()
-            if (train_cfg['hard_update_every'] is not None) and ((step + 1) % train_cfg['hard_update_every'] == 0):
-                accelerator.unwrap_model(model).hard_update()
+            
             if (step + 1) % train_cfg['log_every'] == 0:
-                train_logs.log(*postproc_fs, 
-                               partial(label_logs, label='train'), 
+                train_logs.log(partial(label_logs, label='train'), 
                                iteration=step, epoch=epoch)
-            if (step + 1) % train_cfg['grad_accum_steps'] == 0:
-                train_logs.reset_logs()
+            
             if (step + 1) % train_cfg['eval_every'] == 0:
                 model.eval()
                 eval_logs.reset_logs()
+                eval_loss = 0
                 with torch.no_grad():
+                    eval_items_ct = 0
                     for i, eval_items in enumerate(eval_data_loader):
                         eval_items = to(eval_items, system_cfg['device'])
                         if i >= train_cfg['eval_batches']:
                             break
-                        _, logs, postproc_fs = accelerator.unwrap_model(model).get_loss(eval_items, **train_cfg['loss'])
+                        
+                        # Generate model outputs for evaluation
+                        eval_model_outputs = accelerator.unwrap_model(model).generate(eval_items)
+                        
+                        # Compute diversity scores for the generated outputs
+                        evaluator.verbose = True
+                        eval_generated_diversity_scores = evaluator.evaluate(accelerator.unwrap_model(model), eval_items)
+                        
+                        # Compute evaluation loss
+                        eval_loss = dpo_loss(eval_model_outputs, eval_generated_diversity_scores - eval_items['q_value'])
+                        
+                        eval_logs.accum_logs({'loss': (eval_loss, ([], []))})
+                        
                         if evaluator is not None:
-                            evaluator_logs = evaluator.evaluate(accelerator.unwrap_model(model), eval_items)
+                            evaluator_logs = eval_generated_diversity_scores
                             if evaluator_logs is not None:
-                                logs['evaluation'] = evaluator_logs
-                        eval_logs.accum_logs(logs)
+                                eval_logs.accum_logs(evaluator_logs)
+                    
+                        eval_items_ct += len(eval_items)
+
                 eval_label = 'eval'
-                eval_total_logs = eval_logs.log(*postproc_fs, 
-                                                partial(label_logs, label=eval_label), 
+                eval_total_logs = eval_logs.log(partial(label_logs, label=eval_label), 
                                                 iteration=step, epoch=epoch)
+                
+                run.log({'eval_loss': eval_loss/eval_items_ct, "iteration": step, 'epoch': epoch})
                 accelerator.wait_for_everyone()
                 if accelerator.is_main_process:
                     if eval_total_logs[eval_label]['loss'] < best_loss:
@@ -178,3 +219,7 @@ def train(cfg):
             step += 1
             if train_cfg['max_steps'] is not None and step >= train_cfg['max_steps']:
                 return
+            train_items_ct += len(items)
+        run.log({'train_loss': train_loss/train_items_ct, "iteration": step, 'epoch': epoch})
+
+            

@@ -26,7 +26,7 @@ def train(cfg):
     train_cfg['optim_state_path'] = convert_path(train_cfg['optim_state_path'])
     wandb_cfg = cfg['wandb']
     # deepspeed_plugin = DeepSpeedPlugin(zero_stage=2, gradient_accumulation_steps=2)
-    accelerator = Accelerator()
+    accelerator = Accelerator(mixed_precision='fp16')
     # Print out key configuration properties
     print("Device:", accelerator.device)
     print("Distributed Type:", accelerator.distributed_type)
@@ -148,9 +148,10 @@ def train(cfg):
                         print('new best eval loss! Saving ...')
                         if not os.path.exists(train_cfg['save_checkpoint_dir']):
                             os.makedirs(train_cfg['save_checkpoint_dir'])
-                        torch.save(accelerator.unwrap_model(model).state_dict(),
-                                    os.path.join(train_cfg['save_checkpoint_dir'], 'model.pkl'))
-                        torch.save(optim.state_dict(), os.path.join(train_cfg['save_checkpoint_dir'], 'optim.pkl'))
+                        accelerator.unwrap_model(model).push_to_hub(f"buseskorkmaz/{train_cfg['save_checkpoint_dir']}_model")
+                        # torch.save(accelerator.unwrap_model(model).state_dict(),
+                        #             os.path.join(train_cfg['save_checkpoint_dir'], 'model.pkl'))
+                        # torch.save(optim.state_dict(), os.path.join(train_cfg['save_checkpoint_dir'], 'optim.pkl'))
                         print('saved.')
                         best_loss = eval_total_logs[eval_label]['loss']
                 accelerator.wait_for_everyone()
@@ -161,10 +162,11 @@ def train(cfg):
                     print('saving checkpoint...')
                     if not os.path.exists(train_cfg['save_checkpoint_dir']):
                         os.makedirs(train_cfg['save_checkpoint_dir'])
-                    if (train_cfg['max_checkpoints'] is not None) and (len(saved_checkpoints) >= train_cfg['max_checkpoints']):
-                        os.system('rm -rf %s' % (saved_checkpoints.popleft()))
-                    torch.save(accelerator.unwrap_model(model).state_dict(),
-                                os.path.join(train_cfg['save_checkpoint_dir'], 'model_%d.pkl' % (step)))
+                    # if (train_cfg['max_checkpoints'] is not None) and (len(saved_checkpoints) >= train_cfg['max_checkpoints']):
+                    #     os.system('rm -rf %s' % (saved_checkpoints.popleft()))
+                    # torch.save(accelerator.unwrap_model(model).state_dict(),
+                    #             os.path.join(train_cfg['save_checkpoint_dir'], 'model_%d.pkl' % (step)))
+                    accelerator.unwrap_model(model).push_to_hub(f"buseskorkmaz/{train_cfg['save_checkpoint_dir']}_model_{step}")
                     saved_checkpoints.append(os.path.join(train_cfg['save_checkpoint_dir'], 'model_%d.pkl' % (step)))
                     print('saved.')
                 accelerator.wait_for_everyone()

@@ -23,7 +23,7 @@ dataset:
 model:
   alpha: 0.005
   gamma: 0.99
-  beta: 64
+  beta: 8
   transition_weight: 0.0
   clip_weight: null
   value_max: null
@@ -46,7 +46,7 @@ model:
     name: hackernews_list_dataset
     cache_id: d
   load:
-    checkpoint_path: outputs/hackernews/flant5/flant5_trial.pkl
+    checkpoint_path: outputs/hackernews/openllamav2/iql_1e-5-10epoch-1024bc-512iql/model.pkl
     strict_load: true
   llama:
     lm_head: true
@@ -91,12 +91,12 @@ evaluator:
     rerank_advantage_weight: 1.0
 
 eval:
-  dataloader_workers: 4
+  dataloader_workers: 1
   bsize: 1
-  batches: 400
-  print_every: 8
+  batches: 1
+  print_every: 4
   seed: 0
-  log_save_path: outputs/hackernews/iql_eval_flant5/eval_logs.pkl
+  log_save_path: outputs/hackernews/openllamav2/eval/iql_eval_10epoch-beta8/eval_logs.pkl
   loss:
     v_loss_weight: 1.0
     q_loss_weight: 1.0

@@ -12,6 +12,7 @@ from utils.cache import Cache
 from utils.misc import convert_path
 # from models.gpt2_optional_final_ln import GPT2LMHeadModel, GPT2Config, GPT2Model
 from transformers import PreTrainedModel, LlamaForCausalLM, LlamaConfig
+from accelerate import load_checkpoint_and_dispatch
 
 registry = {}
 cache = {}
@@ -48,7 +49,9 @@ def load_model(config, model, device, verbose=True):
     if config['checkpoint_path'] is not None:
         if verbose:
             print('loading %s state dict from: %s' % (config['name'], convert_path(config["checkpoint_path"])))
-        model.load_state_dict(torch.load(convert_path(config['checkpoint_path']), map_location='cuda'), strict=config['strict_load'])
+        # model = load_checkpoint_and_dispatch(model=model, checkpoint=convert_path(config["checkpoint_path"]), device_map='auto')
+        model.load_state_dict(torch.load(convert_path(config['checkpoint_path']), map_location='cpu'), strict=config['strict_load'])
+        model.to(device)
         if verbose:
             print('loaded.')
     return model

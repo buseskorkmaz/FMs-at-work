@@ -46,7 +46,9 @@ class BC_LM(BaseTransformer):
         position_ids = torch.cumsum(input_attn_mask, dim=1)-1 if set_pos_ids else None
         if remove_prefix_position_embs:
             prefix_embs -= self.model.transformer.wpe(position_ids[:, :prefix_embs.shape[1]])
-        input_embeddings = torch.cat((prefix_embs, self.model.transformer.wte(tokens)), dim=1)
+        embeddings = self.model.get_input_embeddings()
+        model_embeddings = embeddings(tokens)
+        input_embeddings = torch.cat((prefix_embs, model_embeddings), dim=1)
         # print(prefix_embs.shape, tokens.shape, map_pytree(lambda x: x.shape, kwargs['past_key_values'] if 'past_key_values' in kwargs else None))
         # print(input_embeddings.shape, tokens.shape, input_attn_mask.shape, position_ids)
         model_outputs = self.model(inputs_embeds=input_embeddings, 

@@ -106,9 +106,9 @@ evaluator:
     rerank_advantage_weight: 1.0
 
 train:
-  save_checkpoint_dir: outputs/hackernews/conditional_hackernews_official_iql_bc_fix_q_256_try2_16383/
+  save_checkpoint_dir: outputs/hackernews/openllamav2/iql_lr_1e-5_alpha5e-3-10epoch-1024bciql
   optim_state_path: outputs/hackernews/optim_state/
-  epochs: 40
+  epochs: 10
   dataloader_workers: 4
   bsize: 1
   grad_accum_steps: 4
@@ -118,7 +118,7 @@ train:
   max_checkpoints: 1
   eval_bsize: 1
   eval_batches: 8
-  lr: 1e-3
+  lr: 1e-5
   weight_decay: 0.00
   hard_update_every: null
   max_steps: null
@@ -131,5 +131,5 @@ train:
     mc_returns: false
 
 wandb:
-  use_wandb: false
+  use_wandb: true
   wandb_project: hackernews_iql

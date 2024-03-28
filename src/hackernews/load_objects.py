@@ -1,4 +1,4 @@
-from load_objects_openllama import *
+from load_objects_llama import *
 import json
 from hackernews.hackernews_base import HackernewsData
 from hackernews.reward_fs import score_human_reward, hackernews_reward, hackernews_noised_reward
