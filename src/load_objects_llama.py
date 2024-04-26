@@ -112,8 +112,8 @@ def load_bc_evaluator(config, device, verbose=True):
     env = load_item(config['env'], device, verbose=verbose)
     return BC_Evaluator(env, config['env'], config['kind'], **config['generation_kwargs'])
 
-@register('per_token_iql_llama')
-def load_per_token_iql_llama(config, device, verbose=True):
+@register('per_token_iql')
+def load_per_token_iql(config, device, verbose=True):
     llama = load_item(config['llama'], verbose=verbose)
     dataset = load_item(config['dataset'], device, verbose=verbose)
     model = PerTokenIQL(llama, dataset, device, config['alpha'], config['gamma'], 
@@ -123,7 +123,7 @@ def load_per_token_iql_llama(config, device, verbose=True):
                         config['tau'], config['seperate_policy'], config['seperate_target'], 
                         config['exp_weights'], config['dm_margin'], config['advanced_mlp'], 
                         config['cql_temp'])
-    return load_model(config['load'], model, device, verbose=verbose)
+    return load_model(config['load'], model, 'cpu', verbose=verbose)
 
 @register('per_token_cql')
 def load_per_token_cql(config, device, verbose=True):

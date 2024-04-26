@@ -1,5 +1,5 @@
 defaults:
- - /openllama: llama_pretrained
+ - /llama: llama_pretrained
 
 name: per_token_iql
 dataset: null

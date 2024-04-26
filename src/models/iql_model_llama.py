@@ -59,7 +59,7 @@ class PerTokenIQL(BaseTransformer):
                 ):
         assert isinstance(model, PreTrainedModel) or isinstance(model, LlamaForCausalLM)
         super().__init__(model, dataset, device)
-        self.h_dim  = self.model.config.n_embd
+        self.h_dim  = self.model.config.hidden_size
         self.alpha = alpha
         self.gamma = gamma
         self.beta = beta
@@ -86,7 +86,7 @@ class PerTokenIQL(BaseTransformer):
             )
         else:
             self.v = TransformerMLP(self.h_dim, 
-                                    4 * self.h_dim if self.model.config.n_inner is None else self.model.config.n_inner, 
+                                    4 * self.h_dim if self.model.config.dim_ff is None else self.model.config.dim_ff, 
                                     1, self.model.config.resid_pdrop)
         if not self.advanced_mlp:
             self.q = nn.Sequential(
@@ -96,7 +96,7 @@ class PerTokenIQL(BaseTransformer):
             )
         else:
             self.q = TransformerMLP(self.h_dim, 
-                                    4 * self.h_dim if self.model.config.n_inner is None else self.model.config.n_inner, 
+                                    4 * self.h_dim if self.model.config.dim_ff is None else self.model.config.dim_ff, 
                                     self.dataset.tokenizer.num_tokens(), self.model.config.resid_pdrop)
         if self.double_q:
             if not self.advanced_mlp:
@@ -107,7 +107,7 @@ class PerTokenIQL(BaseTransformer):
                 )
             else:
                 self.q2 = TransformerMLP(self.h_dim, 
-                                         4 * self.h_dim if self.model.config.n_inner is None else self.model.config.n_inner, 
+                                         4 * self.h_dim if self.model.config.dim_ff is None else self.model.config.dim_ff, 
                                          self.dataset.tokenizer.num_tokens(), 
                                          self.model.config.resid_pdrop)
         if not self.advanced_mlp:
@@ -118,7 +118,7 @@ class PerTokenIQL(BaseTransformer):
             )
         else:
             self.target_q = TransformerMLP(self.h_dim, 
-                                           4 * self.h_dim if self.model.config.n_inner is None else self.model.config.n_inner, 
+                                           4 * self.h_dim if self.model.config.dim_ff is None else self.model.config.dim_ff, 
                                            self.dataset.tokenizer.num_tokens(), 
                                            self.model.config.resid_pdrop)
         if self.double_q:
@@ -130,7 +130,7 @@ class PerTokenIQL(BaseTransformer):
                 )
             else:
                 self.target_q2 = TransformerMLP(self.h_dim, 
-                                                4 * self.h_dim if self.model.config.n_inner is None else self.model.config.n_inner, 
+                                                4 * self.h_dim if self.model.config.dim_ff is None else self.model.config.dim_ff, 
                                                 self.dataset.tokenizer.num_tokens(), 
                                                 self.model.config.resid_pdrop)
         for target_param, local_param in zip(self.target_q.parameters(), self.q.parameters()):
@@ -155,7 +155,7 @@ class PerTokenIQL(BaseTransformer):
                 )
             else:
                 self.pi = TransformerMLP(self.h_dim, 
-                                         4 * self.h_dim if self.model.config.n_inner is None else self.model.config.n_inner, 
+                                         4 * self.h_dim if self.model.config.dim_ff is None else self.model.config.dim_ff, 
                                          self.dataset.tokenizer.num_tokens(), 
                                          self.model.config.resid_pdrop)
         else:
@@ -220,7 +220,10 @@ class PerTokenIQL(BaseTransformer):
             policy_prefix_embs = prefix_embs.clone()
         if remove_prefix_position_embs:
             prefix_embs -= transformer.wpe(position_ids[:, :prefix_embs.shape[1]])
-        input_embeddings = torch.cat((prefix_embs, transformer.wte(tokens)), dim=1)
+        embeddings = transformer.get_input_embeddings()
+        model_embeddings = embeddings(tokens)
+        input_embeddings = torch.cat((prefix_embs, model_embeddings), dim=1)
+        # input_embeddings = torch.cat((prefix_embs, transformer.wte(tokens)), dim=1)
         model_outputs = self.model(inputs_embeds=input_embeddings, 
                                    attention_mask=input_attn_mask, 
                                    position_ids=position_ids, 
@@ -240,7 +243,10 @@ class PerTokenIQL(BaseTransformer):
         else:
             if remove_prefix_position_embs:
                 target_prefix_embs -= target_transformer.wpe(position_ids[:, :prefix_embs.shape[1]])
-            target_input_embeddings = torch.cat((target_prefix_embs, target_transformer.wte(tokens)), dim=1)
+            # target_input_embeddings = torch.cat((target_prefix_embs, target_transformer.wte(tokens)), dim=1)
+            embeddings = target_transformer.get_input_embeddings()
+            target_model_embeddings = embeddings(tokens)
+            target_input_embeddings = torch.cat((target_prefix_embs, target_model_embeddings), dim=1)
             with torch.no_grad():
                 target_outputs = self.lm_target(inputs_embeds=target_input_embeddings, 
                                                 attention_mask=input_attn_mask, 
@@ -263,7 +269,12 @@ class PerTokenIQL(BaseTransformer):
             else:
                 if remove_prefix_position_embs:
                     policy_prefix_embs -= policy_transformer.wpe(position_ids[:, :prefix_embs.shape[1]])
-                policy_input_embeddings = torch.cat((policy_prefix_embs, policy_transformer.wte(tokens)), dim=1)
+                # policy_input_embeddings = torch.cat((policy_prefix_embs, policy_transformer.wte(tokens)), dim=1)
+
+                embeddings = policy_transformer.get_input_embeddings()
+                policy_model_embeddings = embeddings(tokens)
+                policy_input_embeddings = torch.cat((policy_prefix_embs, policy_model_embeddings), dim=1)
+                
                 if detach_full_policy:
                     with torch.no_grad():
                         policy_outputs = self.lm_policy(inputs_embeds=policy_input_embeddings, 
@@ -446,9 +457,9 @@ class PerTokenIQL(BaseTransformer):
         prepared_inputs = self.prepare_inputs(items)
         a_idx = prepared_inputs['action_idxs']
         get_qvs_outputs = self.get_qvs(items, 
-                                       qv_kwargs={'output_attentions': True}, 
-                                       policy_kwargs={'output_attentions': True}, 
-                                       target_kwargs={'output_attentions': True}, 
+                                       qv_kwargs={'output_attentions': False}, 
+                                       policy_kwargs={'output_attentions': False}, 
+                                       target_kwargs={'output_attentions': False}, 
                                        skip_policy_on_train=(awac_weight == 0.0), 
                                       )
         tokens, attn_mask, model_outputs = get_qvs_outputs['tokens'], get_qvs_outputs['attn_mask'], get_qvs_outputs['model_outputs']
@@ -458,11 +469,15 @@ class PerTokenIQL(BaseTransformer):
 
         logs = {}
         transformer_logs = {}
-        transformer_logs['qv_transformer_logs'] = get_transformer_logs(model_outputs['qv_model_outputs'].attentions, self.model, attn_mask)
+        transformer_logs['qv_transformer_logs'] = get_transformer_logs(self.model, attn_mask)
         if self.lm_policy is not None and (not (self.training and awac_weight == 0.0)):
-            transformer_logs['policy_transformer_logs'] = get_transformer_logs(model_outputs['policy_model_outputs'].attentions, self.lm_policy, attn_mask)
+            transformer_logs['policy_transformer_logs'] = get_transformer_logs(
+                # model_outputs['policy_model_outputs'].attentions, 
+                self.lm_policy, attn_mask)
         if self.lm_target is not None:
-            transformer_logs['target_transformer_logs'] = get_transformer_logs(model_outputs['target_model_outputs'].attentions, self.lm_target, attn_mask)
+            transformer_logs['target_transformer_logs'] = get_transformer_logs(
+                # model_outputs['target_model_outputs'].attentions, 
+            self.lm_target, attn_mask)
         n = (1 - terminals[:, :-1]).sum().item()
         rs_downstream = self.get_downstream_rs(rs, self.gamma)
         if mc_returns:
