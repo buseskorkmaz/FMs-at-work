@@ -63,7 +63,7 @@ evaluator:
     num_generations: 1
 
 train:
-  save_checkpoint_dir: outputs/hackernews/llama/lrl1e-5-2dataloader
+  save_checkpoint_dir: outputs/hackernews/llama/lrl1e-5-512-working
   optim_state_path: null
   epochs: 3
   dataloader_workers: 2
@@ -76,7 +76,7 @@ train:
   eval_bsize: 1
   eval_batches: 4
   lr: 1e-5
-  weight_decay: 0.00
+  weight_decay: 0.1
   max_steps: null
   loss: {}
 
