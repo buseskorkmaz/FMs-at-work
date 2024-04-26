@@ -11,7 +11,8 @@ from models.chai_model import Chai_Evaluator, ChaiModel, ChaiPolicy
 from utils.cache import Cache
 from utils.misc import convert_path
 # from models.gpt2_optional_final_ln import GPT2LMHeadModel, GPT2Config, GPT2Model
-from transformers import PreTrainedModel, LlamaForCausalLM, LlamaConfig
+from transformers import PreTrainedModel, LlamaForCausalLM, LlamaConfig, BitsAndBytesConfig
+# from peft import get_peft_model, prepare_model_for_kbit_training, LoraConfig
 
 registry = {}
 cache = {}
@@ -91,8 +92,8 @@ def load_llama(config, verbose=True):
         # model = get_peft_model(model, peft_config)
         # model.print_trainable_parameters()
         return model
-    config = LlamaConfig.from_pretrained(config['llama_type'])
-    return obj(config)
+    # config = LlamaConfig.from_pretrained(config['llama_type'])
+    # return obj(config)
 
 @register('bc_lm')
 def load_bc_lm(config, device, verbose=True):
