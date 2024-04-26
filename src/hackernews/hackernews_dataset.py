@@ -3,7 +3,7 @@ from typing import Optional
 from data.rl_data import ConstantTokenReward, DataPoint, List_RL_Dataset, TokenReward
 from hackernews.hackernews_base import HackernewsData
 from hackernews.hackernews_env import HackernewsObservation
-from hackernews.hackernews_tokenizer_openllama import HackernewsTokenizer
+from hackernews.hackernews_tokenizer_llama import HackernewsTokenizer
 import numpy as np
 import random
 import time
@@ -25,7 +25,6 @@ class HackernewsListDataset(List_RL_Dataset):
     
     def get_item(self, idx: int):
         if self.cuttoff is not None:
-            print("I AM DOING WWWEIRD STUFF")
             (parent, comment,), reward = random.choice(self.data)
             while reward < self.cuttoff:
                 time.sleep(self.resample_timeout)
