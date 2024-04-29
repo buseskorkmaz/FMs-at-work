@@ -31,22 +31,22 @@ def train(cfg):
     train_cfg['optim_state_path'] = convert_path(train_cfg['optim_state_path'])
     wandb_cfg = cfg['wandb']
     # deepspeed_plugin = DeepSpeedPlugin(zero_stage=2, gradient_accumulation_steps=2)
-    fsdp_plugin = FullyShardedDataParallelPlugin(
-        auto_wrap_policy="SIZE_BASED_WRAP",
-        backward_prefetch=False,
-        cpu_ram_efficient_loading=False,
-        forward_prefetch=False,
-        min_num_params=2000,
-        # offload_params=True,
-        cpu_offload=CPUOffload(offload_params=True),
-        sharding_strategy="FULL_SHARD",
-        state_dict_type="SHARDED_STATE_DICT",
-        sync_module_states=True,
-        use_orig_params=False,
-    )
+    # fsdp_plugin = FullyShardedDataParallelPlugin(
+    #     auto_wrap_policy="SIZE_BASED_WRAP",
+    #     backward_prefetch=False,
+    #     cpu_ram_efficient_loading=False,
+    #     forward_prefetch=False,
+    #     min_num_params=2000,
+    #     # offload_params=True,
+    #     cpu_offload=CPUOffload(offload_params=True),
+    #     sharding_strategy="FULL_SHARD",
+    #     state_dict_type="SHARDED_STATE_DICT",
+    #     sync_module_states=True,
+    #     use_orig_params=False,
+    # )
     kwargs = InitProcessGroupKwargs(timeout=timedelta(seconds=60 * 30))
-    plugin = GradientAccumulationPlugin(fsdp_plugin=fsdp_plugin, sync_with_dataloader=False, num_steps=train_cfg['grad_accum_steps'])
-    accelerator = Accelerator(gradient_accumulation_plugin=plugin, kwargs_handlers=[kwargs])
+    # plugin = GradientAccumulationPlugin(fsdp_plugin=fsdp_plugin, sync_with_dataloader=False, num_steps=train_cfg['grad_accum_steps'])
+    accelerator = Accelerator(kwargs_handlers=[kwargs])
     # Print out key configuration properties
     print("Device:", accelerator.device)
     print("Distributed Type:", accelerator.distributed_type)
