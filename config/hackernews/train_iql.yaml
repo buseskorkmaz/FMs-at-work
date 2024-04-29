@@ -106,7 +106,7 @@ evaluator:
     rerank_advantage_weight: 1.0
 
 train:
-  save_checkpoint_dir: outputs/hackernews/llama/iql_1e-5-100epoch-512
+  save_checkpoint_dir: outputs/hackernews/llama/iql_1e-5-100epoch-256-3gpu
   optim_state_path: outputs/hackernews/optim_state/
   epochs: 100
   dataloader_workers: 2
