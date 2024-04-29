@@ -133,7 +133,8 @@ class RL_Dataset(ABC):
         super().__init__()
         self.tokenizer = tokenizer
         self.token_reward = token_reward
-        self.max_len = max_len
+        # self.max_len = max_len
+        self.max_len = 512
 
     def collate(self, items: List[DataPoint], device):
         tokens, state_idxs, action_idxs, rewards, terminals, u_state_idxs, u_action_idxs, u_rewards, u_terminals = zip(*map(lambda x: x.to_tensors(device, self.max_len), items))

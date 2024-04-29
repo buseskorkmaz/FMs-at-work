@@ -4,7 +4,6 @@ from typing import Any, Dict, List, Optional, Tuple
 import sys
 import os
 # sys.path.append("/u/buseskorkmaz/Bias-ILQL/")
-sys.path.append("/rds/general/user/bsk18/home/final-bias-ilql/src")
 from utils.cache import Cache
 
 
