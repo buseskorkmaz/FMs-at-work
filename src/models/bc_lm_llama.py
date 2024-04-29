@@ -80,12 +80,14 @@ class BC_LM(BaseTransformer):
         prepared_inputs = self.prepare_inputs(items)
         tokens, attn_mask = prepared_inputs['tokens'], prepared_inputs['attn_mask']
         a_idx = prepared_inputs['action_idxs']
-        model_outputs = self(tokens, attn_mask, 
-                             output_attentions=True)
+        model_outputs = self(tokens, attn_mask) 
+                            #  output_attentions=True)
         logs = {}
-        transformer_logs = get_transformer_logs(model_outputs.attentions, 
+        transformer_logs = get_transformer_logs(
+                                                # model_outputs.attentions, 
                                                 self.model, 
-                                                attn_mask)
+                                                attn_mask
+                                            )
         n = attn_mask.sum().item()
         weights = self.get_weights(tokens, a_idx)
         token_loss = self.awac_loss(tokens, attn_mask, model_outputs.logits, weights)
