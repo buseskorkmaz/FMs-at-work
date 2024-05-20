@@ -15,8 +15,8 @@ class Diversity_Evaluator:
 
     def __init__(self, target_male_pct: float=0.5, target_female_pct:float=0.5):
 
-        self.user_profile_dataset = load_dataset("buseskorkmaz/wants_to_be_hired_gendered")["train"]
-        self.hiring_dataset = load_dataset("buseskorkmaz/hiring_w_q_context_256_filtered", split='train')
+        self.user_profile_dataset = load_dataset("buseskorkmaz/wants_to_hired_gendered_sentence_embeddings")["train"]
+        self.hiring_dataset = load_dataset("buseskorkmaz/cleaned_hiring_dataset_qval_w_gendered_mpnet_fixed_prompt", split='train')
         # self.language_eval = Language_Evaluator()
         items = [row for row in self.hiring_dataset]
 
@@ -29,12 +29,13 @@ class Diversity_Evaluator:
             clean_text = clean_text.replace('"', '')
             return clean_text
 
-        self.text2embedding = {remove_links(item['text']): item['embedding'] for item in items}
+        self.text2embedding = {item['cleaned_text']: item['cleaned_embedding_mpnet'] for item in items}
         # In eval, remove "remove_links"
         # self.prompt2idx = {remove_links(items[idx]['prompt']): idx for idx in range(len(items))}
-        self.prompt2location = {remove_links(items[idx]['prompt']): items[idx]['location'] for idx in range(len(items))}
+        self.prompt2location = {items[idx]['prompt']: items[idx]['location'] for idx in range(len(items))}
         # self.idx2location = {idx: items[idx]['location'] for idx in range(len(items))}
         self.promtp2original = {items[idx]['prompt']: items[idx]['text'] for idx in range(len(items))}
+        self.prompt2profession = {items[idx]['prompt']: items[idx]['biasinbios_occupations'] for idx in range(len(items))}
         # self.promtp2original = {remove_links(items[idx]['prompt']): items[idx]['text'] for idx in range(len(items))}
 
         # Load pre-trained model and tokenizer
@@ -42,12 +43,13 @@ class Diversity_Evaluator:
         self.tokenizer = BertTokenizer.from_pretrained('bert-base-uncased')
 
         # initialize target distributions
-        self.calc_location_statistics()
+        # self.calc_location_statistics()
+        self.calc_gender_statistics()
 
-        target_male_pct = 0.5
-        target_female_pct  = 0.5 
+        # target_male_pct = 0.5
+        # target_female_pct  = 0.5 
 
-        self.target_gender_distribution= np.array([target_male_pct, target_female_pct])  # 50% male, 50% female
+        # self.target_gender_distribution= np.array([target_male_pct, target_female_pct])  # 50% male, 50% female
         
 
     def encode_text(self, job_desc):
@@ -111,6 +113,23 @@ class Diversity_Evaluator:
         return
     
 
+    def calc_gender_statistics(self):
+
+        print("Computing gender diversity statistics of the dataset....")
+        dist_for_gender_dataset = load_dataset("buseskorkmaz/biasinbios_processed_train")['train']
+        unique_professions = set(dist_for_gender_dataset['profession_name'])
+        self.genders_per_occupation_dict = {k: [np.nan , np.nan] for k in unique_professions}
+        for profession in unique_professions:
+            matched_candidates = dist_for_gender_dataset.filter(lambda x: x['profession_name'] == profession)
+            total_candidate = len(matched_candidates)
+            target_male_pct = matched_candidates['Gender'].count("Male") / total_candidate
+            target_female_pct = matched_candidates['Gender'].count("Female") / total_candidate
+            self.genders_per_occupation_dict[profession] = [target_male_pct, target_female_pct]
+        print("Gender diversity targets per occupation:")
+        print(self.genders_per_occupation_dict)
+
+        return
+    
     def calc_q_value(self, job_desc, prompt):
 
         if job_desc in self.text2embedding.keys():
@@ -153,15 +172,17 @@ class Diversity_Evaluator:
         locations = []
         main_locations = []
         genders = []
-        filtered_user_profiles = self.user_profile_dataset.filter(lambda x: self.filter_candidates(x,job_location))
+        job_profession = self.prompt2profession[prompt]
+        filtered_user_profiles = self.user_profile_dataset
+        # .filter(lambda x: self.filter_candidates(x,job_location))
         # filtered_user_profiles = self.user_profile_dataset 
         if filtered_user_profiles:
-            similarity_matrix = cosine_similarity(filtered_user_profiles["embedding"], np.array(job_embedding).reshape(1, -1)).flatten()
+            similarity_matrix = cosine_similarity(filtered_user_profiles["gendered_embedding_mpnet"], np.array(job_embedding).reshape(1, -1)).flatten()
             # idmax = similarity_matrix.argmax()
             ind = np.argsort(similarity_matrix)[::-1][:k]
             for idmax in ind:
-                locations.append(filtered_user_profiles[int(idmax)]["Location"])
-                main_locations.append(filtered_user_profiles[int(idmax)]["Main_location"])
+                # locations.append(filtered_user_profiles[int(idmax)]["Location"])
+                # main_locations.append(filtered_user_profiles[int(idmax)]["Main_location"])
                 genders.append(filtered_user_profiles[int(idmax)]["Gender"])
             
             # check if the information is correct
@@ -172,29 +193,29 @@ class Diversity_Evaluator:
             real_male_pct = genders.count("Male")/len(genders)
             real_female_pct = genders.count("Female")/len(genders)
 
-            target_gender_distribution = self.target_gender_distribution  # 50% male, 50% female
+            target_gender_distribution = self.genders_per_occupation_dict[job_profession]  # arranged per occupation in biasinbios dataset  # 50% male, 50% female
             realized_gender_distribution = np.array([real_male_pct, real_female_pct])  # 30% male, 70% female
             print(target_gender_distribution)
             print(realized_gender_distribution)
 
-            total_candidate = len(genders)
-            real_na_pct = main_locations.count("North America") / total_candidate
-            real_eu_pct = main_locations.count("Europe") / total_candidate
-            real_asia_pct = main_locations.count("Asia") / total_candidate
-            real_remote_pct = main_locations.count("Remote") / total_candidate
-            real_australia_pct = main_locations.count("Australia") / total_candidate
-            real_africa_pct = main_locations.count("Africa") / total_candidate
-            real_sa_pct = main_locations.count("South America") / total_candidate
-            real_unknown_pct =  main_locations.count("Unknown") / total_candidate
+            # total_candidate = len(genders)
+            # real_na_pct = main_locations.count("North America") / total_candidate
+            # real_eu_pct = main_locations.count("Europe") / total_candidate
+            # real_asia_pct = main_locations.count("Asia") / total_candidate
+            # real_remote_pct = main_locations.count("Remote") / total_candidate
+            # real_australia_pct = main_locations.count("Australia") / total_candidate
+            # real_africa_pct = main_locations.count("Africa") / total_candidate
+            # real_sa_pct = main_locations.count("South America") / total_candidate
+            # real_unknown_pct =  main_locations.count("Unknown") / total_candidate
 
             # target_location_distribution = np.array(list(get_element_percentages(user_profile_dataset["Main_location"]).values()))
             # realized_location_distribution = np.array(list(get_element_percentages(filtered_user_profiles["Main_location"]).values()))
-            target_location_distribution =  self.target_location_distribution
-            realized_location_distribution = np.array([real_na_pct, real_eu_pct, real_asia_pct, real_remote_pct, real_australia_pct, real_africa_pct,
-                                                    real_sa_pct, real_unknown_pct])
+            # target_location_distribution =  self.target_location_distribution
+            # realized_location_distribution = np.array([real_na_pct, real_eu_pct, real_asia_pct, real_remote_pct, real_australia_pct, real_africa_pct,
+            #                                         real_sa_pct, real_unknown_pct])
 
-            print(target_location_distribution)
-            print(realized_location_distribution)
+            # print(target_location_distribution)
+            # print(realized_location_distribution)
 
             # Calculate the KL divergence -- too sensitive easily becoming inf
             # kl_divergence_gender = kl_div(target_gender_distribution, realized_gender_distribution).sum()
@@ -202,29 +223,30 @@ class Diversity_Evaluator:
 
             # Calculate the Wasserstein divergence -- always finite
             wasserstein_distance_gender = wasserstein_distance(target_gender_distribution, realized_gender_distribution)
-            wasserstein_distance_location = wasserstein_distance(target_location_distribution, realized_location_distribution)
+            # wasserstein_distance_location = wasserstein_distance(target_location_distribution, realized_location_distribution)
 
             print(f"The Wasserstein distance between the target gender and realized distributions is {wasserstein_distance_gender}")
-            print(f"The Wasserstein distance between the target location and realized distributions is {wasserstein_distance_location}")
+            # print(f"The Wasserstein distance between the target location and realized distributions is {wasserstein_distance_location}")
 
-            if wasserstein_distance_gender == np.inf or wasserstein_distance_location == np.inf:
+            if wasserstein_distance_gender == np.inf:
+            # or wasserstein_distance_location == np.inf:
                 distance = 10
             else:
-                distance =  wasserstein_distance_gender + wasserstein_distance_location
+                distance =  wasserstein_distance_gender 
+                # + wasserstein_distance_location
             
             print(f"The total Wasserstein distance between the target and realized distributions is {distance}")
             q_value = distance * -100
 
             # print("The most similar profile cosine similarity:", similarity_matrix[idmax])
             # print("=="*35)
-            # print(user_profile_dataset[int(idmax)]["text"])
+            # print(filtered_user_profiles[int(idmax)]["text"])
             # print("=="*35)
-            # print("Gender:", user_profile_dataset[int(idmax)]["Gender"])
+            # print("Gender:", filtered_user_profiles[int(idmax)]["Gender"])
             # print("=="*35)
             # print(job_desc["text"])
         else:
             print("no match")
-            # changed after submission, it was 1000
             q_value = -100
         
         # q_value += language_value + factual_penalty
