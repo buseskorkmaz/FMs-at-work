@@ -702,8 +702,8 @@ class IQL_Policy(Policy):
     #     n = bsize * beam_width
     #     max_len = self.iql_model.dataset.max_len
     #     if max_len is None:
-    #         max_len = self.iql_model.model.config.n_positions
-    #     max_len = min(max_len, self.iql_model.model.config.n_positions)
+    #         max_len = self.iql_model.model.config.max_position_embeddings
+    #     max_len = min(max_len, self.iql_model.model.config.max_position_embeddings)
     #     if max_generation_len is None:
     #         max_generation_len = max_len+1
     #     input_strs = [tokenizer.decode(tokens[i, :][:attn_mask[i, :].sum().long()].tolist(), clean_up_tokenization_spaces=False) for i in range(len(tokens))]
@@ -858,8 +858,8 @@ class IQL_Policy(Policy):
         tokenizer = self.iql_model.dataset.tokenizer
         max_length = self.iql_model.dataset.max_len
         if max_length is None:
-            max_length = self.iql_model.model.config.n_positions
-        max_length = min(max_length, self.iql_model.model.config.n_positions)
+            max_length = self.iql_model.model.config.max_position_embeddings
+        max_length = min(max_length, self.iql_model.model.config.max_position_embeddings)
         device = self.iql_model.device
         bsize, vocab_size = tokens.shape[0], tokenizer.num_tokens()
         n = bsize * beam_width
@@ -909,9 +909,21 @@ class IQL_Policy(Policy):
                                          policy_kwargs={'use_cache': True, 'past_key_values': curr_policy_kvs}, 
                                          target_kwargs={'use_cache': True, 'past_key_values': curr_target_kvs})
             model_outputs, logits = iql_outputs['model_outputs'], iql_outputs['logits']
-            
-            logits[:, 0, tokenizer.pad_token_id] = torch.where(termination_mask == 1, float('-inf'), 1e7)
-            logits[torch.arange(0, n).to(device), torch.full((n,), 0).to(device), tokens[:, t]] = logits[torch.arange(0, n).to(device), torch.full((n,), 0).to(device), tokens[:, t]].masked_fill_(t < dialogue_lens, 1e7)
+
+            if logits.dtype == torch.float16:
+                logits[:, 0, tokenizer.pad_token_id] = torch.where(termination_mask == 1, float('-inf'), 65504)
+            else:
+                logits[:, 0, tokenizer.pad_token_id] = torch.where(termination_mask == 1, float('-inf'), 1e7)
+
+            # Convert logits to float, perform operation, then convert back to half
+            if logits.dtype == torch.float16:
+                # If logits are in FP16, use the maximum safe FP16 value
+                logits[torch.arange(0, n).to(device), torch.full((n,), 0).to(device), tokens[:, t]] = logits[torch.arange(0, n).to(device), torch.full((n,), 0).to(device), tokens[:, t]].masked_fill_(t < dialogue_lens, 65504)
+            else:
+                # If logits are in FP32, use the original large value
+                logits[torch.arange(0, n).to(device), torch.full((n,), 0).to(device), tokens[:, t]] = logits[torch.arange(0, n).to(device), torch.full((n,), 0).to(device), tokens[:, t]].masked_fill_(t < dialogue_lens, 1e7)
+
+            # logits[torch.arange(0, n).to(device), torch.full((n,), 0).to(device), tokens[:, t]] = logits[torch.arange(0, n).to(device), torch.full((n,), 0).to(device), tokens[:, t]].masked_fill_(t < dialogue_lens, 1e7)
             edited_logits = process_logits(logits.clone(), temp=temp, top_k=top_k, top_p=top_p)
             
             vs, qs = iql_outputs['target_vs'], iql_outputs['target_qs']
@@ -923,8 +935,16 @@ class IQL_Policy(Policy):
                 adv_logits = torch.log(adv_logits)
             if adv_clip is not None:
                 adv_logits = torch.clip(adv_logits, max=adv_clip)
-            adv_logits[:, 0, tokenizer.pad_token_id] = torch.where(termination_mask == 1, float('-inf'), 1e7)
-            adv_logits[torch.arange(0, n).to(device), torch.full((n,), 0).to(device), tokens[:, t]] = adv_logits[torch.arange(0, n).to(device), torch.full((n,), 0).to(device), tokens[:, t]].masked_fill_(t < dialogue_lens, 1e7)
+            
+            if adv_logits.dtype == torch.float16:
+                adv_logits[:, 0, tokenizer.pad_token_id] = torch.where(termination_mask == 1, float('-inf'), 65504)
+            else:
+                adv_logits[:, 0, tokenizer.pad_token_id] = torch.where(termination_mask == 1, float('-inf'), 1e7)
+
+            if adv_logits.dtype == torch.float16:
+                adv_logits[torch.arange(0, n).to(device), torch.full((n,), 0).to(device), tokens[:, t]] = adv_logits[torch.arange(0, n).to(device), torch.full((n,), 0).to(device), tokens[:, t]].masked_fill_(t < dialogue_lens, 65504)
+            else:
+                adv_logits[torch.arange(0, n).to(device), torch.full((n,), 0).to(device), tokens[:, t]] = adv_logits[torch.arange(0, n).to(device), torch.full((n,), 0).to(device), tokens[:, t]].masked_fill_(t < dialogue_lens, 1e7)
 
             full_logits = (edited_logits if include_logits else 0.0) + (adv_logits if include_adv else 0.0) + base_logits.unsqueeze(1).unsqueeze(2)
             
@@ -999,8 +1019,8 @@ class IQL_Policy(Policy):
         tokenizer = self.iql_model.dataset.tokenizer
         max_length = self.iql_model.dataset.max_len
         if max_length is None:
-            max_length = self.iql_model.model.config.n_positions
-        max_length = min(max_length, self.iql_model.model.config.n_positions)
+            max_length = self.iql_model.model.config.max_position_embeddings
+        max_length = min(max_length, self.iql_model.model.config.max_position_embeddings)
         device = self.iql_model.device
         bsize = tokens.shape[0]
         n = bsize * num_generations
@@ -1050,8 +1070,13 @@ class IQL_Policy(Policy):
                                          target_kwargs={'use_cache': True, 'past_key_values': curr_target_kvs})
             model_outputs, logits = iql_outputs['model_outputs'], iql_outputs['logits']
             
-            logits[:, 0, tokenizer.pad_token_id] = torch.where(termination_mask == 1, float('-inf'), 1e7)
-            logits[torch.arange(0, n).to(device), torch.full((n,), 0).to(device), tokens[:, t]] = logits[torch.arange(0, n).to(device), torch.full((n,), 0).to(device), tokens[:, t]].masked_fill_(t < dialogue_lens, 1e7)
+            if logits.dtype == torch.float16:
+                logits[:, 0, tokenizer.pad_token_id] = torch.where(termination_mask == 1, float('-inf'), 65504)
+                logits[torch.arange(0, n).to(device), torch.full((n,), 0).to(device), tokens[:, t]] = logits[torch.arange(0, n).to(device), torch.full((n,), 0).to(device), tokens[:, t]].masked_fill_(t < dialogue_lens, 65504)
+            else:
+                logits[:, 0, tokenizer.pad_token_id] = torch.where(termination_mask == 1, float('-inf'), 1e7)
+                logits[torch.arange(0, n).to(device), torch.full((n,), 0).to(device), tokens[:, t]] = logits[torch.arange(0, n).to(device), torch.full((n,), 0).to(device), tokens[:, t]].masked_fill_(t < dialogue_lens, 1e7)
+
             edited_logits = process_logits(logits.clone(), temp=temp, top_k=top_k, top_p=top_p)
 
             vs, qs = iql_outputs['target_vs'], iql_outputs['target_qs']
@@ -1063,9 +1088,15 @@ class IQL_Policy(Policy):
                 adv_logits = torch.log(adv_logits)
             if adv_clip is not None:
                 adv_logits = torch.clip(adv_logits, max=adv_clip)
-            adv_logits[:, 0, tokenizer.pad_token_id] = torch.where(termination_mask == 1, float('-inf'), 1e7)
-            adv_logits[torch.arange(0, n).to(device), torch.full((n,), 0).to(device), tokens[:, t]] = adv_logits[torch.arange(0, n).to(device), torch.full((n,), 0).to(device), tokens[:, t]].masked_fill_(t < dialogue_lens, 1e7)
+            
 
+            if adv_logits.dtype == torch.float16:
+                adv_logits[:, 0, tokenizer.pad_token_id] = torch.where(termination_mask == 1, float('-inf'), 65504)
+                adv_logits[torch.arange(0, n).to(device), torch.full((n,), 0).to(device), tokens[:, t]] = adv_logits[torch.arange(0, n).to(device), torch.full((n,), 0).to(device), tokens[:, t]].masked_fill_(t < dialogue_lens, 65504)
+            else:
+                adv_logits[:, 0, tokenizer.pad_token_id] = torch.where(termination_mask == 1, float('-inf'), 1e7)
+                adv_logits[torch.arange(0, n).to(device), torch.full((n,), 0).to(device), tokens[:, t]] = adv_logits[torch.arange(0, n).to(device), torch.full((n,), 0).to(device), tokens[:, t]].masked_fill_(t < dialogue_lens, 1e7)
+            
             full_logits = (edited_logits if include_logits else 0.0) + (adv_logits if include_adv else 0.0) + base_logits.unsqueeze(1).unsqueeze(2)
 
             cat_dist = torch.distributions.categorical.Categorical(logits=full_logits[:, 0])
@@ -1125,8 +1156,8 @@ class IQL_Policy(Policy):
     #     tokenizer = self.iql_model.dataset.tokenizer
     #     max_length = self.iql_model.dataset.max_len
     #     if max_length is None:
-    #         max_length = self.iql_model.model.config.n_positions
-    #     max_length = min(max_length, self.iql_model.model.config.n_positions)
+    #         max_length = self.iql_model.model.config.max_position_embeddings
+    #     max_length = min(max_length, self.iql_model.model.config.max_position_embeddings)
     #     device = self.iql_model.device
     #     bsize = tokens.shape[0]
     #     n = bsize * num_generations
