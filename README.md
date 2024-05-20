@@ -1,69 +1,51 @@
-# Foundation Models at Work: Fine-Tuning for Fairness Beyond Human Feedback
+# Foundation Models at Work: Fine-Tuning for Fairness in Algorithmic Hiring
  
-Official code from the paper "Foundation Models at Work: Fine-Tuning for Fairness Beyond Human Feedback", based on the implementation of ILQL [arxiv] (https://arxiv.org/abs/2206.11871) .
+Official code from the paper "Foundation Models at Work: Fine-Tuning for Fairness in Algorithmic Hiring", based on the implementation of ILQL [arxiv] (https://arxiv.org/abs/2206.11871) .
  
 # Setup
 
 ### **Supported Environment**
 
-This project is developed with Python 3.10.6 on CCC with CUDA backend. Currently, some operations required by PyTorch are not implemented yet for MPS backend (MacOS M1/M2 GPUs). Thus, this project is not supported on MPS.
+This project is developed with Python 3.10.0 with CUDA backend. Currently, some operations required by PyTorch are not implemented yet for MPS backend (MacOS M1/M2 GPUs). Thus, this project is not supported on MPS.
  
 ### **Preprocessed Data**
 
-Copy the data and indexes to under `/data/task_path` in your environment. For workable, first move the preprocessed data files into your `/data` directory: 
-
-```shell
-cp -r /dccstor/autofair/workable_processed/candidates_w_main_location path_to_env/data/workable_rl_dataset
-cp -r /dccstor/autofair/workable_processed/job_descriptions_w_q_prompt_eng path_to_env/data/workable_rl_dataset
-```
-
-Then copy the indexes:
-
-```shell
-cp /dccstor/autofair/workable_processed/train_idxs.json path_to_env/data/workable_rl_dataset
-cp /dccstor/autofair/workable_processed/test_idxs.json path_to_env/data/workable_rl_dataset
-cp /dccstor/autofair/workable_processed/eval_idxs.json path_to_env/data/workable_rl_dataset
-```
+Copy the data files and indexes in Drive link to under `/data/task_path` in your environment. 
 
 ### **Dependencies and PYTHONPATH**
- 
-This repo was designed for python 3.9.7
- 
+  
 ```shell
 pip install -r requirements.txt
 export PYTHONPATH="$PWD/src/"
 ```
-# Inference
-
-Under development in `inference_dev` branch. I will develop it with Hackernews checkpoint and share with you in a way that you can make it work for Workable just changing the checkpoint path and prompt.
 
 # Evaluation
 
-Copy the checkpoint to under `/outputs/task_name`. For workable:
+Copy the checkpoint to under `/outputs/task_name`. For hackernews:
 
 ```shell
-cp -r /dccstor/autofair/workable_processed/checkpoints/conditional_workable_official_iql_bc_test1_16383_eng/ path_to_env/outputs/workable/
+cp -r /your/path/to/checkpoint/ path_to_env/outputs/hackernews/
 ```
 
-Edit the config file (`config/workable/eval_policy.yaml`) with input/output paths and hyperparameter values. Then, evaluate policy:
+Edit the config file (`config/hackernews/eval_policy.yaml`) with input/output paths and hyperparameter values. Then, evaluate policy:
 
 ```shell
-cd scripts/eval/workable
-jbsub -queue x86_24h -mem 32g -cores 4+1 python eval_policy.py 
+cd scripts/eval/hackernews
+python eval_policy.py 
 ```
 
 Distill policy to see original and rewrite diversity scores:
 
 ```shell
-cd scripts/eval/workable
-python distill_policy_eval.py --eval_file ../../../outputs/workable/your_output_path/eval_logs.pkl 
+cd scripts/eval/hackernews
+python distill_policy_eval.py --eval_file ../../../outputs/hackernews/your_output_path/eval_logs.pkl 
 ```
 
-Impact ratio and diversity score calculations for both original and rewritten job descriptions (in CCC):
+Impact ratio and diversity score calculations for both original and rewritten job descriptions:
 
 ```shell
-cd scripts/eval/workable
-jbsub -queue x86_24h -mem 32g -cores 4+1 python impact_ratio_calc.py --eval_file ../../../outputs/workable/your_output_path/eval_logs.pkl --save_path ../../../outputs/
+cd scripts/eval/hackernews
+python impact_ratio_calc.py --eval_file ../../../outputs/hackernews/your_output_path/eval_logs.pkl --save_path ../../../outputs/
 ```
 
 # Running Experiments
@@ -86,34 +68,34 @@ Here I outline a recommended workflow for training offline RL agents. Suppose th
 I would first train a BC model on the data:
  
 ``` shell
-cd scripts/train/workable/
+cd scripts/train/hackernews/
 python train_bc.py
 ```
 
-This step is responsible for supervised learning to fine-tune underlying language model to prompt and job description generation task. Thus, the fairness related reward is not part of the loss optimization in the training. Producing good enough job descriptions generally takes 5-6 hours training(depends on data size and epoch number, this number is demonstrative for the current setting) with following command on CCC. Please note, `train_bc` script is not optimized for multi-GPU support currently.
+This step is responsible for supervised learning to fine-tune underlying language model to prompt and job description generation task. Producing good enough job descriptions generally takes 5-6 hours training (depends on data size and epoch number, this number is demonstrative for our current setting in the paper). 
 
 ```shell
-jbsub -queue x86_12h -mem 32g -cores 4+1 python train_bc.py 
+python train_bc.py 
 ```
  
 `BC` stands for behavior-cloning in RL literature. We need to use BC as a language model policy in our training. Following script converts this BC checkpoint into one compatible policy to use with the offline RL models:
  
 ``` shell
 cd ../data/
-python convert_bc.py --load ../../outputs/workable/conditional_workable_official_bc_test1/model.pkl --save ../../outputs/workable/conditional_workable_official_bc_test1/model_converted.pkl
+python convert_bc.py --load ../../outputs/hackernews/conditional_hackernews_official_bc_test1/model.pkl --save ../../outputs/hackernews/conditional_hackernews_official_bc_test1/model_converted.pkl
 ```
  
 Then edit the checkpoint that offline RL is configured to train with:
  
 ``` shell
 cd ../train/
-python train_iql.py model.load.checkpoint_path=outputs/workable/conditional_workable_official_bc_test1/model_converted.pkl model.load.strict_load=false train.loss.awac_weight=0.0
+python train_iql.py model.load.checkpoint_path=outputs/hackernews/conditional_hackernews_official_bc_test1/model_converted.pkl model.load.strict_load=false train.loss.awac_weight=0.0
 ```
 
-`train_iql` is responsible for training the RL agent and producing fairness aware job descriptions. This is the most resource-expensive step in our framework and current version of code supports multi-GPU training with distributed backend of torch. Training of RL agent should take less than 1 day with 8 GPUs. The training time varies with the GPU configuration (multi-node, one node, etc.). You can run the following command on CCC:
+`train_iql` is responsible for training the RL agent and producing fairness aware job descriptions. This is the most resource-expensive step in our framework and current version of code supports multi-GPU training with distributed backend of torch. Training of RL agent should take less than 1 day with 8 GPUs (demonstrative number for the setting in the paper). The training time varies with the GPU configuration (multi-node, one node, etc.). You can run the following command on CCC:
 
 ```shell
-jbsub -queue x86_24h -cores 4x1+2 -mem 32g -name iql_test_16383 python -m torch.distributed.launch --nproc_per_node 2 --use_env train_iql.py model.load.checkpoint_path=outputs/workable/conditional_workable_official_bc_test_1/model_converted.pkl model.load.strict_load=false train.loss.awac_weight=0.0
+python -m torch.distributed.launch --nproc_per_node 2 --use_env train_iql.py model.load.checkpoint_path=outputs/hackernews/conditional_hackernews_official_bc_test_1/model_converted.pkl model.load.strict_load=false train.loss.awac_weight=0.0
 ```
  
 This is just one workflow though, you can also train the BC model at the same time as the offline RL agent by setting `train.loss.awac_weight=1.0` in the training config.
@@ -123,24 +105,24 @@ This is just one workflow though, you can also train the BC model at the same ti
 * All data is provided pre-processed in the `data/` folder.
 * `scripts/` contains all scripts for running training, evaluation, and data pre-processing steps in the paper. Scripts are organized into subfolders corresponding to the dataset used.
 * `config/` contains .yaml configs for each script. This repo uses [hydra](https://hydra.cc/docs/intro/) to manage configs. Configs are organized into subfolders corresponding to the dataset used. Most config files are named the same as their corresponding script, but if you are unsure which config corresponds to a script, check the line `@hydra.main(config_path="some_path", config_name="some_name")` to see which config file the script corresponds to.
-* `src/` contains all the core implementations. See `src/models/` for all model implementations. See `src/data/` for all base data processing and MDP abstraction code. See `src/utils/` for various utility functions. See `src/workable/` for hackernews hiring dataset specific code respectively.
+* `src/` contains all the core implementations. See `src/models/` for all model implementations. See `src/data/` for all base data processing and MDP abstraction code. See `src/utils/` for various utility functions. See `src/hackernews/` for hackernews hiring dataset specific code respectively.
 * `ILQL` is referred to as `iql` throughout the repo.
  
 ## Config Framework Overview
  
-Each script is associated with a config file. The config file specifies which models, dataset, and evaluators are to be loaded by the script and their corresponding hyperparameters. See `configs/workable/train_iql.yaml` for an example.
+Each script is associated with a config file. The config file specifies which models, dataset, and evaluators are to be loaded by the script and their corresponding hyperparameters. See `configs/hackernews/train_iql.yaml` for an example.
  
-Each possible model, dataset, or evaluator object is given its own config file, which specifies default values for that object and a special `name` attribute, which tells the config manager what class to load. See `configs/workable/model/per_token_iql.yaml` for an example.
+Each possible model, dataset, or evaluator object is given its own config file, which specifies default values for that object and a special `name` attribute, which tells the config manager what class to load. See `configs/hackernews/model/per_token_iql.yaml` for an example.
  
-The files `src/load_objects.py` and `src/workable/load_objects.py` define how each object is loaded from its corresponding config. The `@register('name')` tag above each load object function links to the `name` attribute in the config.
+The files `src/load_objects.py` and `src/hackernews/load_objects.py` define how each object is loaded from its corresponding config. The `@register('name')` tag above each load object function links to the `name` attribute in the config.
  
-You may notice a special `cache_id` attribute associated with some objects in a config. For an example, see `train_dataset` in `configs/workable/train_iql.yaml`. This attribute tells the config manager to cache the first object that it loads that is associated with this id, and then to return this cached object for subsequent object configs with this `cache_id`.
+You may notice a special `cache_id` attribute associated with some objects in a config. For an example, see `train_dataset` in `configs/hackernews/train_iql.yaml`. This attribute tells the config manager to cache the first object that it loads that is associated with this id, and then to return this cached object for subsequent object configs with this `cache_id`.
  
 For all configs, use paths relative to the repo root.
  
 ## A Few Abstractions to be Aware of
  
-Hackernews and Workable implement a few base classes. Once implemented, all the offline RL algorithms can be applied to the task in a plug-and-play manner. See the "Creating Your Own Tasks" section for an overview of what should be implemented in order to create your own tasks. Below, we outline the key abstractions that make this possible.
+Hackernews and hackernews implement a few base classes. Once implemented, all the offline RL algorithms can be applied to the task in a plug-and-play manner. See the "Creating Your Own Tasks" section for an overview of what should be implemented in order to create your own tasks. Below, we outline the key abstractions that make this possible.
  
 * `data.language_environment.Language_Environment` – represents a task POMDP environment, which a policy can interact with. It has a gym-like interface.
 * `data.language_environment.Policy` – represents a policy which can interact with an environment. Each of the offline RL algorithms in `src/models/` has a corresponding policy.
@@ -160,7 +142,7 @@ Hacker News hiring task has a corresponding environment and dataset implemented 
 
 You can similarly define your own tasks that can easily be run on all these offline RL algorithms. This codebase implements a simple set of RL environment abstractions that make it possible to define your own environments and datasets that can plug-and-play with any of the offline RL algorithms.
 
-All of the core abstractions are defined in `src/data/`. Here we outline what needs to be implemented in order to create your own tasks. For examples, see the implementations in `src/workable/`.
+All of the core abstractions are defined in `src/data/`. Here we outline what needs to be implemented in order to create your own tasks. For examples, see the implementations in `src/hackernews/`.
  
 ## 1. Create an environment and define observations:
  
