@@ -13,6 +13,7 @@ from utils.misc import convert_path
 # from models.gpt2_optional_final_ln import GPT2LMHeadModel, GPT2Config, GPT2Model
 from transformers import PreTrainedModel, LlamaForCausalLM, LlamaConfig, BitsAndBytesConfig
 # from peft import get_peft_model, prepare_model_for_kbit_training, LoraConfig
+from accelerate import load_checkpoint_and_dispatch
 
 registry = {}
 cache = {}
@@ -49,7 +50,9 @@ def load_model(config, model, device, verbose=True):
     if config['checkpoint_path'] is not None:
         if verbose:
             print('loading %s state dict from: %s' % (config['name'], convert_path(config["checkpoint_path"])))
-        model.load_state_dict(torch.load(convert_path(config['checkpoint_path']), map_location='cuda'), strict=config['strict_load'])
+        # model.load_state_dict(torch.load(convert_path(config['checkpoint_path']), map_location=device), strict=config['strict_load'])
+        load_checkpoint_and_dispatch(model, convert_path(config['checkpoint_path']), strict=config['strict_load'], dtype=torch.float16)
+        # model.to()
         if verbose:
             print('loaded.')
     return model
@@ -68,10 +71,18 @@ def load_specified_token_reward(config, device, verbose=True):
 def load_llama(config, verbose=True):
     obj = LlamaForCausalLM if config['lm_head'] else PreTrainedModel
     if config['from_pretrained']:
-        model = obj.from_pretrained(config['llama_type'])
+        model = obj.from_pretrained(config['llama_type'], torch_dtype=torch.float16)
         print(f"--> Model Llama-2")
         total_params = sum(p.numel() for p in model.parameters() if p.requires_grad)
         print(f"\n--> Llama-2 has {total_params / 1e6} Million params\n")
+        # total layers are 32
+        n_freeze=31
+        for param in model.parameters(): param.requires_grad = False    
+        for param in model.lm_head.parameters(): param.requires_grad = True
+        for param in model.model.layers[n_freeze:].parameters(): param.requires_grad = True
+        model.model.embed_tokens.weight.requires_grad_(False)
+        total_params = sum(p.numel() for p in model.parameters() if p.requires_grad)
+        print(f"\nAfter freezing--> Llama-2 has {total_params / 1e6} Million params\n")
         # model = prepare_model_for_int8_training(model)
         # peft_config = LoraConfig(
         #     lora_alpha=16,
@@ -123,7 +134,7 @@ def load_per_token_iql(config, device, verbose=True):
                         config['tau'], config['seperate_policy'], config['seperate_target'], 
                         config['exp_weights'], config['dm_margin'], config['advanced_mlp'], 
                         config['cql_temp'])
-    return load_model(config['load'], model, 'cpu', verbose=verbose)
+    return load_model(config['load'], model, device, verbose=verbose)
 
 @register('per_token_cql')
 def load_per_token_cql(config, device, verbose=True):
