@@ -16,10 +16,13 @@ from functools import partial
 from utils.torch_utils import to
 import random
 import pickle as pkl
+import wandb
+from torch.cuda.amp import autocast
 
 def eval(cfg):
     print('using config:', cfg)
     eval_cfg = cfg['eval']
+    wandb_cfg = cfg['wandb']
     # process_id = eval_cfg['seed']
     accelerator = Accelerator()
     print("Device:", accelerator.device)
@@ -44,6 +47,12 @@ def eval(cfg):
         dataset = GeneralDataset(raw_dataset, 'cpu')
         # dataset = Subset(orig_dataset, desired_indices)
     
+    if wandb_cfg['use_wandb']:
+        accelerator.wait_for_everyone()
+        if accelerator.is_main_process:
+            wandb.init(project=wandb_cfg['wandb_project'], config=cfg)
+        accelerator.wait_for_everyone()
+    
     print("Dataset length", len(dataset))
     # print("Dataset0", dataset[31])
     
@@ -59,7 +68,6 @@ def eval(cfg):
         evaluator = load_item(cfg['evaluator'], system_cfg['device'])
 
     model = load_item(cfg['model'], system_cfg['device'])
-
     # print("Dataset length", len(dataset))
     # print("Dataset0", dataset[0])
 
@@ -71,18 +79,22 @@ def eval(cfg):
     
     model.eval()
 
-    eval_logs = DistributeCombineLogs(accelerator, use_wandb=False)
+    eval_logs = DistributeCombineLogs(accelerator, use_wandb=True)
     with torch.no_grad():
         for i, eval_items in tqdm(enumerate(data_loader)):
+            print(eval_items['u_rewards'])
             eval_items = to(eval_items, system_cfg['device'])
+            # [print(item, item.get_device()) for item in eval_items]
+            print(model.device)
             if i >= eval_cfg['batches']:
                 break
-            _, logs, postproc_fs = accelerator.unwrap_model(model).get_loss(eval_items, **eval_cfg['loss'])
-            if evaluator is not None:
-                evaluator_logs = evaluator.evaluate(accelerator.unwrap_model(model), eval_items)
-                if evaluator_logs is not None:
-                    logs['evaluation'] = evaluator_logs
-            eval_logs.accum_logs(logs)
+            with autocast():
+                _, logs, postproc_fs = accelerator.unwrap_model(model).get_loss(eval_items, **eval_cfg['loss'])
+                if evaluator is not None:
+                    evaluator_logs = evaluator.evaluate(accelerator.unwrap_model(model), eval_items)
+                    if evaluator_logs is not None:
+                        logs['evaluation'] = evaluator_logs
+                eval_logs.accum_logs(logs)
             if (i + 1) % eval_cfg['print_every'] == 0:
                 eval_total_logs = eval_logs.log(*postproc_fs, 
                                     partial(label_logs, label='eval'), 
@@ -92,8 +104,10 @@ def eval(cfg):
                                     n=(i+1)*eval_cfg['bsize']*system_cfg['num_processes'])
     evaluator_dump = evaluator.dump()
     if eval_cfg['log_save_path'] is not None:
-        if not os.path.exists(convert_path(os.path.dirname(eval_cfg['log_save_path']))):
-            os.makedirs(convert_path(os.path.dirname(eval_cfg['log_save_path'])))
-        with open(convert_path(eval_cfg['log_save_path']), 'wb') as f:
-            pkl.dump({'all_logs': eval_total_logs, 'eval_dump': evaluator_dump, 'config': cfg}, f)
+        accelerator.wait_for_everyone()
+        if accelerator.is_main_process:
+            if not os.path.exists(convert_path(os.path.dirname(eval_cfg['log_save_path']))):
+                os.makedirs(convert_path(os.path.dirname(eval_cfg['log_save_path'])))
+            with open(convert_path(eval_cfg['log_save_path']), 'wb') as f:
+                pkl.dump({'all_logs': eval_total_logs, 'eval_dump': evaluator_dump, 'config': cfg}, f)
 
