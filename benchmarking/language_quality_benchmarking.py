@@ -3,7 +3,8 @@ from UniEval.metric.evaluator import get_evaluator
 from datasets import load_dataset
 import json
 import typing as T
-
+import nltk
+nltk.download('punkt')
 class LanguageEvaluator:
 
     def eval(
@@ -31,10 +32,11 @@ if __name__ == "__main__":
 
     hiring_dataset = load_dataset("buseskorkmaz/hiring_w_q_context_256_filtered", use_auth_token=True)["train"]
 
-    with open('/rds/general/user/bsk18/home/final-bias-ilql/benchmarking/eval_idxs.json', 'r') as f:
+    with open('$HOME/FMs-at-work/benchmarking/eval_idxs.json', 'r') as f:
         eval_indexes = json.load(f)
 
-    debiasing_methods = ["inlp-race", "inlp-gender", "Instructive-Debiasing", "sentence-debiasing-race", "sentence-debiasing-gender", "self-debiasing-gpt2", "self-debiasing-debiased"] 
+    # debiasing_methods = ["inlp-race", "inlp-gender", "Instructive-Debiasing", "sentence-debiasing-race", "sentence-debiasing-gender", "self-debiasing-gpt2", "self-debiasing-debiased"] 
+    debiasing_methods = ["openllamav2"]
     generated_texts_dict = {method: [] for method in debiasing_methods }
     evaluation_dict = {}
     for method in debiasing_methods:
@@ -69,10 +71,12 @@ if __name__ == "__main__":
             file_path = 'outputs/self-debiasing/prompted_generations_gpt2-large_debiased.txt'
             generated_text_key = 'continuations'
 
+        elif method == "openllamav2":
+            file_path = '$HOME/FMs-at-work/benchmarking/sentence-debiasing/generated_debias_texts_openllamav2.jsonl' 
+            generated_text_key = 'generated_text' 
         
         # List to hold the extracted generated_text values
         generated_texts = []
-        file_path = '/rds/general/user/bsk18/home/final-bias-ilql/benchmarking/' + file_path    
         # Open the file and read line by line
         with open(file_path, 'r', encoding='utf-8') as file:
             for line in file:
@@ -98,7 +102,7 @@ if __name__ == "__main__":
         evaluation_dict[method] = language_quality_scores
 
     # Specify the file path for the JSON file
-    output_file_path = '/rds/general/user/bsk18/home/final-bias-ilql/benchmarking/language_quality_results/self_debiasing_language_quality_scores.json'
+    output_file_path = '$HOME/FMs-at-work/benchmarking/openllamav2_generated_language_quality_scores.json'
 
     # Save the evaluation_dict to a JSON file
     with open(output_file_path, 'w', encoding='utf-8') as f:

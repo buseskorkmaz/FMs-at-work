@@ -14,14 +14,14 @@ class HackernewsData:
                 # not sure about them
                  reward_scale: float=1.0):
         
-        rl_dataset = load_dataset("buseskorkmaz/hiring_w_q_context_256_filtered", split="train")
+        rl_dataset = load_dataset("buseskorkmaz/cleaned_hiring_dataset_qval_w_gendered_mpnet_fixed_llama3_prompt", split="train")
         print(rl_dataset)
         # print(len(rl_dataset))
         # print(rl_dataset[0])
         items = [row for row in rl_dataset]
         # print("Indexes:", indexes)
         if indexes is not None:
-            items = [items[idx] for idx in indexes]
+            items = [items[idx] for idx in indexes if idx < len(rl_dataset)]
         self.info = ("huggingface", len(indexes))
         self.reward_cache = reward_cache
         if self.reward_cache is None:
@@ -36,9 +36,9 @@ class HackernewsData:
             clean_text = clean_text.replace('"', '')
             return clean_text
 
-        self.data = [remove_links(item['text']) for item in items]
-        self.parent_data = [remove_links(item['prompt']) for item in items]
-        self.gt_scores = [-100 if float(item['q_value']) == -1000.0 else float(item['q_value']) for item in items]
+        self.data = [item['cleaned_text'] for item in items]
+        self.parent_data = [item['messages_llama'] for item in items]
+        self.gt_scores = [-100 if float(item['q_val']) == -1000.0 else float(item['q_val']) for item in items]
         # self.location = [item['location'] for item in items]
         # self.embedding = [item['embedding'] for item in items]
         # self.remote = [item['remote'] for item in items]

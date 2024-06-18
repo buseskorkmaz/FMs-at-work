@@ -40,7 +40,7 @@ class Diversity_Evaluator:
             clean_text = clean_text.replace('"', '')
             return clean_text
 
-        self.text2embedding = {remove_links(item['text']): item['embedding'] for item in items}
+        self.text2embedding = {item['cleaned_text']: item['embedding'] for item in items}
         # self.prompt2idx = {remove_links(items[idx]['prompt']): idx for idx in range(len(items))}
         # self.idx2location = {idx: items[idx]['location'] for idx in range(len(items))}
 

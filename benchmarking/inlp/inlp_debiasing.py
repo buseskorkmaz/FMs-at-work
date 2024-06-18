@@ -47,13 +47,13 @@ if __name__ == "__main__":
 
     # Assuming bias_direction is your pre-computed bias direction tensor
     # Load it here, for example:
-    projection_matrix = torch.load(f'/rds/general/user/bsk18/home/inlp/projection_matrix/projection_m-GPT2Model_c-gpt2_t-{mode}_s-0.pt')
+    projection_matrix = torch.load(f'$HOME/inlp/projection_matrix/projection_m-GPT2Model_c-gpt2_t-{mode}_s-0.pt')
     model = INLPGPT2LMHeadModel('gpt2', projection_matrix)
     tokenizer = transformers.GPT2Tokenizer.from_pretrained('gpt2')
 
 
-    output_file = f'/rds/general/user/bsk18/home/inlp/generated_debias_texts_{mode}.jsonl'
-    prompts = read_prompts('/rds/general/user/bsk18/home/inlp/debias_prompts.jsonl')
+    output_file = f'$HOME/inlp/generated_debias_texts_{mode}.jsonl'
+    prompts = read_prompts('$HOME/inlp/debias_prompts.jsonl')
 
     for idx, prompt in enumerate(prompts):
         generated_text = generate_text(prompt, model, tokenizer)

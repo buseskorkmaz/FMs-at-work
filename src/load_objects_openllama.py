@@ -71,9 +71,9 @@ def load_openllama(config, verbose=True):
     obj = LlamaForCausalLM if config['lm_head'] else PreTrainedModel
     if config['from_pretrained']:
         model = obj.from_pretrained(config['openllama_type'])
-        print(f"--> Model Llama-2")
+        print(f"--> Model Llama-3")
         total_params = sum(p.numel() for p in model.parameters() if p.requires_grad)
-        print(f"\n--> Llama-2 has {total_params / 1e6} Million params\n")
+        print(f"\n--> Llama-3 has {total_params / 1e6} Million params\n")
         return model
     config = LlamaConfig.from_pretrained(config['openllama_type'])
     return obj(config)

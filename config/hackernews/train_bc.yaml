@@ -59,18 +59,18 @@ evaluator:
   verbose: true
   kind: sample
   generation_kwargs:
-    max_generation_len: 256
+    max_generation_len: 512
     num_generations: 1
 
 train:
-  save_checkpoint_dir: outputs/hackernews/llama/lrl1e-5-512-working
+  save_checkpoint_dir: outputs/hackernews/llama/lrl1e-5-512-cleaned
   optim_state_path: null
   epochs: 3
   dataloader_workers: 2
   bsize: 1
   grad_accum_steps: 4
   log_every: 128
-  eval_every: 512
+  eval_every: 1024
   save_every: 2048
   max_checkpoints: 1
   eval_bsize: 1

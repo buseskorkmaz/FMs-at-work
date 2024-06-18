@@ -106,20 +106,20 @@ evaluator:
     rerank_advantage_weight: 1.0
 
 train:
-  save_checkpoint_dir: outputs/hackernews/llama/iql_1e-5-100epoch-256-3gpu
+  save_checkpoint_dir: outputs/hackernews/llama/frozen_512_bios_no_offload_5_epoch_awac0-5
   optim_state_path: outputs/hackernews/optim_state/
-  epochs: 100
+  epochs: 5
   dataloader_workers: 2
   bsize: 1
   grad_accum_steps: 4
   log_every: 128
   eval_every: 512
-  save_every: 2048
+  save_every: 1500
   max_checkpoints: 1
   eval_bsize: 1
   eval_batches: 8
-  lr: 1e-5
-  weight_decay: 0.00
+  lr: 3e-4
+  weight_decay: 0.1
   hard_update_every: null
   max_steps: null
   loss:

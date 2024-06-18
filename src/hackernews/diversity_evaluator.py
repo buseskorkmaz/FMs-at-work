@@ -9,14 +9,31 @@ from scipy.stats import wasserstein_distance
 from transformers import BertTokenizer, BertModel
 import torch
 # from hackernews.language_quality_evaluator import Language_Evaluator
-
+from datasets import load_dataset
+from transformers import BertTokenizer, BertModel
+import torch
+import logging
+import sys
+from sentence_transformers import SentenceTransformer
 
 class Diversity_Evaluator:
 
     def __init__(self, target_male_pct: float=0.5, target_female_pct:float=0.5):
 
+        # Initialize models
+        self.model_names = [
+            'sentence-transformers/all-mpnet-base-v2',
+            # 'sentence-transformers/all-distilroberta-v1',
+            # 'sentence-transformers/all-MiniLM-L12-v2'
+        ]
+        self.models = {
+            'mpnet': SentenceTransformer(self.model_names[0], truncate_dim=512),
+            # 'distilroberta': SentenceTransformer(self.model_names[1], truncate_dim=512),
+            # 'minilm': SentenceTransformer(self.model_names[2], truncate_dim=512)
+        }
+
         self.user_profile_dataset = load_dataset("buseskorkmaz/wants_to_hired_gendered_sentence_embeddings")["train"]
-        self.hiring_dataset = load_dataset("buseskorkmaz/cleaned_hiring_dataset_qval_w_gendered_mpnet_fixed_prompt", split='train')
+        self.hiring_dataset = load_dataset("buseskorkmaz/cleaned_hiring_dataset_qval_w_gendered_mpnet_fixed_llama3_prompt", split='train')
         # self.language_eval = Language_Evaluator()
         items = [row for row in self.hiring_dataset]
 
@@ -32,10 +49,10 @@ class Diversity_Evaluator:
         self.text2embedding = {item['cleaned_text']: item['cleaned_embedding_mpnet'] for item in items}
         # In eval, remove "remove_links"
         # self.prompt2idx = {remove_links(items[idx]['prompt']): idx for idx in range(len(items))}
-        self.prompt2location = {items[idx]['prompt']: items[idx]['location'] for idx in range(len(items))}
+        self.prompt2location = {str(items[idx]['messages_llama']): items[idx]['location'] for idx in range(len(items))}
         # self.idx2location = {idx: items[idx]['location'] for idx in range(len(items))}
-        self.promtp2original = {items[idx]['prompt']: items[idx]['text'] for idx in range(len(items))}
-        self.prompt2profession = {items[idx]['prompt']: items[idx]['biasinbios_occupations'] for idx in range(len(items))}
+        self.promtp2original = {str(items[idx]['messages_llama']): items[idx]['text'] for idx in range(len(items))}
+        self.prompt2profession = {str(items[idx]['messages_llama']): items[idx]['biasinbios_occupations'] for idx in range(len(items))}
         # self.promtp2original = {remove_links(items[idx]['prompt']): items[idx]['text'] for idx in range(len(items))}
 
         # Load pre-trained model and tokenizer
@@ -44,37 +61,44 @@ class Diversity_Evaluator:
 
         # initialize target distributions
         # self.calc_location_statistics()
-        self.calc_gender_statistics()
+        # self.calc_gender_statistics()
 
-        # target_male_pct = 0.5
-        # target_female_pct  = 0.5 
+        target_male_pct = 0.5
+        target_female_pct  = 0.5 
 
-        # self.target_gender_distribution= np.array([target_male_pct, target_female_pct])  # 50% male, 50% female
-        
+        self.target_gender_distribution= np.array([target_male_pct, target_female_pct])  # 50% male, 50% female
+    
+    def three_sentence_transformers_encoding(self, text):
 
-    def encode_text(self, job_desc):
+        # Generate embeddings for each model
+        embedding = self.models['mpnet'].encode(text).tolist()
 
-        text = job_desc
-        # Preprocess the text
-        text = text.replace('\n', ' ').replace(',', ' ')
+        return embedding
 
-        # Tokenize and pad the text to a maximum length of 512 tokens
-        input_ids = self.tokenizer.encode(text, add_special_tokens=True, max_length=512, truncation=True, padding='max_length')
 
-        # Convert to tensor
-        input_ids = torch.tensor([input_ids])
+    # def encode_text(self, job_desc):
 
-        # Get the embeddings
-        with torch.no_grad():
-            last_hidden_states = self.model(input_ids)[0]  # Models outputs are now tuples
+    #     text = job_desc
+    #     # Preprocess the text
+    #     text = text.replace('\n', ' ').replace(',', ' ')
 
-        # Get the embeddings of the '[CLS]' token, which represents the entire sentence
-        sentence_embedding = last_hidden_states[0][0]
+    #     # Tokenize and pad the text to a maximum length of 512 tokens
+    #     input_ids = self.tokenizer.encode(text, add_special_tokens=True, max_length=512, truncation=True, padding='max_length')
 
-        # Convert the tensor to a list
-        sentence_embedding = sentence_embedding.tolist()
+    #     # Convert to tensor
+    #     input_ids = torch.tensor([input_ids])
 
-        return sentence_embedding   
+    #     # Get the embeddings
+    #     with torch.no_grad():
+    #         last_hidden_states = self.model(input_ids)[0]  # Models outputs are now tuples
+
+    #     # Get the embeddings of the '[CLS]' token, which represents the entire sentence
+    #     sentence_embedding = last_hidden_states[0][0]
+
+    #     # Convert the tensor to a list
+    #     sentence_embedding = sentence_embedding.tolist()
+
+    #     return sentence_embedding   
 
     def filter_candidates(self, user_profile_row, job_location):
         # replace 'location' and 'remote' with the actual column names in your dataset
@@ -131,11 +155,11 @@ class Diversity_Evaluator:
         return
     
     def calc_q_value(self, job_desc, prompt):
-
+        prompt = str(prompt)
         if job_desc in self.text2embedding.keys():
             job_embedding = self.text2embedding[job_desc]
         else:
-            job_embedding = self.encode_text(job_desc)
+            job_embedding = self.three_sentence_transformers_encoding(job_desc)
         
         idx = None
         print(prompt)
@@ -193,7 +217,8 @@ class Diversity_Evaluator:
             real_male_pct = genders.count("Male")/len(genders)
             real_female_pct = genders.count("Female")/len(genders)
 
-            target_gender_distribution = self.genders_per_occupation_dict[job_profession]  # arranged per occupation in biasinbios dataset  # 50% male, 50% female
+            target_gender_distribution = self.target_gender_distribution
+            # self.genders_per_occupation_dict[job_profession]  # arranged per occupation in biasinbios dataset  # 50% male, 50% female
             realized_gender_distribution = np.array([real_male_pct, real_female_pct])  # 30% male, 70% female
             print(target_gender_distribution)
             print(realized_gender_distribution)

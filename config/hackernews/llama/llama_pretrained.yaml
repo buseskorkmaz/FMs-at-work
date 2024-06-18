@@ -1,4 +1,4 @@
 name: llama
-llama_type: meta-llama/Llama-2-7b-chat-hf
+llama_type: meta-llama/Meta-Llama-3-8B-Instruct
 from_pretrained: true
 lm_head: true

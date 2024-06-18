@@ -72,17 +72,17 @@ def load_llama(config, verbose=True):
     obj = LlamaForCausalLM if config['lm_head'] else PreTrainedModel
     if config['from_pretrained']:
         model = obj.from_pretrained(config['llama_type'], torch_dtype=torch.float16)
-        print(f"--> Model Llama-2")
+        print(f"--> Model Llama-3")
         total_params = sum(p.numel() for p in model.parameters() if p.requires_grad)
-        print(f"\n--> Llama-2 has {total_params / 1e6} Million params\n")
+        print(f"\n--> Llama-3 has {total_params / 1e6} Million params\n")
         # total layers are 32
-        n_freeze=31
-        for param in model.parameters(): param.requires_grad = False    
-        for param in model.lm_head.parameters(): param.requires_grad = True
-        for param in model.model.layers[n_freeze:].parameters(): param.requires_grad = True
-        model.model.embed_tokens.weight.requires_grad_(False)
-        total_params = sum(p.numel() for p in model.parameters() if p.requires_grad)
-        print(f"\nAfter freezing--> Llama-2 has {total_params / 1e6} Million params\n")
+        # n_freeze=32
+        # for param in model.parameters(): param.requires_grad = False    
+        # for param in model.lm_head.parameters(): param.requires_grad = True
+        # # for param in model.model.layers[n_freeze:].parameters(): param.requires_grad = True
+        # model.model.embed_tokens.weight.requires_grad_(False)
+        # total_params = sum(p.numel() for p in model.parameters() if p.requires_grad)
+        print(f"\nAfter freezing--> Llama-3 has {total_params / 1e6} Million params\n")
         # model = prepare_model_for_int8_training(model)
         # peft_config = LoraConfig(
         #     lora_alpha=16,

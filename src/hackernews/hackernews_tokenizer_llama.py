@@ -1,9 +1,9 @@
 from data.tokenizer import Tokenizer
-from transformers import LlamaTokenizer
+from transformers import AutoTokenizer
 
 class HackernewsTokenizer(Tokenizer):
     def __init__(self):
-        self.tokenizer = LlamaTokenizer.from_pretrained('meta-llama/Llama-2-7b-chat-hf', trust_remote_code=True, legacy=False)
+        self.tokenizer = AutoTokenizer.from_pretrained('meta-llama/Meta-Llama-3-8B-Instruct', trust_remote_code=True, legacy=False)
         self.tokenizer.add_special_tokens({'additional_special_tokens': ['</a>', '<a>', '</eod>'], 
                                            'bos_token': '<s>', 
                                            'sep_token': '</s>', 
@@ -16,14 +16,23 @@ class HackernewsTokenizer(Tokenizer):
                          self.tokenizer.convert_tokens_to_ids('</eod>'))
     
     def encode(self, str_, **kwargs):
-        items = self.tokenizer(
-                    str_, 
-                    add_special_tokens=False, 
-                    padding=True, 
-                    truncation=True,
-                    max_length=512,
-                    **kwargs, 
-                )
+        items = self.tokenizer.apply_chat_template(
+                str_,
+                add_generation_prompt=True,
+                return_dict=True,
+                return_tensors="pt",
+                truncation=True,
+                max_length=600,
+                **kwargs,
+            )
+        # items = self.tokenizer(
+        #             str_, 
+        #             add_special_tokens=False, 
+        #             padding=True, 
+        #             truncation=True,
+        #             max_length=512,
+        #             **kwargs, 
+        #         )
         return items['input_ids'], items['attention_mask']
     
     def decode(self, tokens, **kwargs):

@@ -23,7 +23,7 @@ dataset:
 model:
   alpha: 0.005
   gamma: 0.99
-  beta: 8
+  beta: 64
   transition_weight: 0.0
   clip_weight: null
   value_max: null
@@ -46,7 +46,7 @@ model:
     name: hackernews_list_dataset
     cache_id: d
   load:
-    checkpoint_path: outputs/hackernews/openllamav2/iql_1e-5-10epoch-1024bc-512iql/model.pkl
+    checkpoint_path: outputs/hackernews/llama/frozen_512_bios_no_offload_5_epoch_awac0-5/model_7499.pkl
     strict_load: true
   llama:
     lm_head: true
@@ -76,7 +76,7 @@ evaluator:
   verbose: true
   kind: sample
   generation_kwargs:
-    max_generation_len: 256
+    max_generation_len: 512
     # beam_width: 1
     temp: 1.0
     top_k: null
@@ -93,13 +93,17 @@ evaluator:
 eval:
   dataloader_workers: 1
   bsize: 1
-  batches: 1
+  batches: 400
   print_every: 4
   seed: 0
-  log_save_path: outputs/hackernews/openllamav2/eval/iql_eval_10epoch-beta8/eval_logs.pkl
+  log_save_path: outputs/hackernews/llama/eval/frozen_512_hn_no_offload_5_epoch-beta64_awac025/eval_logs.pkl
   loss:
     v_loss_weight: 1.0
     q_loss_weight: 1.0
-    awac_weight: 1.0
+    awac_weight: 0.25
     cql_loss_weight: 0.25
     mc_returns: false
+
+wandb:
+  use_wandb: true
+  wandb_project: hackernews_iql_llama_eval

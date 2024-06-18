@@ -10,7 +10,7 @@ from sklearn.metrics.pairwise import cosine_similarity
 from scipy.stats import wasserstein_distance
 from transformers import BertTokenizer, BertModel
 import torch
-
+import argparse
 
 def remove_links(text):
         clean_text = re.sub('<a.*?</a>', '', text)
@@ -319,13 +319,23 @@ def extract_text(input_string, parent):
 
 if __name__ == "__main__":
 
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--index', type=int)
+    parser.add_argument('--method', type=str)
+    args = parser.parse_args()
+
+    batch_index = args.index
+    method = args.method
+    num_batches = 10  # Specify the total number of batches
+    
     hiring_dataset = load_dataset("buseskorkmaz/hiring_w_q_context_256_filtered", use_auth_token=True)["train"]
     candidates_dataset  = load_dataset("buseskorkmaz/wants_to_be_hired_gendered", use_auth_token=True)["train"]
 
-    with open('/rds/general/user/bsk18/home/final-bias-ilql/benchmarking/eval_idxs.json', 'r') as f:
+    with open('$HOME/FMs-at-work/benchmarking/eval_idxs.json', 'r') as f:
         eval_indexes = json.load(f)
 
-    debiasing_methods = ["inlp-race", "inlp-gender", "Instructive-Debiasing", "sentence-debiasing-race", "sentence-debiasing-gender", "self-debiasing-gpt2", "self-debiasing-debiased"] 
+    # debiasing_methods = ["inlp-race", "inlp-gender", "Instructive-Debiasing", "sentence-debiasing-race", "sentence-debiasing-gender", "self-debiasing-gpt2", "self-debiasing-debiased"] 
+    debiasing_methods = [method]
     generated_texts_dict = {method: [] for method in debiasing_methods }
 
     for method in debiasing_methods:
@@ -359,11 +369,26 @@ if __name__ == "__main__":
         elif method == "self-debiasing-debiased":
             file_path = 'outputs/self-debiasing/prompted_generations_gpt2-large_debiased.txt'
             generated_text_key = 'continuations'
-
+        
+        elif method == "openllamav2":
+            file_path = '$HOME/FMs-at-work/benchmarking/sentence-debiasing/generated_debias_texts_openllamav2.jsonl' 
+            generated_text_key = 'generated_text' 
+        
+        elif method == "gemma":
+            file_path = '$HOME/FMs-at-work/benchmarking/sentence-debiasing/generated_debias_texts_gemma.jsonl' 
+            generated_text_key = 'generated_text' 
+        
+        elif method == "llama":
+            file_path = '$HOME/FMs-at-work/benchmarking/sentence-debiasing/generated_debias_texts_llama.jsonl' 
+            generated_text_key = 'generated_text' 
+        
+        elif method == "mistral":
+            file_path = '$HOME/FMs-at-work/benchmarking/sentence-debiasing/generated_debias_texts_mistral.jsonl' 
+            generated_text_key = 'generated_text' 
         
         # List to hold the extracted generated_text values
         generated_texts = []
-        file_path = '/rds/general/user/bsk18/home/final-bias-ilql/benchmarking/' + file_path    
+        file_path = f'$HOME/FMs-at-work/benchmarking/sentence-debiasing/generated_debias_texts_{method}.jsonl'  
         # Open the file and read line by line
         with open(file_path, 'r', encoding='utf-8') as file:
             for line in file:
@@ -382,12 +407,15 @@ if __name__ == "__main__":
         generated_texts_dict[method] = generated_texts
     
         evaluation_dataset = hiring_dataset.select(eval_indexes)
-        evaluation_dataset = evaluation_dataset.add_column("generated_text", generated_texts)
+        batch_size = len(evaluation_dataset) // num_batches
+        batch = evaluation_dataset.select(range(batch_index * batch_size, (batch_index + 1) * batch_size))
+        batch = batch.add_column("generated_text", generated_texts[batch_index * batch_size: (batch_index + 1) * batch_size])
 
-        evaluator = Diversity_Evaluator(evaluation_dataset=evaluation_dataset)
-        generated_evaluation_dataset = evaluation_dataset.map(lambda x: evaluator.calc_q_value(x, x["generated_text"]))
+        evaluator = Diversity_Evaluator(evaluation_dataset=batch)
+        generated_evaluation_dataset = batch.map(lambda x: evaluator.calc_q_value(x, x["generated_text"]))
         
-        generated_evaluation_dataset.save_to_disk(f"diversity_benchmark_results/{method}_generated")
+        generated_evaluation_dataset.save_to_disk(f"diversity_benchmark_results/{method}_generated_batch_{batch_index}")
         print(generated_evaluation_dataset[1])
 
-        print(f"Evalution of {method} is done!")
+        print(f"Evaluation of {method} is done!")
+

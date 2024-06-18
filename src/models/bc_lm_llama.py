@@ -51,10 +51,16 @@ class BC_LM(BaseTransformer):
         input_embeddings = torch.cat((prefix_embs, model_embeddings), dim=1)
         # print(prefix_embs.shape, tokens.shape, map_pytree(lambda x: x.shape, kwargs['past_key_values'] if 'past_key_values' in kwargs else None))
         # print(input_embeddings.shape, tokens.shape, input_attn_mask.shape, position_ids)
+        terminators = [
+            self.dataset.tokenizer.eos_token_id,
+            self.dataset.tokenizer.convert_tokens_to_ids("<|eot_id|>")
+        ]
         model_outputs = self.model(inputs_embeds=input_embeddings, 
                                    attention_mask=input_attn_mask, 
-                                   position_ids=position_ids, 
+                                   position_ids=position_ids,
+                                   eos_token_id=terminators,  
                                    **kwargs)
+        model_outputs = model_outputs[0][input_embeddings.shape[-1]:]
         return model_outputs
     
     def get_weights(self, 

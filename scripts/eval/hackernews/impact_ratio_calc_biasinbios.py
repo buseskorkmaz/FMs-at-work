@@ -34,12 +34,12 @@ class Diversity_Evaluator:
     def __init__(self, evaluation_dataset, target_male_pct: float=0.5, target_female_pct:float=0.5):
 
         # self.user_profile_dataset = load_dataset("buseskorkmaz/wants_to_be_hired_gendered")["train"]
-        self.user_profile_dataset = load_dataset("buseskorkmaz/biasinbios_processed")["train"]
-        logging.info(f"user profile dataset before {len(self.user_profile_dataset)}")
-        # Define the profession classes to exclude
-        excluded_classes = [1, 3, 4, 5, 6, 7, 8, 9, 12, 13, 14, 16, 17, 18, 19, 20, 22, 23, 25, 27]
-        # Filter the dataset to exclude rows with specified profession classes
-        self.user_profile_dataset = self.user_profile_dataset.filter(lambda x: x['profession'] not in excluded_classes)
+        self.user_profile_dataset = load_dataset("buseskorkmaz/biasinbios_processed_train")["train"]
+        # logging.info(f"user profile dataset before {len(self.user_profile_dataset)}")
+        # # Define the profession classes to exclude
+        # excluded_classes = [1, 3, 4, 5, 6, 7, 8, 9, 12, 13, 14, 16, 17, 18, 19, 20, 22, 23, 25, 27]
+        # # Filter the dataset to exclude rows with specified profession classes
+        # self.user_profile_dataset = self.user_profile_dataset.filter(lambda x: x['profession'] not in excluded_classes)
         logging.info(f"user profile dataset after {len(self.user_profile_dataset)}")
         
         self.evaluation_dataset = evaluation_dataset
@@ -63,12 +63,12 @@ class Diversity_Evaluator:
         self.tokenizer = BertTokenizer.from_pretrained('bert-base-uncased')
 
         # initialize target distributions
-        # self.calc_location_statistics()
+        self.calc_gender_statistics()
 
-        target_male_pct = 0.5
-        target_female_pct  = 0.5 
+        # target_male_pct = 0.5
+        # target_female_pct  = 0.5 
 
-        self.target_gender_distribution= np.array([target_male_pct, target_female_pct])  # 50% male, 50% female
+        # self.target_gender_distribution= np.array([target_male_pct, target_female_pct])  # 50% male, 50% female
         logging.info("Diversity_Evaluator initialized.")
 
     def encode_text(self, job_desc):
@@ -113,22 +113,21 @@ class Diversity_Evaluator:
         #     return True
         
         return False
-    
-    def calc_location_statistics(self):
 
-        print("Calculating location diversity statistics of the dataset....")
-        total_candidate = len(self.user_profile_dataset)
-        target_na_pct = self.user_profile_dataset["Main_location"].count("North America") / total_candidate
-        target_eu_pct = self.user_profile_dataset["Main_location"].count("Europe") / total_candidate
-        target_asia_pct = self.user_profile_dataset["Main_location"].count("Asia") / total_candidate
-        target_remote_pct = self.user_profile_dataset["Main_location"].count("Remote") / total_candidate
-        target_australia_pct = self.user_profile_dataset["Main_location"].count("Australia") / total_candidate
-        target_africa_pct = self.user_profile_dataset["Main_location"].count("Africa") / total_candidate
-        target_sa_pct = self.user_profile_dataset["Main_location"].count("South America") / total_candidate
-        target_unknown_pct =  self.user_profile_dataset["Main_location"].count("Unknown") / total_candidate
-        
-        self.target_location_distribution = np.array([target_na_pct, target_eu_pct, target_asia_pct, target_remote_pct, target_australia_pct, target_africa_pct,
-                                                    target_sa_pct, target_unknown_pct])
+    def calc_gender_statistics(self):
+
+        print("Computing gender diversity statistics of the dataset....")
+        unique_professions = set(self.user_profile_dataset['profession_name'])
+        self.genders_per_occupation_dict = {k: [np.nan , np.nan] for k in unique_professions}
+        for profession in unique_professions:
+            matched_candidates = self.user_profile_dataset.filter(lambda x: x['profession_name'] == profession)
+            total_candidate = len(matched_candidates)
+            target_male_pct = matched_candidates['Gender'].count("Male") / total_candidate
+            target_female_pct = matched_candidates['Gender'].count("Female") / total_candidate
+            self.genders_per_occupation_dict[profession] = [target_male_pct, target_female_pct]
+        print("Gender diversity targets per occupation:")
+        print(self.genders_per_occupation_dict)
+
         return
     
 
@@ -152,6 +151,7 @@ class Diversity_Evaluator:
         
 
         k = 50
+        job_profession = row["biasinbios_occupations"]
         # locations = []
         # main_locations = []
         professions = []
@@ -177,7 +177,7 @@ class Diversity_Evaluator:
             real_male_pct = genders.count("Male")/len(genders)
             real_female_pct = genders.count("Female")/len(genders)
 
-            target_gender_distribution = self.target_gender_distribution  # 50% male, 50% female
+            target_gender_distribution = self.genders_per_occupation_dict[job_profession]  # arranged per occupation in biasinbios dataset
             realized_gender_distribution = np.array([real_male_pct, real_female_pct])  # 30% male, 70% female
             print(target_gender_distribution)
             print(realized_gender_distribution)
@@ -195,25 +195,6 @@ class Diversity_Evaluator:
             
             for profession in set(female_candidates):
                 female_profession_percentages[profession] = female_candidates.count(profession) / total_female_candidates
-
-            # total_candidate = len(genders)
-            # real_na_pct = main_locations.count("North America") / total_candidate
-            # real_eu_pct = main_locations.count("Europe") / total_candidate
-            # real_asia_pct = main_locations.count("Asia") / total_candidate
-            # real_remote_pct = main_locations.count("Remote") / total_candidate
-            # real_australia_pct = main_locations.count("Australia") / total_candidate
-            # real_africa_pct = main_locations.count("Africa") / total_candidate
-            # real_sa_pct = main_locations.count("South America") / total_candidate
-            # real_unknown_pct =  main_locations.count("Unknown") / total_candidate
-
-            # target_location_distribution = np.array(list(get_element_percentages(user_profile_dataset["Main_location"]).values()))
-            # realized_location_distribution = np.array(list(get_element_percentages(filtered_user_profiles["Main_location"]).values()))
-            # target_location_distribution =  self.target_location_distribution
-            # realized_location_distribution = np.array([real_na_pct, real_eu_pct, real_asia_pct, real_remote_pct, real_australia_pct, real_africa_pct,
-            #                                         real_sa_pct, real_unknown_pct])
-
-            # print(target_location_distribution)
-            # print(realized_location_distribution)
 
             # Calculate the Wasserstein divergence -- always finite
             wasserstein_distance_gender = wasserstein_distance(target_gender_distribution, realized_gender_distribution)
@@ -281,58 +262,6 @@ class Diversity_Evaluator:
             for profession in set(female_selected_candidates):
                 female_selected_profession_percentages[profession] = female_selected_candidates.count(profession) / total_female_selected_candidates
 
-
-            # selection rate of locations
-            # if real_na_pct > 0:
-            #     sr_na = loc_selected.count("North America") / main_locations.count("North America")
-            # else:
-            #     sr_na = 0
-            
-            # if real_eu_pct > 0:
-            #     sr_eu = loc_selected.count("Europe") / main_locations.count("Europe")
-            # else:
-            #     sr_eu = 0
-
-            # if real_asia_pct > 0:
-            #     sr_asia = loc_selected.count("Asia") / main_locations.count("Asia")
-            # else:
-            #     sr_asia = 0
-
-            # if real_remote_pct > 0:
-            #     sr_remote = loc_selected.count("Remote") / main_locations.count("Remote") 
-            # else:
-            #     sr_remote = 0
-            
-            # if real_australia_pct > 0:
-            #     sr_australia = loc_selected.count("Australia") / main_locations.count("Australia")
-            # else:
-            #     sr_australia = 0
-            
-            # if real_africa_pct > 0:
-            #     sr_africa = loc_selected.count("Africa") / main_locations.count("Africa")
-            # else:
-            #     sr_africa = 0
-            
-            # if real_sa_pct > 0:
-            #     sr_sa = loc_selected.count("South America") / main_locations.count("South America") 
-            # else:
-            #     sr_sa = 0
-            
-            # if real_unknown_pct > 0:
-            #     sr_unknown =  loc_selected.count("Unknown") / main_locations.count("Unknown")
-            # else:
-            #     sr_unknown = 0
-
-            # # impact ratio of locations
-            # impact_r_na = sr_na / max(sr_na, sr_eu, sr_asia, sr_remote, sr_australia, sr_africa, sr_sa, sr_unknown)
-            # impact_r_eu = sr_eu / max(sr_na, sr_eu, sr_asia, sr_remote, sr_australia, sr_africa, sr_sa, sr_unknown)
-            # impact_r_asia = sr_asia / max(sr_na, sr_eu, sr_asia, sr_remote, sr_australia, sr_africa, sr_sa, sr_unknown)
-            # impact_r_remote = sr_remote / max(sr_na, sr_eu, sr_asia, sr_remote, sr_australia, sr_africa, sr_sa, sr_unknown)
-            # impact_r_australia = sr_australia / max(sr_na, sr_eu, sr_asia, sr_remote, sr_australia, sr_africa, sr_sa, sr_unknown)
-            # impact_r_africa = sr_africa / max(sr_na, sr_eu, sr_asia, sr_remote, sr_australia, sr_africa, sr_sa, sr_unknown)
-            # impact_r_sa = sr_sa / max(sr_na, sr_eu, sr_asia, sr_remote, sr_australia, sr_africa, sr_sa, sr_unknown)
-            # impact_r_unknown = sr_unknown / max(sr_na, sr_eu, sr_asia, sr_remote, sr_australia, sr_africa, sr_sa, sr_unknown)
-
         else:
             print("no match")
             wasserstein_distance_gender = 1
@@ -340,15 +269,6 @@ class Diversity_Evaluator:
             distance =  wasserstein_distance_gender 
             # + wasserstein_distance_location
             q_value = -100
-
-            # real_na_pct = np.nan
-            # real_eu_pct = np.nan
-            # real_asia_pct = np.nan
-            # real_remote_pct = np.nan
-            # real_australia_pct = np.nan
-            # real_africa_pct = np.nan
-            # real_sa_pct = np.nan
-            # real_unknown_pct = np.nan
 
             real_male_pct = np.nan
             real_female_pct = np.nan
@@ -359,26 +279,6 @@ class Diversity_Evaluator:
             # impact ratio of genders
             impact_r_female = np.nan
             impact_r_male = np.nan
-
-            # selection rate of locations
-            # sr_na = np.nan
-            # sr_eu = np.nan
-            # sr_asia = np.nan
-            # sr_remote = np.nan
-            # sr_australia = np.nan
-            # sr_africa = np.nan
-            # sr_sa = np.nan
-            # sr_unknown =  np.nan
-
-            # impact ratio of locations
-            # impact_r_na = np.nan
-            # impact_r_eu = np.nan
-            # impact_r_asia = np.nan
-            # impact_r_remote = np.nan
-            # impact_r_australia = np.nan
-            # impact_r_africa = np.nan
-            # impact_r_sa = np.nan
-            # impact_r_unknown = np.nan
 
             male_profession_percentages = {}
             female_profession_percentages = {}
@@ -406,35 +306,29 @@ class Diversity_Evaluator:
                 # "ir_australia": impact_r_australia, "ir_africa": impact_r_africa, "ir_sa": impact_r_sa, "ir_unknown": impact_r_unknown, 
                 }
 
-def extract_text(input_string, parent):
-    if parent:
-        pattern = r"(?<=parent:)(.*?)(?=comment:)"
-    else:
-        pattern = r"(?<=comment:)(.*)"
-    matches = re.findall(pattern, input_string, re.DOTALL)
-    return [match.strip() for match in matches]
-
 def main(batch_index):
     setup_logging(f"processing_batch_generated_{batch_index}.log")
     
     logging.info("Loading dataset...")
 
     logging.info("Loading evaluation dataset...")
-    evaluation_dataset = load_dataset("buseskorkmaz/beta8_paper_generated", data_files="data-00000-of-00001.arrow")["train"]
+    # evaluation_dataset = load_dataset("buseskorkmaz/beta8_paper_generated", data_files="data-00000-of-00001.arrow")["train"]
+    evaluation_dataset = load_dataset("buseskorkmaz/hiring_w_q_context_256_filtered_biasinbios_occ")["train"]
+    evaluation_dataset = evaluation_dataset.select(range(5600, 5635))
     print(evaluation_dataset)
     print(evaluation_dataset[0])
     batch = evaluation_dataset.select(range(batch_index * batch_size, (batch_index + 1) * batch_size))
 
     evaluator = Diversity_Evaluator(evaluation_dataset=batch)
-    generated_evaluation_dataset = batch.map(lambda x: evaluator.calc_q_value(x, x["generated_text"]))
-    # original_evaluation_dataset = batch.map(lambda x: evaluator.calc_q_value(x, x["text"]))
+    # generated_evaluation_dataset = batch.map(lambda x: evaluator.calc_q_value(x, x["generated_text"]))
+    original_evaluation_dataset = batch.map(lambda x: evaluator.calc_q_value(x, x["text"]))
     logging.info("Saving generated evaluation dataset...")
-    generated_evaluation_dataset.save_to_disk(f"buseskorkmaz/biasinbios_generated_{batch_index}")
-    # original_evaluation_dataset.save_to_disk(f"buseskorkmaz/biasinbios_original_{batch_index}_mrr")
-    logging.info(f"Sample evaluated item: {generated_evaluation_dataset[1]}")
-    # print(original_evaluation_dataset[1])
-    print(generated_evaluation_dataset[1])
-    logging.info(f"Finished processing batch {batch_index + 1}/{num_batches}")
+    # generated_evaluation_dataset.save_to_disk(f"buseskorkmaz/biasinbios_generated_{batch_index}")
+    original_evaluation_dataset.save_to_disk(f"buseskorkmaz/biasinbios_original_{batch_index}_occ_map")
+    logging.info(f"Sample evaluated item: {original_evaluation_dataset[1]}")
+    print(original_evaluation_dataset[1])
+    # print(generated_evaluation_dataset[1])
+    logging.info(f"Finished processing batch {batch_index}/{num_batches}")
 
 if __name__ == "__main__":
     if len(sys.argv) != 2:
@@ -442,7 +336,8 @@ if __name__ == "__main__":
         sys.exit(1)
     
     batch_index = int(sys.argv[1])
-    num_batches = 10
-    batch_size = len(load_dataset("buseskorkmaz/beta8_paper_generated", data_files="data-00000-of-00001.arrow")["train"]) // num_batches
-    
+    num_batches = 100
+    # batch_size = len(load_dataset("", data_files="data-00000-of-00001.arrow")["train"]) // num_batches
+    batch_size = len(load_dataset("buseskorkmaz/labelled_cleaned_hiring_w_embedding")["train"]) // num_batches
+    # batch_size = 5
     main(batch_index)

@@ -19,6 +19,8 @@ def load_score_human_reward(config, device, verbose=True):
     if config['index_path'] is not None:
         with open(convert_path(config['index_path']), 'r') as f:
             indexes = json.load(f)
+            # small temporary fix, idx < len(dataset)
+        indexes = [idx for idx in indexes if idx < 5200]
     else:
         indexes = None
     return score_human_reward(indexes)
