@@ -1,5 +1,6 @@
 *.pyc
-*.json
+benchmarking/*.json
+benchmarking/
 *.arrow
 !analysis/input_files/
 __pycache__/
