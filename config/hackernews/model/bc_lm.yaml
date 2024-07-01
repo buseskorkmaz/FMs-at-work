@@ -1,5 +1,5 @@
 defaults:
- - /llama: llama_pretrained
+ - /gpt2: gpt2_pretrained
 
 name: bc_lm
 dataset: null

@@ -138,6 +138,7 @@ class BC_Policy(Policy):
         assert kind in {'sample', 'beam'}
         self.kind = kind
         self.generation_kwargs = generation_kwargs
+        self.logits_all = []
     
     def sample_raw(self, 
                    tokens: torch.Tensor, attn_mask: torch.Tensor, 
@@ -203,7 +204,7 @@ class BC_Policy(Policy):
                     processed_str = processed_str[:processed_str.find(tokenizer.id_to_token(tokenizer.eoa_token_id))].strip()
                 temp_outputs.append(processed_str)
             processed_outputs.append(temp_outputs)
-        return list(zip(input_strs, processed_outputs)), log_probs.reshape(-1, num_generations)
+        return list(zip(input_strs, processed_outputs)), log_probs.reshape(-1, num_generations), logits
     
     def beam_raw(self, 
                  tokens: torch.Tensor, attn_mask: torch.Tensor, 
@@ -284,9 +285,10 @@ class BC_Policy(Policy):
             method = self.sample_raw
         else:
             raise NotImplementedError
-        generations, probs = method(tokens, attn_mask, 
+        generations, probs, logits = method(tokens, attn_mask, 
                                     termination_condition, 
                                     **kwargs)
+        self.logits_all.append(logits)
         return generations, probs
     
     def act(self, obs: Language_Observation) -> str:

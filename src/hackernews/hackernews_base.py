@@ -4,6 +4,7 @@ from typing import Callable, List, Optional
 from utils.cache import Cache
 from datasets import load_dataset
 import re
+import json
 
 class HackernewsData:
     def __init__(self,
@@ -14,15 +15,18 @@ class HackernewsData:
                 # not sure about them
                  reward_scale: float=1.0):
         
-        rl_dataset = load_dataset("buseskorkmaz/cleaned_hiring_dataset_qval_w_gendered_mpnet_fixed_llama3_prompt", split="train")
-        print(rl_dataset)
+        # rl_dataset = load_dataset("buseskorkmaz/cleaned_hiring_dataset_qval_w_gendered_mpnet_fixed_llama3_prompt", split="train")
+        with open('/gpfs/home/bsk18/FMs-at-work/data/hackernews_rl_dataset/prompts.json', 'r') as file:
+            rl_dataset = json.load(file)
+
+        # print(rl_dataset)
         # print(len(rl_dataset))
         # print(rl_dataset[0])
         items = [row for row in rl_dataset]
         # print("Indexes:", indexes)
-        if indexes is not None:
-            items = [items[idx] for idx in indexes if idx < len(rl_dataset)]
-        self.info = ("huggingface", len(indexes))
+        # if indexes is not None:
+        #     items = [items[idx] for idx in indexes if idx < len(rl_dataset)]
+        # self.info = ("huggingface", len(indexes))
         self.reward_cache = reward_cache
         if self.reward_cache is None:
             self.reward_cache = Cache()
@@ -37,7 +41,7 @@ class HackernewsData:
             return clean_text
 
         self.data = [item['cleaned_text'] for item in items]
-        self.parent_data = [item['messages_llama'] for item in items]
+        self.parent_data = [item['prompt'] for item in items]
         self.gt_scores = [-100 if float(item['q_val']) == -1000.0 else float(item['q_val']) for item in items]
         # self.location = [item['location'] for item in items]
         # self.embedding = [item['embedding'] for item in items]
@@ -45,13 +49,13 @@ class HackernewsData:
         # self.relocate = [item['relocate'] for item in items]
         self.reward_shift = reward_shift
         self.reward_scale = reward_scale
-        print("INITIALIZED WITH REWARD F", reward_f)
+        # print("INITIALIZED WITH REWARD F", reward_f)
         self.reward_f = reward_f
 
-        print(self.data[12])
-        print(self.parent_data[12])
-        print(self.gt_scores[12])
-        print("Uploaded dataset length:", len(self.data))
+        # print(self.data[0])
+        # print(self.parent_data[0])
+        # print(self.gt_scores[0])
+        # print("Uploaded dataset length:", len(self.data))
 
     def __getitem__(self, idx):
         job_description = self.data[idx]

@@ -1,0 +1,59 @@
+defaults:
+  - model: bc_lm
+  - dataset: list_eval
+  - evaluator: bc_evaluator
+  - _self_
+
+dataset:
+  cache_id: d
+  data:
+    cache_id: raw_data
+    cache_path: null
+    reward_shift: 0.0
+    reward_scale: 1.0
+    reward_f: null
+  max_len: 1024
+  cuttoff: null
+  resample_timeout: 0.05
+  include_parent: true
+
+model:
+  dataset:
+    name: hackernews_list_dataset
+    cache_id: d
+  load:
+    checkpoint_path: /gpfs/home/bsk18/FMs-at-work/outputs/hackernews/gpt2/lrl1e-4-20.pkl/model.pkl
+    strict_load: true
+
+evaluator:
+  env:
+    reward_shift: 0.0
+    reward_scale: 1.0
+    data:
+      name: hackernews_rl_dataset
+      cache_id: raw_data
+    reward_f:
+      name: hackernews_reward
+      job_descriptions_path: data/hackernews_rl_dataset/
+      index_path: data/hackernews_rl_dataset/eval_idxs.json
+    include_parent: true
+  verbose: true
+  kind: sample
+  generation_kwargs:
+    max_generation_len: 512
+    num_generations: 1
+
+eval:
+  dataloader_workers: 1
+  bsize: 1
+  batches: 400
+  print_every: 4
+  seed: 0
+  log_save_path: /gpfs/home/bsk18/FMs-at-work/outputs/hackernews/gpt2/hackernews-checkpoint/inference_logs.pkl
+  loss:
+    v_loss_weight: 1.0
+    q_loss_weight: 1.0
+    awac_weight: 0.25
+    cql_loss_weight: 0.25
+    mc_returns: false
+

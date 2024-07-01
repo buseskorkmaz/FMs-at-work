@@ -1,5 +1,5 @@
-#PBS -l walltime=18:00:00
-#PBS -l select=1:ncpus=16:mem=160gb:ngpus=2:gpu_type=A100
+#PBS -l walltime=00:30:00
+#PBS -l select=1:ncpus=8:mem=50gb:ngpus=1:gpu_type=A100
 
 echo "Host - $HOSTNAME"
 
@@ -60,7 +60,8 @@ export TOKENIZERS_PARALLELISM=false
 
 # Install dependencies.
 cd $HOME/FMs-at-work/
-accelerate launch $HOME/FMs-at-work/scripts/train/hackernews/train_bc.py
+python /gpfs/home/bsk18/FMs-at-work/scripts/eval/hackernews/inference_policy.py
+# accelerate launch $HOME/FMs-at-work/scripts/train/hackernews/train_bc.py
 # accelerate launch $HOME/FMs-at-work/scripts/train/hackernews/train_iql.py model.load.checkpoint_path=/gpfs/home/bsk18/FMs-at-work/outputs/hackernews/llama/lrl1e-5-512-working/model_converted.pkl model.load.strict_load=false train.loss.awac_weight=0.4 train.save_checkpoint_dir=outputs/hackernews/llama/frozen_512_bios_no_offload_5_epoch_awac0-4
 # accelerate launch $HOME/FMs-at-work/scripts/eval/hackernews/eval_policy.py model.load.checkpoint_path=outputs/hackernews/llama/frozen_512_bios_no_offload_5_epoch_awac0-4/model_7499.pkl eval.log_save_path=outputs/hackernews/llama/eval/frozen_512_hn_no_offload_5_epoch-beta8_awac04/eval_logs.pkl
 

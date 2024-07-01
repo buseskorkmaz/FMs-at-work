@@ -26,9 +26,9 @@ def register(name):
 
 def load_item(config, *args, verbose=True):
     config = config.copy()
-    print("Config: ", config)
+    # print("Config: ", config)
     name = config.pop('name')
-    print("Registry:",registry)
+    # print("Registry:",registry)
     print(name)
     if name not in registry:
         raise NotImplementedError

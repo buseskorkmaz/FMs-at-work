@@ -3,7 +3,7 @@ from typing import Optional
 from data.rl_data import ConstantTokenReward, DataPoint, List_RL_Dataset, TokenReward
 from hackernews.hackernews_base import HackernewsData
 from hackernews.hackernews_env import HackernewsObservation
-from hackernews.hackernews_tokenizer_llama import HackernewsTokenizer
+from hackernews.hackernews_tokenizer_gpt2 import HackernewsTokenizer
 import numpy as np
 import random
 import time

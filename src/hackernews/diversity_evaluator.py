@@ -15,6 +15,7 @@ import torch
 import logging
 import sys
 from sentence_transformers import SentenceTransformer
+import json
 
 class Diversity_Evaluator:
 
@@ -33,7 +34,10 @@ class Diversity_Evaluator:
         }
 
         self.user_profile_dataset = load_dataset("buseskorkmaz/wants_to_hired_gendered_sentence_embeddings")["train"]
-        self.hiring_dataset = load_dataset("buseskorkmaz/cleaned_hiring_dataset_qval_w_gendered_mpnet_fixed_llama3_prompt", split='train')
+        with open('/gpfs/home/bsk18/FMs-at-work/data/hackernews_rl_dataset/prompts.json', 'r') as file:
+            self.hiring_dataset = json.load(file)
+
+        # load_dataset("buseskorkmaz/cleaned_hiring_dataset_qval_w_gendered_mpnet_fixed_llama3_prompt", split='train')
         # self.language_eval = Language_Evaluator()
         items = [row for row in self.hiring_dataset]
 
@@ -46,13 +50,13 @@ class Diversity_Evaluator:
             clean_text = clean_text.replace('"', '')
             return clean_text
 
-        self.text2embedding = {item['cleaned_text']: item['cleaned_embedding_mpnet'] for item in items}
+        self.text2embedding = {"empty": []}
         # In eval, remove "remove_links"
         # self.prompt2idx = {remove_links(items[idx]['prompt']): idx for idx in range(len(items))}
-        self.prompt2location = {str(items[idx]['messages_llama']): items[idx]['location'] for idx in range(len(items))}
+        self.prompt2location = {str(items[idx]['prompt']): '' for idx in range(len(items))}
         # self.idx2location = {idx: items[idx]['location'] for idx in range(len(items))}
-        self.promtp2original = {str(items[idx]['messages_llama']): items[idx]['text'] for idx in range(len(items))}
-        self.prompt2profession = {str(items[idx]['messages_llama']): items[idx]['biasinbios_occupations'] for idx in range(len(items))}
+        self.promtp2original = {str(items[idx]['prompt']):'' for idx in range(len(items))}
+        self.prompt2profession = {str(items[idx]['prompt']): '' for idx in range(len(items))}
         # self.promtp2original = {remove_links(items[idx]['prompt']): items[idx]['text'] for idx in range(len(items))}
 
         # Load pre-trained model and tokenizer

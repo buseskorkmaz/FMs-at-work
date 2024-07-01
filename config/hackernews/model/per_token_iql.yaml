@@ -1,5 +1,5 @@
 defaults:
- - /llama: llama_pretrained
+ - /gpt2: gpt2_pretrained
 
 name: per_token_iql
 dataset: null

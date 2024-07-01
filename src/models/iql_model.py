@@ -669,6 +669,7 @@ class IQL_Policy(Policy):
         self.generation_kwargs = generation_kwargs
         self.kls_all = []
         self.logprobs_all = []
+        self.logits_all = []
 
     # def greedy_raw(self, tokens: torch.Tensor, attn_mask: torch.Tensor, 
     #                state_idxs: torch.Tensor, action_idxs: torch.Tensor, 
@@ -1094,7 +1095,7 @@ class IQL_Policy(Policy):
         scores = torch.gather(scores, dim=1, index=order)
         log_probs = torch.gather(log_probs.reshape(-1, num_generations), dim=1, index=order)
         kls = torch.gather(kls.reshape(-1, num_generations), dim=1, index=order)
-        return list(zip(input_strs, processed_outputs)), log_probs.reshape(-1, num_generations), kls
+        return list(zip(input_strs, processed_outputs)), log_probs.reshape(-1, num_generations), kls, full_logits
     
     # def rerank_raw(self, 
     #                tokens: torch.Tensor, attn_mask: torch.Tensor, 
@@ -1187,17 +1188,18 @@ class IQL_Policy(Policy):
             method = self.sample_raw
         else:
             raise NotImplementedError
-        generations, info, kls = method(tokens, attn_mask, 
+        generations, info, kls, logits = method(tokens, attn_mask, 
                                              state_idxs, action_idxs, 
                                              termination_condition, 
                                              **kwargs)
-        return generations, info, kls
+        return generations, info, kls, logits
     
     def act(self, obs: Language_Observation) -> str:
         item = DataPoint.from_obs(obs, self.iql_model.dataset.tokenizer, self.iql_model.dataset.token_reward)
-        generations, logprobs, kls = self.generate([item], always_terminate, **self.generation_kwargs)
+        generations, logprobs, kls, logits = self.generate([item], always_terminate, **self.generation_kwargs)
         self.kls_all.append(kls[0, 0].item())
         self.logprobs_all.append(logprobs[0, 0].item())
+        self.logits_all.append(logits)
         return generations[0][1][0]
     
     def train(self):
