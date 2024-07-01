@@ -11,7 +11,6 @@ from accelerate import Accelerator
 from utils.misc import add_system_configs, convert_path
 from torch.utils.data import DataLoader
 from tqdm.auto import tqdm
-from utils.torch_utils import to
 import random
 from omegaconf import DictConfig
 from src.models.iql_model import IQL_Policy
@@ -57,8 +56,6 @@ def generations(cfg : DictConfig):
     policy = IQL_Policy(accelerator.unwrap_model(model), kind, **generation_kwargs)
     with torch.no_grad():
         for i, item in tqdm(enumerate(data_loader)):
-            print(f"i {i}\n", "**"*50)
-            # item = to(item, system_cfg['device'])
             result, sequence = interact_environment(env, policy, None)
             print("IQL GENERATIONS:")
             print(result)

@@ -22,7 +22,7 @@ model:
     name: hackernews_list_dataset
     cache_id: d
   load:
-    checkpoint_path: /gpfs/home/bsk18/FMs-at-work/outputs/hackernews/gpt2/lrl1e-4-20.pkl/model.pkl
+    checkpoint_path: /dccstor/autofair/busekorkmaz/FMs-at-work/outputs/hackernews-bc-gpt2/model.pkl
     strict_load: true
 
 evaluator:
@@ -49,7 +49,7 @@ eval:
   batches: 400
   print_every: 4
   seed: 0
-  log_save_path: /gpfs/home/bsk18/FMs-at-work/outputs/hackernews/gpt2/hackernews-checkpoint/inference_logs.pkl
+  log_save_path: /outputs/hackernews/gpt2/hackernews-checkpoint/inference_logs.pkl
   loss:
     v_loss_weight: 1.0
     q_loss_weight: 1.0

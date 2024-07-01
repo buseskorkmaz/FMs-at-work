@@ -1,0 +1,101 @@
+/dccstor/autofair/busekorkmaz/FMs-at-work/scripts/eval/hackernews/inference_policy.py:10: UserWarning: 
+The version_base parameter is not specified.
+Please specify a compatability version level, or None.
+Will assume defaults for version 1.1
+  @hydra.main(config_path="../../../config/hackernews", config_name="eval_policy_bc")
+/u/busekorkmaz/.conda/envs/fms_at_work/lib/python3.10/site-packages/hydra/_internal/hydra.py:119: UserWarning: Future Hydra versions will no longer change working directory at job runtime by default.
+See https://hydra.cc/docs/1.2/upgrades/1.1_to_1.2/changes_to_job_working_dir/ for more information.
+  ret = run_job(
+[2024-07-01 17:23:27,533][accelerate.utils.other][WARNING] - Detected kernel version 4.18.0, which is below the recommended minimum of 5.5.0; this can cause the process to hang. It is recommended to upgrade the kernel to the minimum version or higher.
+/u/busekorkmaz/.conda/envs/fms_at_work/lib/python3.10/site-packages/accelerate/accelerator.py:593: FutureWarning: The `use_fp16` property is deprecated and will be removed in version 1.0 of Accelerate use `Accelerator.mixed_precision == 'fp16'` instead.
+  warnings.warn(
+using device: cuda
+num processes: 1
+using fp16: False
+saving to cache (hackernews_rl_dataset, raw_data)
+saving to cache (hackernews_list_dataset, d)
+loading diversity_reward: {}
+[2024-07-01 17:23:27,799][sentence_transformers.SentenceTransformer][INFO] - Use pytorch device_name: cuda
+[2024-07-01 17:23:27,799][sentence_transformers.SentenceTransformer][INFO] - Load pretrained SentenceTransformer: sentence-transformers/all-mpnet-base-v2
+/u/busekorkmaz/.conda/envs/fms_at_work/lib/python3.10/site-packages/huggingface_hub/file_download.py:1132: FutureWarning: `resume_download` is deprecated and will be removed in version 1.0.0. Downloads always resume when possible. If you want to force a new download, use `force_download=True`.
+  warnings.warn(
+0it [00:00, ?it/s]1it [00:03,  3.82s/it]2it [00:05,  2.58s/it]2it [00:05,  2.78s/it]
+BC GENERATIONS:
+parent: Original job description for reference: 'San Francisco, CA and Vancouver, BC
+The Systems Software team at OpenDNS is building a platform as a service to support our product engineering teams. We're looking for engineers that have a passion for distributed systems, enjoy writing code, and love delighting customers with their product.
+The compute side of the PaaS is built around Docker. We're building out across 24 datacenters. And, have big plans for the remainder of the year and 2015. This is a great opportunity to make an impact at a fast growing company.
+We've started talking about some of what our team is up to:
+>
+>
+>
+Resumes can be submitted here:
+>.
+You can also reach out to me directly, '
+Based on the original description, the job is located in San Francisco, CA and Vancouver, BC. The company, OpenDNS, is seeking a qualified individual for the docker position. The ideal candidate would be skilled in the following technologies: docker. The remote work options for this job are currently unknown. Write a new job description using only the information provided in the original description.
+comment: San Francisco, CA and Vancouver, BC
+The Systems Software team at OpenDNS is building a platform as a service to support our product engineering teams. We're looking for engineers that have a passion for distributed systems, enjoy writing code, and love delighting customers with their product.
+The compute side of the PaaS is built around Docker. We're building out across 24 datacenters. And, have big plans for the remainder of the year and 2015. This is a great opportunity to make an impact at a fast growing company.
+We've started talking about some of what our team is up to:
+ >
+ >
+Resumes can be submitted here:
+>.
+You can also reach out to me directly,
+==================================================
+latest logits
+tensor([[[-16.6149, -19.2679, -20.9195,  ...,  -2.2223,  -1.4555,     -inf]]],
+       device='cuda:0')
+BC GENERATIONS:
+parent: Original job description for reference: 'Hipmunk San Francisco, CA - close to Caltrain
+Experienced frontend, backend, full stack, iOS, and Android engineers. We're always open to good DevOps and data engineers as well.
+>
+We're a high-standards group with a lot of pride in our products, code, and people. We understand consumer scale and data (Reddit co-founder &amp; engineers) and aspire to build products that customers love. We've had success due to this, consistently getting 4-5 star reviews on app/play stores and net promoter scores at or above the best in the tech industry.
+We're friends and work hard to enable folks to do their best work. Processes are light and trust is high. At 26 engineers we're not so big where you can't know everyone well and have an impact, but not so small where it's chaos and you don't have anyone to learn from. We value learning and growth (and not having bored people) and invest regular time in doing so. For example, every other Friday is open time for you to do stuff that helps you be a better engineer.
+We're looking for folks that love all of the above and can help us raise our standards. You can email us at  if you're interested!'
+Based on the original description, the job is located in Experienced frontend, backend, full stack, iOS, and Android engineers. The company, Hipmunk, is seeking a qualified individual for the Experienced frontend, backend, full stack, iOS, and Android engineers position. The ideal candidate would be skilled in the following technologies: iOS, and Android. The remote work options for this job are currently unknown. Write a new job description using only the information provided in the original description.
+comment: Hipmunk San Francisco, CA - close to Caltrain
+Experienced frontend, backend, full stack, iOS, and Android engineers. We're always open to good DevOps and data engineers as well.
+ >
+We're a high-standards group with a lot of pride in our products, code, and people. We understand consumer scale and data (Reddit co-founder &amp; engineers) and aspire to build products that customers love. We've had success due to this, consistently getting 4-5 star reviews on app/play stores and net promoter scores at or above the best in the tech industry.
+We're friends and work hard to enable folks
+==================================================
+latest logits
+tensor([[[36.9877, 20.7499, 10.2344,  ...,  2.9325,  1.8452,    -inf]]],
+       device='cuda:0')
+
+------------------------------------------------------------
+Sender: LSF System <lsfadmin@cccxc438.pok.ibm.com>
+Subject: Job 3190953: <python /dccstor/autofair/busekorkmaz/FMs-at-work/scripts/eval/hackernews/inference_policy.py> in cluster <cccCluster> Done
+
+Job <python /dccstor/autofair/busekorkmaz/FMs-at-work/scripts/eval/hackernews/inference_policy.py> was submitted from host <cccxl010> by user <busekorkmaz> in cluster <cccCluster> at Mon Jul  1 17:19:35 2024
+Job was executed on host(s) <4*cccxc438>, in queue <x86_1h>, as user <busekorkmaz> in cluster <cccCluster> at Mon Jul  1 17:23:10 2024
+</u/busekorkmaz> was used as the home directory.
+</dccstor/autofair/busekorkmaz/FMs-at-work> was used as the working directory.
+Started at Mon Jul  1 17:23:10 2024
+Terminated at Mon Jul  1 17:24:04 2024
+Results reported at Mon Jul  1 17:24:04 2024
+
+Your job looked like:
+
+------------------------------------------------------------
+# LSBATCH: User input
+python /dccstor/autofair/busekorkmaz/FMs-at-work/scripts/eval/hackernews/inference_policy.py
+------------------------------------------------------------
+
+Successfully completed.
+
+Resource usage summary:
+
+    CPU time :                                   22.23 sec.
+    Max Memory :                                 1683 MB
+    Average Memory :                             950.60 MB
+    Total Requested Memory :                     22528.00 MB
+    Delta Memory :                               20845.00 MB
+    Max Swap :                                   -
+    Max Processes :                              4
+    Max Threads :                                18
+    Run time :                                   55 sec.
+    Turnaround time :                            269 sec.
+
+The output (if any) is above this job summary.
+

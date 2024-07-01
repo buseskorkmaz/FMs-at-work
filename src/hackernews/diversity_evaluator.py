@@ -34,30 +34,17 @@ class Diversity_Evaluator:
         }
 
         self.user_profile_dataset = load_dataset("buseskorkmaz/wants_to_hired_gendered_sentence_embeddings")["train"]
-        with open('/gpfs/home/bsk18/FMs-at-work/data/hackernews_rl_dataset/prompts.json', 'r') as file:
+        with open('/dccstor/autofair/busekorkmaz/FMs-at-work/data/hackernews_rl_dataset/prompts.json', 'r') as file:
             self.hiring_dataset = json.load(file)
 
         # load_dataset("buseskorkmaz/cleaned_hiring_dataset_qval_w_gendered_mpnet_fixed_llama3_prompt", split='train')
         # self.language_eval = Language_Evaluator()
         items = [row for row in self.hiring_dataset]
 
-        # remove links <a> and </a> are special tokens
-        def remove_links(text):
-            clean_text = re.sub('<a.*?</a>', '', text)
-            clean_text = clean_text.replace('<a href="', '')
-            clean_text = clean_text.replace('www.', '')
-            clean_text = clean_text.replace("</a>", '')
-            clean_text = clean_text.replace('"', '')
-            return clean_text
-
         self.text2embedding = {"empty": []}
-        # In eval, remove "remove_links"
-        # self.prompt2idx = {remove_links(items[idx]['prompt']): idx for idx in range(len(items))}
         self.prompt2location = {str(items[idx]['prompt']): '' for idx in range(len(items))}
-        # self.idx2location = {idx: items[idx]['location'] for idx in range(len(items))}
         self.promtp2original = {str(items[idx]['prompt']):'' for idx in range(len(items))}
         self.prompt2profession = {str(items[idx]['prompt']): '' for idx in range(len(items))}
-        # self.promtp2original = {remove_links(items[idx]['prompt']): items[idx]['text'] for idx in range(len(items))}
 
         # Load pre-trained model and tokenizer
         self.model = BertModel.from_pretrained('bert-base-uncased')
@@ -78,32 +65,7 @@ class Diversity_Evaluator:
         embedding = self.models['mpnet'].encode(text).tolist()
 
         return embedding
-
-
-    # def encode_text(self, job_desc):
-
-    #     text = job_desc
-    #     # Preprocess the text
-    #     text = text.replace('\n', ' ').replace(',', ' ')
-
-    #     # Tokenize and pad the text to a maximum length of 512 tokens
-    #     input_ids = self.tokenizer.encode(text, add_special_tokens=True, max_length=512, truncation=True, padding='max_length')
-
-    #     # Convert to tensor
-    #     input_ids = torch.tensor([input_ids])
-
-    #     # Get the embeddings
-    #     with torch.no_grad():
-    #         last_hidden_states = self.model(input_ids)[0]  # Models outputs are now tuples
-
-    #     # Get the embeddings of the '[CLS]' token, which represents the entire sentence
-    #     sentence_embedding = last_hidden_states[0][0]
-
-    #     # Convert the tensor to a list
-    #     sentence_embedding = sentence_embedding.tolist()
-
-    #     return sentence_embedding   
-
+    
     def filter_candidates(self, user_profile_row, job_location):
         # replace 'location' and 'remote' with the actual column names in your dataset
 
@@ -114,12 +76,6 @@ class Diversity_Evaluator:
         # print(job_location)
         if any(term in user_location.lower().split(" ") for term in job_location):
             return True
-        
-        # if user_profile_row['Remote'] == "Yes" or user_profile_row['Relocate'] == "Yes":
-        #     return True
-
-        # if user_profile_row['Relocate'] == "Yes":
-        #     return True
         
         return False
     
@@ -168,33 +124,10 @@ class Diversity_Evaluator:
         idx = None
         print(prompt)
         if prompt in self.prompt2location.keys():
-            # idx = self.prompt2idx[prompt]
-            # job_location = self.idx2location[idx]
             job_location = self.prompt2location[prompt]
-            # original = self.promtp2original[prompt]
-            # original_embedding = self.encode_text(original)
         else:
             raise NotImplementedError
-        
-        # overall language check for coherency
-        # language_scores = self.language_eval.language_score(prompt, job_desc)
-        # language_score = language_scores['overall'] 
-        # if language_score < 0.5:
-        #     print("Poor English quality")
-        #     language_value = -1000
-        # else:
-        #     language_value = language_score * 100
-        
-        # this is going to be a problem - commented after submission
-        # if cosine_similarity(np.array(job_embedding).reshape(1, -1), np.array(original_embedding).reshape(1, -1))[0][0] >= 0.98:
-        #     language_value *= 0.6 
 
-        # # fact check based on given prompt
-        # groundedness = language_scores['groundedness']
-        # factual_penalty = 0
-        # if groundedness < 0.85:
-        #     print('It is not grounded enough for given prompt')
-        #     factual_penalty = (0.85 - groundedness) * -100
 
         k = 50
         locations = []
