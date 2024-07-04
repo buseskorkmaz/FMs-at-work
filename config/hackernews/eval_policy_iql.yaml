@@ -62,7 +62,7 @@ evaluator:
   kind: sample
   generation_kwargs:
     max_generation_len: 512
-    beam_width: 1
+    # beam_width: 1
     temp: 1.0
     top_k: null
     top_p: null
