@@ -457,11 +457,20 @@ class PerTokenIQL(BaseTransformer):
 
         logs = {}
         transformer_logs = {}
-        transformer_logs['qv_transformer_logs'] = get_transformer_logs(model_outputs['qv_model_outputs'].attentions, self.model, attn_mask)
+        transformer_logs['qv_transformer_logs'] = get_transformer_logs(
+            # model_outputs['qv_model_outputs'].attentions, 
+            self.model, 
+            attn_mask)
         if self.lm_policy is not None and (not (self.training and awac_weight == 0.0)):
-            transformer_logs['policy_transformer_logs'] = get_transformer_logs(model_outputs['policy_model_outputs'].attentions, self.lm_policy, attn_mask)
+            transformer_logs['policy_transformer_logs'] = get_transformer_logs(
+                # model_outputs['policy_model_outputs'].attentions, 
+                self.lm_policy, 
+                attn_mask)
         if self.lm_target is not None:
-            transformer_logs['target_transformer_logs'] = get_transformer_logs(model_outputs['target_model_outputs'].attentions, self.lm_target, attn_mask)
+            transformer_logs['target_transformer_logs'] = get_transformer_logs(
+                # model_outputs['target_model_outputs'].attentions, 
+                self.lm_target, 
+                attn_mask)
         n = (1 - terminals[:, :-1]).sum().item()
         rs_downstream = self.get_downstream_rs(rs, self.gamma)
         if mc_returns:
@@ -895,8 +904,8 @@ class IQL_Policy(Policy):
                                          target_kwargs={'use_cache': True, 'past_key_values': curr_target_kvs})
             model_outputs, logits = iql_outputs['model_outputs'], iql_outputs['logits']
             
-            logits[:, 0, tokenizer.pad_token_id] = torch.where(termination_mask == 1, float('-inf'), 1e7)
-            logits[torch.arange(0, n).to(device), torch.full((n,), 0).to(device), tokens[:, t]] = logits[torch.arange(0, n).to(device), torch.full((n,), 0).to(device), tokens[:, t]].masked_fill_(t < dialogue_lens, 1e7)
+            logits[:, 0, tokenizer.pad_token_id] = torch.where(termination_mask == 1, float('-inf'), 65504)
+            logits[torch.arange(0, n).to(device), torch.full((n,), 0).to(device), tokens[:, t]] = logits[torch.arange(0, n).to(device), torch.full((n,), 0).to(device), tokens[:, t]].masked_fill_(t < dialogue_lens, 65504)
             edited_logits = process_logits(logits.clone(), temp=temp, top_k=top_k, top_p=top_p)
             
             vs, qs = iql_outputs['target_vs'], iql_outputs['target_qs']
@@ -908,8 +917,8 @@ class IQL_Policy(Policy):
                 adv_logits = torch.log(adv_logits)
             if adv_clip is not None:
                 adv_logits = torch.clip(adv_logits, max=adv_clip)
-            adv_logits[:, 0, tokenizer.pad_token_id] = torch.where(termination_mask == 1, float('-inf'), 1e7)
-            adv_logits[torch.arange(0, n).to(device), torch.full((n,), 0).to(device), tokens[:, t]] = adv_logits[torch.arange(0, n).to(device), torch.full((n,), 0).to(device), tokens[:, t]].masked_fill_(t < dialogue_lens, 1e7)
+            adv_logits[:, 0, tokenizer.pad_token_id] = torch.where(termination_mask == 1, float('-inf'), 65504)
+            adv_logits[torch.arange(0, n).to(device), torch.full((n,), 0).to(device), tokens[:, t]] = adv_logits[torch.arange(0, n).to(device), torch.full((n,), 0).to(device), tokens[:, t]].masked_fill_(t < dialogue_lens, 65504)
 
             full_logits = (edited_logits if include_logits else 0.0) + (adv_logits if include_adv else 0.0) + base_logits.unsqueeze(1).unsqueeze(2)
             
@@ -1021,6 +1030,7 @@ class IQL_Policy(Policy):
         state_idxs_temp, action_idxs_temp = torch.zeros((dialogue_lens.shape[0], 1,)).long().to(device), torch.zeros((dialogue_lens.shape[0], 1,)).long().to(device)
         t = torch.min(dialogue_lens).int()
         base_logits = torch.full((dialogue_lens.shape[0],), 0.0).to(device)
+        full_logits = None
         while termination_mask.sum() > 0 and (t+prefix_t) < max_length:
             curr_token = tokens[:, t-1].unsqueeze(1)
             curr_kvs = map_all_kvs(lambda x: x[:,:,:(t+prefix_t)-1,:], kvs['qv'])
@@ -1035,8 +1045,8 @@ class IQL_Policy(Policy):
                                          target_kwargs={'use_cache': True, 'past_key_values': curr_target_kvs})
             model_outputs, logits = iql_outputs['model_outputs'], iql_outputs['logits']
             
-            logits[:, 0, tokenizer.pad_token_id] = torch.where(termination_mask == 1, float('-inf'), 1e7)
-            logits[torch.arange(0, n).to(device), torch.full((n,), 0).to(device), tokens[:, t]] = logits[torch.arange(0, n).to(device), torch.full((n,), 0).to(device), tokens[:, t]].masked_fill_(t < dialogue_lens, 1e7)
+            logits[:, 0, tokenizer.pad_token_id] = torch.where(termination_mask == 1, float('-inf'), 65504)
+            logits[torch.arange(0, n).to(device), torch.full((n,), 0).to(device), tokens[:, t]] = logits[torch.arange(0, n).to(device), torch.full((n,), 0).to(device), tokens[:, t]].masked_fill_(t < dialogue_lens, 65504)
             edited_logits = process_logits(logits.clone(), temp=temp, top_k=top_k, top_p=top_p)
 
             vs, qs = iql_outputs['target_vs'], iql_outputs['target_qs']
@@ -1048,8 +1058,8 @@ class IQL_Policy(Policy):
                 adv_logits = torch.log(adv_logits)
             if adv_clip is not None:
                 adv_logits = torch.clip(adv_logits, max=adv_clip)
-            adv_logits[:, 0, tokenizer.pad_token_id] = torch.where(termination_mask == 1, float('-inf'), 1e7)
-            adv_logits[torch.arange(0, n).to(device), torch.full((n,), 0).to(device), tokens[:, t]] = adv_logits[torch.arange(0, n).to(device), torch.full((n,), 0).to(device), tokens[:, t]].masked_fill_(t < dialogue_lens, 1e7)
+            adv_logits[:, 0, tokenizer.pad_token_id] = torch.where(termination_mask == 1, float('-inf'), 65504)
+            adv_logits[torch.arange(0, n).to(device), torch.full((n,), 0).to(device), tokens[:, t]] = adv_logits[torch.arange(0, n).to(device), torch.full((n,), 0).to(device), tokens[:, t]].masked_fill_(t < dialogue_lens, 65504)
 
             full_logits = (edited_logits if include_logits else 0.0) + (adv_logits if include_adv else 0.0) + base_logits.unsqueeze(1).unsqueeze(2)
 

@@ -15,18 +15,18 @@ class HackernewsData:
                 # not sure about them
                  reward_scale: float=1.0):
         
-        # rl_dataset = load_dataset("buseskorkmaz/cleaned_hiring_dataset_qval_w_gendered_mpnet_fixed_llama3_prompt", split="train")
-        with open('/gpfs/home/bsk18/FMs-at-work/data/hackernews_rl_dataset/prompts.json', 'r') as file:
-            rl_dataset = json.load(file)
+        rl_dataset = load_dataset("buseskorkmaz/cleaned_hiring_dataset_qval_w_gendered_mpnet_fixed_llama3_prompt", split="train")
+        # with open('/gpfs/home/bsk18/FMs-at-work/data/hackernews_rl_dataset/prompts.json', 'r') as file:
+        #     rl_dataset = json.load(file)
 
-        # print(rl_dataset)
-        # print(len(rl_dataset))
-        # print(rl_dataset[0])
+        print(rl_dataset)
+        print(len(rl_dataset))
+        print(rl_dataset[0])
         items = [row for row in rl_dataset]
         # print("Indexes:", indexes)
-        # if indexes is not None:
-        #     items = [items[idx] for idx in indexes if idx < len(rl_dataset)]
-        # self.info = ("huggingface", len(indexes))
+        if indexes is not None:
+            items = [items[idx] for idx in indexes if idx < len(rl_dataset)]
+        self.info = ("huggingface", len(indexes))
         self.reward_cache = reward_cache
         if self.reward_cache is None:
             self.reward_cache = Cache()

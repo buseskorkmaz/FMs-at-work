@@ -79,8 +79,7 @@ class BC_LM(BaseTransformer):
         model_outputs = self(tokens, attn_mask, 
                              output_attentions=True)
         logs = {}
-        transformer_logs = get_transformer_logs(model_outputs.attentions, 
-                                                self.model, 
+        transformer_logs = get_transformer_logs(self.model, 
                                                 attn_mask)
         n = attn_mask.sum().item()
         weights = self.get_weights(tokens, a_idx)
@@ -172,6 +171,7 @@ class BC_Policy(Policy):
         log_probs = torch.full((dialogue_lens.shape[0],), 0.0).to(device)
         termination_mask = torch.full((dialogue_lens.shape[0],), 1).to(device)
         t = torch.min(dialogue_lens).int()
+        logits = None
         while termination_mask.sum() > 0 and (t+prefix_t) < max_length:
             curr_token = tokens[:, t-1].unsqueeze(1)
             curr_dialogue_kvs = map_all_kvs(lambda x: x[:,:,:(t+prefix_t)-1,:], dialogue_kvs)

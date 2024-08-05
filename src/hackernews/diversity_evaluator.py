@@ -34,8 +34,7 @@ class Diversity_Evaluator:
         }
 
         self.user_profile_dataset = load_dataset("buseskorkmaz/wants_to_hired_gendered_sentence_embeddings")["train"]
-        with open('/gpfs/home/bsk18/FMs-at-work/data/hackernews_rl_dataset/prompts.json', 'r') as file:
-            self.hiring_dataset = json.load(file)
+        self.hiring_dataset = load_dataset("buseskorkmaz/cleaned_hiring_dataset_qval_w_gendered_mpnet_fixed_llama3_prompt", split='train')
 
         # load_dataset("buseskorkmaz/cleaned_hiring_dataset_qval_w_gendered_mpnet_fixed_llama3_prompt", split='train')
         # self.language_eval = Language_Evaluator()
@@ -53,15 +52,15 @@ class Diversity_Evaluator:
         self.text2embedding = {"empty": []}
         # In eval, remove "remove_links"
         # self.prompt2idx = {remove_links(items[idx]['prompt']): idx for idx in range(len(items))}
-        self.prompt2location = {str(items[idx]['prompt']): '' for idx in range(len(items))}
+        # self.prompt2location = {str(items[idx]['messages_llama']): items[idx]['location'] for idx in range(len(items))}
         # self.idx2location = {idx: items[idx]['location'] for idx in range(len(items))}
-        self.promtp2original = {str(items[idx]['prompt']):'' for idx in range(len(items))}
-        self.prompt2profession = {str(items[idx]['prompt']): '' for idx in range(len(items))}
+        self.promtp2original = {str(items[idx]['prompt']): items[idx]['text'] for idx in range(len(items))}
+        self.prompt2profession = {str(items[idx]['prompt']): items[idx]['biasinbios_occupations'] for idx in range(len(items))}
         # self.promtp2original = {remove_links(items[idx]['prompt']): items[idx]['text'] for idx in range(len(items))}
 
         # Load pre-trained model and tokenizer
-        self.model = BertModel.from_pretrained('bert-base-uncased')
-        self.tokenizer = BertTokenizer.from_pretrained('bert-base-uncased')
+        # self.model = BertModel.from_pretrained('bert-base-uncased')
+        # self.tokenizer = BertTokenizer.from_pretrained('bert-base-uncased')
 
         # initialize target distributions
         # self.calc_location_statistics()
@@ -75,34 +74,9 @@ class Diversity_Evaluator:
     def three_sentence_transformers_encoding(self, text):
 
         # Generate embeddings for each model
-        embedding = self.models['mpnet'].encode(text).tolist()
+        embedding = self.models['mpnet'].encode(text, device='cpu').tolist()
 
         return embedding
-
-
-    # def encode_text(self, job_desc):
-
-    #     text = job_desc
-    #     # Preprocess the text
-    #     text = text.replace('\n', ' ').replace(',', ' ')
-
-    #     # Tokenize and pad the text to a maximum length of 512 tokens
-    #     input_ids = self.tokenizer.encode(text, add_special_tokens=True, max_length=512, truncation=True, padding='max_length')
-
-    #     # Convert to tensor
-    #     input_ids = torch.tensor([input_ids])
-
-    #     # Get the embeddings
-    #     with torch.no_grad():
-    #         last_hidden_states = self.model(input_ids)[0]  # Models outputs are now tuples
-
-    #     # Get the embeddings of the '[CLS]' token, which represents the entire sentence
-    #     sentence_embedding = last_hidden_states[0][0]
-
-    #     # Convert the tensor to a list
-    #     sentence_embedding = sentence_embedding.tolist()
-
-    #     return sentence_embedding   
 
     def filter_candidates(self, user_profile_row, job_location):
         # replace 'location' and 'remote' with the actual column names in your dataset
@@ -167,34 +141,14 @@ class Diversity_Evaluator:
         
         idx = None
         print(prompt)
-        if prompt in self.prompt2location.keys():
-            # idx = self.prompt2idx[prompt]
-            # job_location = self.idx2location[idx]
-            job_location = self.prompt2location[prompt]
-            # original = self.promtp2original[prompt]
-            # original_embedding = self.encode_text(original)
-        else:
-            raise NotImplementedError
-        
-        # overall language check for coherency
-        # language_scores = self.language_eval.language_score(prompt, job_desc)
-        # language_score = language_scores['overall'] 
-        # if language_score < 0.5:
-        #     print("Poor English quality")
-        #     language_value = -1000
+        # if prompt in self.prompt2location.keys():
+        #     # idx = self.prompt2idx[prompt]
+        #     # job_location = self.idx2location[idx]
+        #     job_location = self.prompt2location[prompt]
+        #     # original = self.promtp2original[prompt]
+        #     # original_embedding = self.encode_text(original)
         # else:
-        #     language_value = language_score * 100
-        
-        # this is going to be a problem - commented after submission
-        # if cosine_similarity(np.array(job_embedding).reshape(1, -1), np.array(original_embedding).reshape(1, -1))[0][0] >= 0.98:
-        #     language_value *= 0.6 
-
-        # # fact check based on given prompt
-        # groundedness = language_scores['groundedness']
-        # factual_penalty = 0
-        # if groundedness < 0.85:
-        #     print('It is not grounded enough for given prompt')
-        #     factual_penalty = (0.85 - groundedness) * -100
+        #     raise NotImplementedError
 
         k = 50
         locations = []
@@ -209,8 +163,6 @@ class Diversity_Evaluator:
             # idmax = similarity_matrix.argmax()
             ind = np.argsort(similarity_matrix)[::-1][:k]
             for idmax in ind:
-                # locations.append(filtered_user_profiles[int(idmax)]["Location"])
-                # main_locations.append(filtered_user_profiles[int(idmax)]["Main_location"])
                 genders.append(filtered_user_profiles[int(idmax)]["Gender"])
             
             # check if the information is correct
@@ -227,42 +179,15 @@ class Diversity_Evaluator:
             print(target_gender_distribution)
             print(realized_gender_distribution)
 
-            # total_candidate = len(genders)
-            # real_na_pct = main_locations.count("North America") / total_candidate
-            # real_eu_pct = main_locations.count("Europe") / total_candidate
-            # real_asia_pct = main_locations.count("Asia") / total_candidate
-            # real_remote_pct = main_locations.count("Remote") / total_candidate
-            # real_australia_pct = main_locations.count("Australia") / total_candidate
-            # real_africa_pct = main_locations.count("Africa") / total_candidate
-            # real_sa_pct = main_locations.count("South America") / total_candidate
-            # real_unknown_pct =  main_locations.count("Unknown") / total_candidate
-
-            # target_location_distribution = np.array(list(get_element_percentages(user_profile_dataset["Main_location"]).values()))
-            # realized_location_distribution = np.array(list(get_element_percentages(filtered_user_profiles["Main_location"]).values()))
-            # target_location_distribution =  self.target_location_distribution
-            # realized_location_distribution = np.array([real_na_pct, real_eu_pct, real_asia_pct, real_remote_pct, real_australia_pct, real_africa_pct,
-            #                                         real_sa_pct, real_unknown_pct])
-
-            # print(target_location_distribution)
-            # print(realized_location_distribution)
-
-            # Calculate the KL divergence -- too sensitive easily becoming inf
-            # kl_divergence_gender = kl_div(target_gender_distribution, realized_gender_distribution).sum()
-            # kl_divergence_location = kl_div(target_location_distribution, realized_location_distribution).sum()
-
             # Calculate the Wasserstein divergence -- always finite
             wasserstein_distance_gender = wasserstein_distance(target_gender_distribution, realized_gender_distribution)
-            # wasserstein_distance_location = wasserstein_distance(target_location_distribution, realized_location_distribution)
 
             print(f"The Wasserstein distance between the target gender and realized distributions is {wasserstein_distance_gender}")
-            # print(f"The Wasserstein distance between the target location and realized distributions is {wasserstein_distance_location}")
 
             if wasserstein_distance_gender == np.inf:
-            # or wasserstein_distance_location == np.inf:
                 distance = 10
             else:
                 distance =  wasserstein_distance_gender 
-                # + wasserstein_distance_location
             
             print(f"The total Wasserstein distance between the target and realized distributions is {distance}")
             q_value = distance * -100
