@@ -10,20 +10,7 @@ This project is developed with Python 3.10.6 on CCC with CUDA backend. Currently
  
 ### **Preprocessed Data**
 
-Copy the data and indexes to under `/data/task_path` in your environment. For workable, first move the preprocessed data files into your `/data` directory: 
-
-```shell
-cp -r /dccstor/autofair/workable_processed/candidates_w_main_location path_to_env/data/workable_rl_dataset
-cp -r /dccstor/autofair/workable_processed/job_descriptions_w_q_prompt_eng path_to_env/data/workable_rl_dataset
-```
-
-Then copy the indexes:
-
-```shell
-cp /dccstor/autofair/workable_processed/train_idxs.json path_to_env/data/workable_rl_dataset
-cp /dccstor/autofair/workable_processed/test_idxs.json path_to_env/data/workable_rl_dataset
-cp /dccstor/autofair/workable_processed/eval_idxs.json path_to_env/data/workable_rl_dataset
-```
+Copy the data and indexes to under `/data/task_path` in your environment.
 
 ### **Dependencies and PYTHONPATH**
  
@@ -35,35 +22,35 @@ export PYTHONPATH="$PWD/src/"
 ```
 # Inference
 
-Under development in `inference_dev` branch. I will develop it with Hackernews checkpoint and share with you in a way that you can make it work for Workable just changing the checkpoint path and prompt.
+Under development in `inference_dev` branch. I will develop it with Hackernews checkpoint and share with you in a way that you can make it work for Hackernews just changing the checkpoint path and prompt.
 
 # Evaluation
 
 Copy the checkpoint to under `/outputs/task_name`. For workable:
 
 ```shell
-cp -r /dccstor/autofair/workable_processed/checkpoints/conditional_workable_official_iql_bc_test1_16383_eng/ path_to_env/outputs/workable/
+cp -r /dccstor/autofair/hackernews_processed/checkpoints/conditional_hackernews_official_iql_bc_test1_16383_eng/ path_to_env/outputs/hackernews/
 ```
 
-Edit the config file (`config/workable/eval_policy.yaml`) with input/output paths and hyperparameter values. Then, evaluate policy:
+Edit the config file (`config/hackernews/eval_policy.yaml`) with input/output paths and hyperparameter values. Then, evaluate policy:
 
 ```shell
-cd scripts/eval/workable
+cd scripts/eval/hackernews
 jbsub -queue x86_24h -mem 32g -cores 4+1 python eval_policy.py 
 ```
 
 Distill policy to see original and rewrite diversity scores:
 
 ```shell
-cd scripts/eval/workable
-python distill_policy_eval.py --eval_file ../../../outputs/workable/your_output_path/eval_logs.pkl 
+cd scripts/eval/hackernews
+python distill_policy_eval.py --eval_file ../../../outputs/hackernews/your_output_path/eval_logs.pkl 
 ```
 
-Impact ratio and diversity score calculations for both original and rewritten job descriptions (in CCC):
+Impact ratio and diversity score calculations for both original and rewritten job descriptions (in your favourite computing environment):
 
 ```shell
 cd scripts/eval/workable
-jbsub -queue x86_24h -mem 32g -cores 4+1 python impact_ratio_calc.py --eval_file ../../../outputs/workable/your_output_path/eval_logs.pkl --save_path ../../../outputs/
+jbsub -queue x86_24h -mem 32g -cores 4+1 python impact_ratio_calc.py --eval_file ../../../outputs/hackernews/your_output_path/eval_logs.pkl --save_path ../../../outputs/
 ```
 
 # Running Experiments
@@ -86,7 +73,7 @@ Here I outline a recommended workflow for training offline RL agents. Suppose th
 I would first train a BC model on the data:
  
 ``` shell
-cd scripts/train/workable/
+cd scripts/train/hackernews/
 python train_bc.py
 ```
 
@@ -100,20 +87,20 @@ jbsub -queue x86_12h -mem 32g -cores 4+1 python train_bc.py
  
 ``` shell
 cd ../data/
-python convert_bc.py --load ../../outputs/workable/conditional_workable_official_bc_test1/model.pkl --save ../../outputs/workable/conditional_workable_official_bc_test1/model_converted.pkl
+python convert_bc.py --load ../../outputs/hackernews/conditional_hackernews_official_bc_test1/model.pkl --save ../../outputs/hackernews/conditional_hackernews_official_bc_test1/model_converted.pkl
 ```
  
 Then edit the checkpoint that offline RL is configured to train with:
  
 ``` shell
 cd ../train/
-python train_iql.py model.load.checkpoint_path=outputs/workable/conditional_workable_official_bc_test1/model_converted.pkl model.load.strict_load=false train.loss.awac_weight=0.0
+python train_iql.py model.load.checkpoint_path=outputs/hackernews/conditional_hackernews_official_bc_test1/model_converted.pkl model.load.strict_load=false train.loss.awac_weight=0.0
 ```
 
-`train_iql` is responsible for training the RL agent and producing fairness aware job descriptions. This is the most resource-expensive step in our framework and current version of code supports multi-GPU training with distributed backend of torch. Training of RL agent should take less than 1 day with 8 GPUs. The training time varies with the GPU configuration (multi-node, one node, etc.). You can run the following command on CCC:
+`train_iql` is responsible for training the RL agent and producing fairness aware job descriptions. This is the most resource-expensive step in our framework and current version of code supports multi-GPU training with distributed backend of torch. Training of RL agent should take less than 1 day with 8 GPUs. The training time varies with the GPU configuration (multi-node, one node, etc.). You can run a similar command on your favourite computing environment:
 
 ```shell
-jbsub -queue x86_24h -cores 4x1+2 -mem 32g -name iql_test_16383 python -m torch.distributed.launch --nproc_per_node 2 --use_env train_iql.py model.load.checkpoint_path=outputs/workable/conditional_workable_official_bc_test_1/model_converted.pkl model.load.strict_load=false train.loss.awac_weight=0.0
+jbsub -queue x86_24h -cores 4x1+2 -mem 32g -name iql_test_16383 python -m torch.distributed.launch --nproc_per_node 2 --use_env train_iql.py model.load.checkpoint_path=outputs/hackernews/conditional_hackernews_official_bc_test_1/model_converted.pkl model.load.strict_load=false train.loss.awac_weight=0.0
 ```
  
 This is just one workflow though, you can also train the BC model at the same time as the offline RL agent by setting `train.loss.awac_weight=1.0` in the training config.
@@ -128,13 +115,13 @@ This is just one workflow though, you can also train the BC model at the same ti
  
 ## Config Framework Overview
  
-Each script is associated with a config file. The config file specifies which models, dataset, and evaluators are to be loaded by the script and their corresponding hyperparameters. See `configs/workable/train_iql.yaml` for an example.
+Each script is associated with a config file. The config file specifies which models, dataset, and evaluators are to be loaded by the script and their corresponding hyperparameters. See `configs/hackernews/train_iql.yaml` for an example.
  
 Each possible model, dataset, or evaluator object is given its own config file, which specifies default values for that object and a special `name` attribute, which tells the config manager what class to load. See `configs/workable/model/per_token_iql.yaml` for an example.
  
-The files `src/load_objects.py` and `src/workable/load_objects.py` define how each object is loaded from its corresponding config. The `@register('name')` tag above each load object function links to the `name` attribute in the config.
+The files `src/load_objects.py` and `src/hackernews/load_objects.py` define how each object is loaded from its corresponding config. The `@register('name')` tag above each load object function links to the `name` attribute in the config.
  
-You may notice a special `cache_id` attribute associated with some objects in a config. For an example, see `train_dataset` in `configs/workable/train_iql.yaml`. This attribute tells the config manager to cache the first object that it loads that is associated with this id, and then to return this cached object for subsequent object configs with this `cache_id`.
+You may notice a special `cache_id` attribute associated with some objects in a config. For an example, see `train_dataset` in `configs/hackernews/train_iql.yaml`. This attribute tells the config manager to cache the first object that it loads that is associated with this id, and then to return this cached object for subsequent object configs with this `cache_id`.
  
 For all configs, use paths relative to the repo root.
  
