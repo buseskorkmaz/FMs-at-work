@@ -26,7 +26,7 @@ Under development in `inference_dev` branch. I will develop it with Hackernews c
 
 # Evaluation
 
-Copy the checkpoint to under `/outputs/task_name`. For workable:
+Copy the checkpoint to under `/outputs/task_name`. For hackernews:
 
 ```shell
 cp -r /dccstor/autofair/hackernews_processed/checkpoints/conditional_hackernews_official_iql_bc_test1_16383_eng/ path_to_env/outputs/hackernews/
@@ -49,7 +49,7 @@ python distill_policy_eval.py --eval_file ../../../outputs/hackernews/your_outpu
 Impact ratio and diversity score calculations for both original and rewritten job descriptions (in your favourite computing environment):
 
 ```shell
-cd scripts/eval/workable
+cd scripts/eval/hackernews
 jbsub -queue x86_24h -mem 32g -cores 4+1 python impact_ratio_calc.py --eval_file ../../../outputs/hackernews/your_output_path/eval_logs.pkl --save_path ../../../outputs/
 ```
 
@@ -110,14 +110,14 @@ This is just one workflow though, you can also train the BC model at the same ti
 * All data is provided pre-processed in the `data/` folder.
 * `scripts/` contains all scripts for running training, evaluation, and data pre-processing steps in the paper. Scripts are organized into subfolders corresponding to the dataset used.
 * `config/` contains .yaml configs for each script. This repo uses [hydra](https://hydra.cc/docs/intro/) to manage configs. Configs are organized into subfolders corresponding to the dataset used. Most config files are named the same as their corresponding script, but if you are unsure which config corresponds to a script, check the line `@hydra.main(config_path="some_path", config_name="some_name")` to see which config file the script corresponds to.
-* `src/` contains all the core implementations. See `src/models/` for all model implementations. See `src/data/` for all base data processing and MDP abstraction code. See `src/utils/` for various utility functions. See `src/workable/` for hackernews hiring dataset specific code respectively.
+* `src/` contains all the core implementations. See `src/models/` for all model implementations. See `src/data/` for all base data processing and MDP abstraction code. See `src/utils/` for various utility functions. See `src/hackernews/` for hackernews hiring dataset specific code respectively.
 * `ILQL` is referred to as `iql` throughout the repo.
  
 ## Config Framework Overview
  
 Each script is associated with a config file. The config file specifies which models, dataset, and evaluators are to be loaded by the script and their corresponding hyperparameters. See `configs/hackernews/train_iql.yaml` for an example.
  
-Each possible model, dataset, or evaluator object is given its own config file, which specifies default values for that object and a special `name` attribute, which tells the config manager what class to load. See `configs/workable/model/per_token_iql.yaml` for an example.
+Each possible model, dataset, or evaluator object is given its own config file, which specifies default values for that object and a special `name` attribute, which tells the config manager what class to load. See `configs/hackernews/model/per_token_iql.yaml` for an example.
  
 The files `src/load_objects.py` and `src/hackernews/load_objects.py` define how each object is loaded from its corresponding config. The `@register('name')` tag above each load object function links to the `name` attribute in the config.
  
@@ -127,7 +127,7 @@ For all configs, use paths relative to the repo root.
  
 ## A Few Abstractions to be Aware of
  
-Hackernews and Workable implement a few base classes. Once implemented, all the offline RL algorithms can be applied to the task in a plug-and-play manner. See the "Creating Your Own Tasks" section for an overview of what should be implemented in order to create your own tasks. Below, we outline the key abstractions that make this possible.
+Hackernews and hackernews implement a few base classes. Once implemented, all the offline RL algorithms can be applied to the task in a plug-and-play manner. See the "Creating Your Own Tasks" section for an overview of what should be implemented in order to create your own tasks. Below, we outline the key abstractions that make this possible.
  
 * `data.language_environment.Language_Environment` – represents a task POMDP environment, which a policy can interact with. It has a gym-like interface.
 * `data.language_environment.Policy` – represents a policy which can interact with an environment. Each of the offline RL algorithms in `src/models/` has a corresponding policy.
@@ -147,7 +147,7 @@ Hacker News hiring task has a corresponding environment and dataset implemented 
 
 You can similarly define your own tasks that can easily be run on all these offline RL algorithms. This codebase implements a simple set of RL environment abstractions that make it possible to define your own environments and datasets that can plug-and-play with any of the offline RL algorithms.
 
-All of the core abstractions are defined in `src/data/`. Here we outline what needs to be implemented in order to create your own tasks. For examples, see the implementations in `src/workable/`.
+All of the core abstractions are defined in `src/data/`. Here we outline what needs to be implemented in order to create your own tasks. For examples, see the implementations in `src/hackernews/`.
  
 ## 1. Create an environment and define observations:
  
